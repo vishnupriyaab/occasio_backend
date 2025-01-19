@@ -17,13 +17,18 @@ const asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => P
     return (req: Request, res: Response, next: NextFunction) => {
         Promise.resolve(fn(req, res, next)).catch(next);
     };
-  };
+  };  
 
 eventRoute.get( '/getEvents',asyncHandler(async (req: Request, res: Response) => {  return await eventController.getEvents(req, res) }) );
-eventRoute.post( '/addEvent', upload.single('img'),asyncHandler(async (req: Request, res: Response) => {  return await eventController.addEvent(req, res) }) );
+eventRoute.post( '/addEvent', upload.single('img'),asyncHandler(async (req: Request, res: Response) => { return await eventController.addEvent(req, res) }) );
 eventRoute.put( '/updateEvent/:id', upload.single('img'),asyncHandler(async (req: Request, res: Response) => {  return await eventController.updateEvent(req, res) }) );
 eventRoute.patch( '/blockEvent/:id',asyncHandler(async (req: Request, res: Response) => {  return await eventController.blockEvent(req, res) }) );
 eventRoute.delete( '/deleteEvent/:id',asyncHandler(async (req: Request, res: Response) => {  return await eventController.deleteEvent(req, res) }) );
 
+eventRoute.get( '/getPackages/:id',asyncHandler(async (req: Request, res: Response) => {  return await eventController.getPackages(req, res) }) );
+eventRoute.post('/addPackage', upload.single('img'),asyncHandler(async (req: Request, res:Response) => { return await eventController.addPackage(req,res) }) )
+eventRoute.put( '/updatePackage/:id', upload.single('img'),asyncHandler(async (req: Request, res: Response) => {  return await eventController.updatePackage(req, res) }) );
+eventRoute.delete( '/deletePackage/:id',asyncHandler(async (req: Request, res: Response) => {  return await eventController.deletePackage(req, res) }) );
+eventRoute.patch( '/blockPackage/:id',asyncHandler(async (req: Request, res: Response) => {  return await eventController.blockPackage(req, res) }) );
 
-export default eventRoute
+export default eventRoute;

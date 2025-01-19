@@ -14,7 +14,7 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  async findByEmail(email: string) {
+  async findByEmail(email: string): Promise<IUser | null> {
     try {
       return await Users.findOne({ email: email });
     } catch (error) {
@@ -22,10 +22,7 @@ export class UserRepository implements IUserRepository {
       throw error;
     }
   }
-  async updateUserStatus(
-    email: string,
-    isVerified: boolean
-  ): Promise<IUser | null> {
+  async updateUserStatus( email: string, isVerified: boolean ): Promise<IUser | null> {
     try {
       const updatedUser = await Users.findOneAndUpdate(
         { email: email },
@@ -40,11 +37,27 @@ export class UserRepository implements IUserRepository {
     }
   }
 
+  async updateActivatedStatus(email:string, isActivated:boolean):Promise <IUser | null>{
+    try {
+      const updatedActivatedStatus = await Users.findOneAndUpdate(
+        { email: email },
+        { $set: { isActivated: isActivated } },
+        { new: true }
+      ).exec();
+
+      return updatedActivatedStatus ? updatedActivatedStatus.toObject() : null;
+    } catch (error) {
+      console.error("Error updating user status:", error);
+      throw error;
+    }
+  }
+
   async findUserByEmail(email: string): Promise<IUser | null> {
     console.log(email, "userrepooo");
     // console.log(Users.findOne({email}),"1234567890")
     return await Users.findOne({ email });
   }
+
   async savePasswordResetToken(userId: string, token: string): Promise<void> {
     await Users.updateOne(
       { _id: userId },
@@ -52,6 +65,7 @@ export class UserRepository implements IUserRepository {
       { upsert: true }
     );
   }
+  
   async findUserById(userId: string): Promise<IUser | null> {
     return await Users.findById(userId).exec();
   }
@@ -87,12 +101,6 @@ export class UserRepository implements IUserRepository {
     }).exec();
   }
 
-  //   async checkUser(email: string): Promise<IUser | null> {
-  //     console.log(email,"email in repooooooo")
-  //     const user = await Users.findOne({ email: email })
-  //     return user
-  // }
-
   async createGoogleUser(userData: IUser): Promise<IUser> {
     console.log("qwertyu12345678dfghjkl");
     try {
@@ -105,4 +113,9 @@ export class UserRepository implements IUserRepository {
       throw error;
     }
   }
+
+  async getAllUsers(): Promise<IUser[]> {
+    return Users.find().sort({ createdAt: -1 });
+  }
+
 }

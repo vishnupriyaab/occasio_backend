@@ -25,6 +25,10 @@ const userSchema: Schema = new Schema<IUser>(
       type: Boolean,
       default: false,
     },
+    isActivated: {
+      type: Boolean,
+      default: true,
+    },
     isBlocked: {
       type: Boolean,
       default: false,

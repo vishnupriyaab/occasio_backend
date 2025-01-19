@@ -1,7 +1,7 @@
 export interface IEvent {
     _id: string;
     eventName: string;
-    packageName: string;
+    // packageName: string;
     description: string;
     image: string;
     createdAt: Date;

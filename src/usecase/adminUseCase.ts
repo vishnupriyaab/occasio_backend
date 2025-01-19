@@ -1,4 +1,5 @@
 import { IAdmin } from "../entities/admin.entity";
+import { IUser } from "../entities/user.entity";
 import { JWTService } from "../framework/utils/jwtServices";
 import { AdminLoginResponse, IAdminUseCase } from "../interfaces/IAdmin";
 import { AdminRepository } from "../repositories/adminRepository";
@@ -32,13 +33,20 @@ export class AdminUseCase implements IAdminUseCase {
         accessToken,
         refreshToken
       };
-    // const adminEmail = this.adminRepo.getAdminEmail();
-    // const adminPassword = this.adminRepo.getAdminPassword();
-
-    // console.log(adminEmail, adminPassword, "Heyyyh");
   }
 
   async findAdminByEmail(email: string): Promise<IAdmin | null> {
     return await this.adminRepo.findAdminByEmail(email);
   }
+
+  async blockUser(userId:string):Promise<IUser | null>{
+    const user = await this.adminRepo.findById(userId);
+    if (!user) {
+      throw new Error('Event not found');
+    }
+    
+    user.isBlocked = !user.isBlocked;
+    return await this.adminRepo.updateStatus(userId, { isBlocked: user.isBlocked });
+  }
+
 }

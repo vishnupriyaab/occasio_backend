@@ -14,5 +14,4 @@ const storage = new CloudinaryStorage({
   } as any
 });
 
-
 export const upload = multer({ storage: storage });

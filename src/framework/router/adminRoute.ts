@@ -21,7 +21,7 @@ const asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => P
 
 
   adminRoute.post( '/login', asyncHandler(async (req: Request, res: Response) => {  return await adminController.adminLogin(req, res) }) );
-  // adminRoute.post( '/addEvent', asyncHandler(async (req: Request, res: Response) => {  return await adminController.adminLogin(req, res) }) );
+  adminRoute.patch( '/blockUser/:id', asyncHandler(async (req: Request, res: Response) => {  return await adminController.blockUsers(req, res) }) );
 
 
 export default adminRoute;

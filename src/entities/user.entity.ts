@@ -7,6 +7,7 @@ export interface IUser {
   password: string;
   createdAt: Date;
   updatedAt: Date;
+  isActivated:boolean;
   isVerified: boolean;
   isBlocked: boolean;
   resetPasswordToken?: string;

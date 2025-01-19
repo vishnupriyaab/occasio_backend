@@ -7,10 +7,6 @@ const eventSchema: Schema = new Schema<IEvent>(
       type: String,
       required: true,
     },
-    packageName: {
-      type: String,
-      required: true,
-    },
     description: {
       type: String,
     },

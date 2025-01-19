@@ -8,6 +8,8 @@ import { IUserUseCase } from "../../interfaces/IUser";
 import { IOtpRepository } from "../../interfaces/IOtp";
 import { IJWTService } from "../../interfaces/IJwt";
 import { JWTService } from "../utils/jwtServices";
+import { IGoogleAuthService } from "../../interfaces/IGoogleVerification";
+import { GoogleAuthService } from "../utils/googleVerification";
 
 const userRoute = express.Router();
 
@@ -20,7 +22,10 @@ const emailConfig = {
 const userRepository = new UserRepository();
 const iJwtService:IJWTService = new JWTService()
 const otpRepository: IOtpRepository = new OtpRepository();
-const userUseCase:IUserUseCase = new UserUseCase( userRepository, otpRepository, emailConfig ,iJwtService);
+const googleAuthService: IGoogleAuthService = new GoogleAuthService(
+  process.env.GOOGLE_AUTH_CLIENT_ID as string
+);
+const userUseCase:IUserUseCase = new UserUseCase( userRepository, otpRepository, emailConfig ,iJwtService, googleAuthService);
 const userController = new UserController(userUseCase);
 
 
@@ -29,6 +34,7 @@ const asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => P
       Promise.resolve(fn(req, res, next)).catch(next);
   };
 };
+
 
 // Route definitions
 userRoute.post( '/register', asyncHandler(async (req: Request, res: Response) => {  return await userController.registerUser(req, res) }) );
@@ -42,5 +48,12 @@ userRoute.post( '/resetPassword', asyncHandler(async (req: Request, res: Respons
 userRoute.post( '/login', asyncHandler(async (req: Request, res: Response) => {  return await userController.userLogin(req, res) }) );
 
 userRoute.post( '/google-login', asyncHandler(async (req: Request, res: Response) => {  return await userController.googleLogin(req, res) }) );
+
+userRoute.get( '/getUsers', asyncHandler(async (req: Request, res: Response) => {  return await userController.getUsers(req, res) }) );
+
+userRoute.post( '/logOut', asyncHandler(async (req: Request, res: Response) => {  return await userController.logOut(req, res) }) );
+
+userRoute.post('/isAuthenticate',userController.isAuthenticated.bind(userController));
+
 
 export default userRoute;

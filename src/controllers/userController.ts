@@ -4,17 +4,14 @@ import { HttpStatusCode } from "../constant/httpStatusCodes";
 import { handleError, handleSuccess } from "../framework/utils/responseHandler";
 
 export class UserController implements IUserController {
-  constructor(
-    private userUserCase: IUserUseCase,
-    
-  ) {}
+  constructor(private userUserCase: IUserUseCase) {}
   async registerUser(req: Request, res: Response): Promise<Response | void> {
     try {
       const { name, email, mobile, password } = req.body;
       if (!name || !email || !mobile || !password) {
         res
           .status(HttpStatusCode.BAD_REQUEST)
-          .json(handleError("Allfields are required", 400));
+          .json(handleError("Allfields are required", HttpStatusCode.BAD_REQUEST));
         return;
       }
       const user = await this.userUserCase.registerUser({
@@ -23,17 +20,17 @@ export class UserController implements IUserController {
         mobile,
         password,
       });
-      const response = handleSuccess("User registerd Successfully!", 201, user);
-      res.status(response.statusCode).json(response);
-      return;
+      // const response = handleSuccess("User registerd Successfully!", 201, user);
+      // res.status(response.statusCode).json(response);
+      // return;
+      return res
+        .status(HttpStatusCode.CREATED)
+        .json(handleSuccess("User registered successfully!", HttpStatusCode.CREATED, user));
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(HttpStatusCode.BAD_REQUEST).json({ message: error.message });
-      } else {
-        res
-          .status(HttpStatusCode.BAD_REQUEST)
-          .json({ message: "An unknown error occurred" });
-      }
+      const message = error instanceof Error ? error.message : "An unknown error occurred";
+      return res
+        .status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+        .json(handleError(message, HttpStatusCode.INTERNAL_SERVER_ERROR));
     }
   }
 
@@ -44,13 +41,10 @@ export class UserController implements IUserController {
       const result = await this.userUserCase.verifyOtp(email, otp);
       res.status(HttpStatusCode.OK).json(result);
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(HttpStatusCode.BAD_REQUEST).json({ message: error.message });
-      } else {
-        res
-          .status(HttpStatusCode.BAD_REQUEST)
-          .json({ message: "An unknown error occurred" });
-      }
+      const message = error instanceof Error ? error.message : "An unknown error occurred";
+      return res
+        .status(HttpStatusCode.BAD_REQUEST)
+        .json(handleError(message, HttpStatusCode.BAD_REQUEST));
     }
   }
 
@@ -58,9 +52,10 @@ export class UserController implements IUserController {
     const { email, password } = req.body;
     console.log(email, password);
     try {
-      const { accessToken, refreshToken } = await this.userUserCase.loginUser(email, password);
-
-      // Send tokens to the client
+      const { accessToken, refreshToken } = await this.userUserCase.loginUser(
+        email,
+        password
+      );
       return res
         .cookie("refresh_token", refreshToken, {
           httpOnly: true,
@@ -76,9 +71,11 @@ export class UserController implements IUserController {
         })
         .status(HttpStatusCode.OK)
         .json({ message: "Login success", accessToken, refreshToken });
-    } catch (error:any) {
-      console.error("Login error:", error.message);
-      return res.status(400).json({ message: error.message });
+    } catch (error: any) {
+      const message = error instanceof Error ? error.message : "An unknown error occurred";
+      return res
+        .status(HttpStatusCode.UNAUTHORIZED)
+        .json(handleError(message, HttpStatusCode.UNAUTHORIZED));
     }
   }
 
@@ -89,37 +86,27 @@ export class UserController implements IUserController {
       await this.userUserCase.forgotPassword(email);
       return res
         .status(HttpStatusCode.OK)
-        .json({ message: "Password reset link sent to your email" });
+        .json(handleSuccess("Password reset link sent to your email", HttpStatusCode.OK));
     } catch (error) {
-      if (error instanceof Error) {
-        return res
-          .status(HttpStatusCode.BAD_REQUEST)
-          .json({ message: error.message });
-      } else {
-        return res
-          .status(HttpStatusCode.BAD_REQUEST)
-          .json({ message: "An unknown error occurred" });
-      }
+      const message = error instanceof Error ? error.message : "An unknown error occurred";
+      return res
+        .status(HttpStatusCode.BAD_REQUEST)
+        .json(handleError(message, HttpStatusCode.BAD_REQUEST));
     }
   }
+
   async resetPassword(req: Request, res: Response): Promise<Response | void> {
-    const { password, token } = req.body;
     try {
-      // console.log(password, token,"password and token");
+      const { password, token } = req.body;
       await this.userUserCase.resetPassword(token, password);
       return res
         .status(HttpStatusCode.OK)
-        .json({ message: "Password has been reset" });
+        .json(handleSuccess("Password has been reset", HttpStatusCode.OK));
     } catch (error) {
-      if (error instanceof Error) {
-        return res
-          .status(HttpStatusCode.BAD_REQUEST)
-          .json({ message: error.message });
-      } else {
-        return res
-          .status(HttpStatusCode.BAD_REQUEST)
-          .json({ message: "An unknown error occurred" });
-      }
+      const message = error instanceof Error ? error.message : "An unknown error occurred";
+      return res
+        .status(HttpStatusCode.BAD_REQUEST)
+        .json(handleError(message, HttpStatusCode.BAD_REQUEST));
     }
   }
 
@@ -133,23 +120,72 @@ export class UserController implements IUserController {
         });
       }
 
-      console.log(jwtToken, "dfgtyuicvbnm,");
       const tokens = await this.userUserCase.execute(jwtToken);
-
-      return res.status(HttpStatusCode.OK).json({
-        message: "Successfully authenticated with Google",
-        tokens,
-      });
+      return res
+        .status(HttpStatusCode.OK)
+        .json(handleSuccess("Successfully authenticated with Google", HttpStatusCode.OK, tokens));
     } catch (error) {
-      if (error instanceof Error) {
-        return res
-          .status(HttpStatusCode.BAD_REQUEST)
-          .json({ message: error.message });
-      } else {
-        return res
-          .status(HttpStatusCode.BAD_REQUEST)
-          .json({ message: "An unknown error occurred" });
-      }
+      const message = error instanceof Error ? error.message : "An unknown error occurred";
+      return res
+        .status(HttpStatusCode.BAD_REQUEST)
+        .json(handleError(message, HttpStatusCode.BAD_REQUEST));
+    }
+  }
+
+  async getUsers(req: Request, res: Response): Promise<void> {
+    try {
+      const users = await this.userUserCase.getAllUsers();
+      const response = handleSuccess(
+        "Events fetched successfully",
+        HttpStatusCode.OK,
+        users
+      );
+      res.status(response.statusCode).json(response);
+    } catch (error) {
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+        status: "error",
+        message:
+          error instanceof Error ? error.message : "Failed to fetch users",
+      });
+    }
+  }
+
+  async logOut(req: Request, res: Response): Promise<void> {
+    try {
+      res
+        .clearCookie("refresh_token", {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict",
+        })
+        .clearCookie("access_token", {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict",
+        });
+        console.log(123);
+      res.status(HttpStatusCode.OK).json({ message: "logout successfull" });
+    } catch (error) {
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+        status: "error",
+        message:
+          error instanceof Error ? error.message : "Failed to Logout",
+      });
+    }
+  }
+
+  async isAuthenticated(req: Request, res: Response): Promise<void> {
+    try {
+      const token = req.cookies?.token;
+      console.log(token,"authenticatedToken")
+      const responseObj = await this.userUserCase.isAuthenticated(token)
+      res.status(responseObj.status).json({message:responseObj.message})
+    } catch (error) {
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+        status: "error",
+        message:
+          error instanceof Error ? error.message : "Failed to Authenticate",
+      });
     }
   }
 }
