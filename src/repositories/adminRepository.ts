@@ -8,25 +8,41 @@ import bcrypt from "bcrypt";
 export class AdminRepository implements IAdminRepository {
 
   async findAdminByEmail(email: string): Promise<IAdmin | null> {
-    console.log(email, "userrepooo");
-    return await Admin.findOne({ email });
+    try {
+      console.log(email, "userrepooo");
+      return await Admin.findOne({ email: email });
+    } catch (error) {
+      throw error
+    }
   }
 
   async validateCredentials(email: string, password: string): Promise<boolean> {
-    const admin = await this.findAdminByEmail(email);
-    if (!admin?.password) return false;
-    return await bcrypt.compare(password, admin.password);
+    try {
+      const admin = await this.findAdminByEmail(email);
+      if (!admin?.password) return false;
+      return await bcrypt.compare(password, admin.password);
+    } catch (error) {
+      throw error
+    }
   }
 
   async findById(id:string):Promise<IUser | null> {
-    return await Users.findById(id);
+    try {
+      return await Users.findById(id);
+    } catch (error) {
+      throw error
+    }
   }
 
   async updateStatus(id:string, updateData:any):Promise<IUser | null> {
-    return await Users.findByIdAndUpdate(
-      id,
-      updateData,
-      { new: true, runValidators: true }
-    );
+    try {
+      return await Users.findByIdAndUpdate(
+        id,
+        updateData,
+        { new: true, runValidators: true }
+      );
+    } catch (error) {
+      throw error
+    }
   }
 }

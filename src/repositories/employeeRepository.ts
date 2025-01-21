@@ -3,6 +3,7 @@ import Employees from "../framework/models/employeeModel";
 import { IEmployeeRepository } from "../interfaces/IEmployee";
 
 export class EmployeeRepository implements IEmployeeRepository {
+  
   async createEmployee(
     employee: IRegisterEmployee
   ): Promise<IEmployee | never> {
@@ -26,8 +27,12 @@ export class EmployeeRepository implements IEmployeeRepository {
   }
 
   async findEmployeeById(employeeId: string): Promise<IEmployee | null> {
-    console.log(1234523456)
-    return await Employees.findById(employeeId).exec();
+    try {
+      console.log(1234523456);
+      return await Employees.findById(employeeId).exec();
+    } catch (error) {
+      throw error;
+    }
   }
 
   async updateEmployeeStatus(
@@ -49,52 +54,73 @@ export class EmployeeRepository implements IEmployeeRepository {
   }
 
   async findEmployeeByEmail(email: string): Promise<IEmployee | null> {
-    console.log(email, "employeeRepo");
-    return await Employees.findOne({ email });
+    try {
+      console.log(email, "employeeRepo");
+      return await Employees.findOne({ email });
+    } catch (error) {
+      throw error;
+    }
   }
 
   async savePasswordResetToken(
     employeeId: string,
     token: string
   ): Promise<void> {
-    await Employees.updateOne(
-      { _id: employeeId },
-      { resetPasswordToken: token, resetPasswordExpires: Date.now() + 3600000 },
-      { upsert: true }
-    );
+    try {
+      await Employees.updateOne(
+        { _id: employeeId },
+        { resetPasswordToken: token, resetPasswordExpires: Date.now() + 3600000 },
+        { upsert: true }
+      );
+    } catch (error) {
+      throw error;
+    }
   }
 
   async getPasswordResetToken(employeeId: string): Promise<string | null> {
-    const employee = await Employees.findById(employeeId)
+    try {
+      const employee = await Employees.findById(employeeId)
       .select("resetPasswordToken")
       .exec();
     return employee?.resetPasswordToken || null;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async updatePassword(
     employeeId: string,
     hashedPassword: string
   ): Promise<void> {
-    const result = await Employees.findByIdAndUpdate(
-      employeeId,
-      {
-        $set: {
-          password: hashedPassword,
+    try {
+      const result = await Employees.findByIdAndUpdate(
+        employeeId,
+        {
+          $set: {
+            password: hashedPassword,
+          },
         },
-      },
-      { new: true }
-    ).exec();
-
-    if (!result) {
-      throw new Error("Failed to update password");
+        { new: true }
+      ).exec();
+  
+      if (!result) {
+        throw new Error("Failed to update password");
+      }
+    } catch (error) {
+      throw error;
     }
   }
 
   async clearPasswordResetToken(employeeId: string): Promise<void> {
-    await Employees.findByIdAndUpdate(employeeId, {
-      $unset: {
-        resetPasswordToken: 1,
-      },
-    }).exec();
+    try {
+      await Employees.findByIdAndUpdate(employeeId, {
+        $unset: {
+          resetPasswordToken: 1,
+        },
+      }).exec();
+    } catch (error) {
+      throw error;
+    }
   }
+
 }

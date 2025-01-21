@@ -20,3 +20,4 @@ export interface IRegisterUser {
   mobile: number;
   password: string;
 }
+

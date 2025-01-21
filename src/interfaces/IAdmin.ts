@@ -1,31 +1,28 @@
 import { Request, Response } from "express";
-import { IAdmin } from "../entities/admin.entity";
+import { AdminLoginResponse, IAdmin } from "../entities/admin.entity";
+import { IUser } from "../entities/user.entity";
+import { IsAuthenticatedUseCaseRES } from "./IIsAuthenticated";
 
 export interface IAdminController{
-    adminLogin(req:Request,res:Response):Promise<Response | void>;
-}
+    isAuthenticated(req: Request, res: Response): Promise<void>
+    adminLogin(req:Request,res:Response):Promise<void>;
+    blockUsers(req: Request, res: Response): Promise<void>
+    logOut(req: Request, res: Response): Promise<void>
+}   
 
-
-// interfaces/IAdminUseCase.ts
 export interface IAdminUseCase {
-    adminLogin(email: string, password: string): Promise<AdminLoginResponse>;
+    adminLogin(email: string, password: string):Promise<{ accessToken: string; refreshToken: string }>
+    findAdminByEmail(email: string): Promise<IAdmin | null>
+    blockUser(userId:string):Promise<IUser | null>
+    isAuthenticated(
+        token: string | undefined
+      ): Promise<IsAuthenticatedUseCaseRES>
 }
 
-// interfaces/IAdminRepository.ts
 export interface IAdminRepository {
-    // getAdminEmail(): string;
-    // getAdminPassword(): string;
-    // getJwtSecret(): string;
     findAdminByEmail(email:string):Promise<IAdmin | null>
+    validateCredentials(email: string, password: string): Promise<boolean>
+    findById(id:string):Promise<IUser | null>
+    updateStatus(id:string, updateData:any):Promise<IUser | null>
 }
 
-
-
-// types/admin.types.ts
-export type AdminLoginResponse = {
-    success: boolean;
-    // token?: string;
-    accessToken?:string;
-    refreshToken?:string;
-    error?: string;
-}

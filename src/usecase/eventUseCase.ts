@@ -1,20 +1,21 @@
 import { IAddEventRegister, IEvent } from "../entities/event.entity";
 import { IPackage, IPackageRegister } from "../entities/package.entity";
 import { ICloudinaryService } from "../interfaces/IClaudinary";
+import { IEventRepository } from "../interfaces/IEvent";
 import { EventRepository } from "../repositories/eventRepository";
 
 export class EventUseCase {
   constructor(
     private cloudinaryService: ICloudinaryService,
-    private eventRepo: EventRepository
+    private eventRepo: IEventRepository
   ) {}
 
-  async addEvent(eventData: any, file: Express.Multer.File) {
-    console.log(eventData, file, "datas in eventUseCaseee");
-
+  async addEvent(eventData: any, file: Express.Multer.File):Promise<any> {
     try {
+      const normalizedEventName = eventData.eventName.toLowerCase();
+
       const existingEvent = await this.eventRepo.findByEventName(
-        eventData.eventName
+        normalizedEventName
       );
       if (existingEvent) {
         throw new Error(
@@ -35,38 +36,57 @@ export class EventUseCase {
 
       return newEvent;
     } catch (error) {
-      throw new Error("Failed to create event");
+      throw error;
     }
   }
 
-  async getAllEvents(): Promise<IEvent[]> {
-    return this.eventRepo.getAllEvents();
+  async getAllEvents(): Promise<IEvent[] | undefined> {
+    try {
+      return this.eventRepo.getAllEvents();
+    } catch (error) {
+      throw error;
+    }
   }
 
-  async updateEvent(id: string, updatedData: any): Promise<IEvent | null> {
-    return this.eventRepo.updateEvent(id, updatedData);
+  async updateEvent(id: string, updatedData: any): Promise<IEvent | undefined | null> {
+    try {
+      return this.eventRepo.updateEvent(id, updatedData);
+    } catch (error) {
+      throw error;
+    }
   }
+
   async blockEvent(eventId: string): Promise<IEvent | null> {
-    const event = await this.eventRepo.findByEventId(eventId);
-    if (!event) {
-      throw new Error("Event not found");
+    try {
+      const event = await this.eventRepo.findByEventId(eventId);
+      if (!event) {
+        throw new Error("Event not found");
+      }
+  
+      event.isBlocked = !event.isBlocked;
+      return await this.eventRepo.updateEvent(eventId, {
+        isBlocked: event.isBlocked,
+      });
+    } catch (error) {
+      throw error;
     }
-
-    event.isBlocked = !event.isBlocked;
-    return await this.eventRepo.updateEvent(eventId, {
-      isBlocked: event.isBlocked,
-    });
   }
 
-  async deleteEvent(eventId: string) {
-    const event = await this.eventRepo.findByEventId(eventId);
-    if (!event) {
-      throw new Error("Event not found");
+  async deleteEvent(eventId: string):Promise<void> {
+    try {
+      const event = await this.eventRepo.findByEventId(eventId);
+      if (!event) {
+        throw new Error("Event not found");
+      }
+  
+       await this.eventRepo.deleteEvent(eventId);
+       return
+    } catch (error) {
+      throw error
     }
-
-    return await this.eventRepo.deleteEvent(eventId);
   }
-  async addPackage(packageData: any, file: Express.Multer.File) {
+
+  async addPackage(packageData: any, file: Express.Multer.File):Promise<any> {
     console.log(packageData, file, "data in useCase");
     try {
       const existingPackage = await this.eventRepo.findByPackageName(
@@ -91,7 +111,7 @@ export class EventUseCase {
       const setNewPackage = await this.eventRepo.addPackage(newPackage);
       return setNewPackage;
     } catch (error) {
-      throw new Error("Failed to create event");
+      throw error;
     }
   }
 
@@ -99,9 +119,10 @@ export class EventUseCase {
     try {
       return this.eventRepo.getAllPackages(eventId);
     } catch (error) {
-      throw new Error("Failed to fetch packges");
+      throw error
     }
   }
+
   async updatedPackage(
     packageId: string,
     updatedData: any
@@ -127,29 +148,39 @@ export class EventUseCase {
         return updatedPackage;
       }
     } catch (error) {
-      if (error instanceof Error) {
-        throw new Error(error.message);
-      }
-      throw new Error("Failed to update package");
+      throw error;
     }
   }
-  async deletePackage(packageId:string){
-    const packagee = await this.eventRepo.findByPackageId(packageId);
-    if(!packagee){
-      throw new Error("Package not found");
+  
+  async deletePackage(packageId:string):Promise<void>{
+    try {
+      const packagee = await this.eventRepo.findByPackageId(packageId);
+      if(!packagee){
+        throw new Error("Package not found");
+      }
+       await this.eventRepo.deletePackage(packageId);
+       return
+    } catch (error) {
+      throw error;
     }
-    return await this.eventRepo.deletePackage(packageId);
   }
 
   async blockPackage(packageId: string): Promise<IPackage | null> {
-    const packagee = await this.eventRepo.findByPackageId(packageId);
-    if (!packagee) {
-      throw new Error("Event not found");
-    }
+    try {
 
-    packagee.isBlocked = !packagee.isBlocked;
-    return await this.eventRepo.updatedPackage(packageId, {
-      isBlocked: packagee.isBlocked,
-    });
+      const packagee = await this.eventRepo.findByPackageId(packageId);
+      if (!packagee) {
+        throw new Error("Event not found");
+      }
+      packagee.isBlocked = !packagee.isBlocked;
+      return await this.eventRepo.updatedPackage(packageId, {
+        isBlocked: packagee.isBlocked,
+      });
+
+    } catch (error) {
+      throw error;
+    }
   }
+
+  
 }

@@ -3,8 +3,7 @@ import { UserController } from "../../controllers/userController";
 import { UserRepository } from "../../repositories/userRepository";
 import { UserUseCase } from "../../usecase/userUseCase";
 import { OtpRepository } from "../../repositories/otpRepository";
-import { Request, Response, NextFunction } from "express";
-import { IUserUseCase } from "../../interfaces/IUser";
+import { IUserController, IUserRepository, IUserUseCase } from "../../interfaces/IUser";
 import { IOtpRepository } from "../../interfaces/IOtp";
 import { IJWTService } from "../../interfaces/IJwt";
 import { JWTService } from "../utils/jwtServices";
@@ -19,41 +18,33 @@ const emailConfig = {
   frontendUrl: process.env.FRONTEND_URL
 };
 
-const userRepository = new UserRepository();
-const iJwtService:IJWTService = new JWTService()
+const userRepository:IUserRepository = new UserRepository();
+const iJwtService:IJWTService = new JWTService();
 const otpRepository: IOtpRepository = new OtpRepository();
 const googleAuthService: IGoogleAuthService = new GoogleAuthService(
   process.env.GOOGLE_AUTH_CLIENT_ID as string
 );
 const userUseCase:IUserUseCase = new UserUseCase( userRepository, otpRepository, emailConfig ,iJwtService, googleAuthService);
-const userController = new UserController(userUseCase);
+const userController:IUserController = new UserController(userUseCase);
 
 
-const asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => Promise<any>) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-      Promise.resolve(fn(req, res, next)).catch(next);
-  };
-};
+userRoute.post('/register',userController.registerUser.bind(userController));
 
+userRoute.post('/login',userController.userLogin.bind(userController));
 
-// Route definitions
-userRoute.post( '/register', asyncHandler(async (req: Request, res: Response) => {  return await userController.registerUser(req, res) }) );
+userRoute.post('/google-login',userController.googleLogin.bind(userController));
 
-userRoute.post( '/verifyOtp', asyncHandler(async (req: Request, res: Response) => {  return await userController.verifyOtp(req, res) }) );
+userRoute.post('/logOut',userController.logOut.bind(userController));
 
-userRoute.post( '/forgotPassword', asyncHandler(async (req: Request, res: Response) => {  return await userController.forgotPassword(req, res) }) );
+userRoute.post('/forgotPassword',userController.forgotPassword.bind(userController));
 
-userRoute.post( '/resetPassword', asyncHandler(async (req: Request, res: Response) => {  return await userController.resetPassword(req, res) }) );
+userRoute.post('/resetPassword',userController.resetPassword.bind(userController));
 
-userRoute.post( '/login', asyncHandler(async (req: Request, res: Response) => {  return await userController.userLogin(req, res) }) );
+userRoute.post('/verifyOtp',userController.verifyOtp.bind(userController));
 
-userRoute.post( '/google-login', asyncHandler(async (req: Request, res: Response) => {  return await userController.googleLogin(req, res) }) );
+userRoute.get('/isAuthenticate',userController.isAuthenticated.bind(userController));
 
-userRoute.get( '/getUsers', asyncHandler(async (req: Request, res: Response) => {  return await userController.getUsers(req, res) }) );
-
-userRoute.post( '/logOut', asyncHandler(async (req: Request, res: Response) => {  return await userController.logOut(req, res) }) );
-
-userRoute.post('/isAuthenticate',userController.isAuthenticated.bind(userController));
+userRoute.get('/getUsers',userController.getUsers.bind(userController));
 
 
 export default userRoute;

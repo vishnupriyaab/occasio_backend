@@ -3,6 +3,7 @@ import { IRegisterUser, IUser } from "../entities/user.entity";
 import { IUserRepository } from "../interfaces/IUser";
 
 export class UserRepository implements IUserRepository {
+    
   async createUser(user: IRegisterUser): Promise<IUser | never> {
     try {
       const newUser = new Users(user);
@@ -22,6 +23,7 @@ export class UserRepository implements IUserRepository {
       throw error;
     }
   }
+
   async updateUserStatus( email: string, isVerified: boolean ): Promise<IUser | null> {
     try {
       const updatedUser = await Users.findOneAndUpdate(
@@ -53,52 +55,75 @@ export class UserRepository implements IUserRepository {
   }
 
   async findUserByEmail(email: string): Promise<IUser | null> {
-    console.log(email, "userrepooo");
-    // console.log(Users.findOne({email}),"1234567890")
-    return await Users.findOne({ email });
+    try {
+      console.log(email, "userrepooo");
+      return await Users.findOne({ email });
+    } catch (error) {
+      throw error
+    }
   }
 
   async savePasswordResetToken(userId: string, token: string): Promise<void> {
-    await Users.updateOne(
-      { _id: userId },
-      { resetPasswordToken: token, resetPasswordExpires: Date.now() + 3600000 },
-      { upsert: true }
-    );
+    try {
+      await Users.updateOne(
+        { _id: userId },
+        { resetPasswordToken: token, resetPasswordExpires: Date.now() + 3600000 },
+        { upsert: true }
+      );
+    } catch (error) {
+      throw error;
+    }
   }
-  
+
   async findUserById(userId: string): Promise<IUser | null> {
-    return await Users.findById(userId).exec();
+    try {
+      return await Users.findById(userId).exec();
+    } catch (error) {
+      throw error;
+    }
   }
 
   async updatePassword(userId: string, hashedPassword: string): Promise<void> {
-    const result = await Users.findByIdAndUpdate(
-      userId,
-      {
-        $set: {
-          password: hashedPassword,
+    try {
+      const result = await Users.findByIdAndUpdate(
+        userId,
+        {
+          $set: {
+            password: hashedPassword,
+          },
         },
-      },
-      { new: true }
-    ).exec();
-
-    if (!result) {
-      throw new Error("Failed to update password");
+        { new: true }
+      ).exec();
+  
+      if (!result) {
+        throw new Error("Failed to update password");
+      }
+    } catch (error) {
+      throw error
     }
   }
 
   async getPasswordResetToken(userId: string): Promise<string | null> {
-    const user = await Users.findById(userId)
-      .select("resetPasswordToken")
-      .exec();
-    return user?.resetPasswordToken || null;
+    try {
+      const user = await Users.findById(userId)
+        .select("resetPasswordToken")
+        .exec();
+      return user?.resetPasswordToken || null;
+    } catch (error) {
+      throw error
+    }
   }
 
   async clearPasswordResetToken(userId: string): Promise<void> {
-    await Users.findByIdAndUpdate(userId, {
-      $unset: {
-        resetPasswordToken: 1,
-      },
-    }).exec();
+    try {
+      await Users.findByIdAndUpdate(userId, {
+        $unset: {
+          resetPasswordToken: 1,
+        },
+      }).exec();
+    } catch (error) {
+      throw error
+    }
   }
 
   async createGoogleUser(userData: IUser): Promise<IUser> {
@@ -115,7 +140,11 @@ export class UserRepository implements IUserRepository {
   }
 
   async getAllUsers(): Promise<IUser[]> {
-    return Users.find().sort({ createdAt: -1 });
+    try {
+      return Users.find().sort({ createdAt: -1 });
+    } catch (error) {
+      throw error;
+    }
   }
 
 }

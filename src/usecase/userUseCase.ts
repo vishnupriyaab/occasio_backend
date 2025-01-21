@@ -10,10 +10,7 @@ import { CloudinaryService } from "../framework/utils/claudinaryService";
 import { IsAuthenticatedUseCaseRES } from "../interfaces/IIsAuthenticated";
 import { IGoogleAuthService } from "../interfaces/IGoogleVerification";
 import { ICloudinaryService } from "../interfaces/IClaudinary";
-
-// interface CustomMulterFile extends Express.Multer.File {
-//   path: string;
-// }
+import { otpResponse } from "../entities/otp.entity";
 
 export class UserUseCase implements IUserUseCase {
   private emailService: IEmailService;
@@ -64,23 +61,27 @@ export class UserUseCase implements IUserUseCase {
     }
   }
 
-  async verifyOtp(email: string, otp: string) {
-    const otpRecord = await this.otpRepo.findOtp(email);
-    if (!otpRecord) {
-      throw new Error("OTP not found or has expired");
-    }
-
-    const verified = await this.cryptoService.compareData(otp, otpRecord.otp);
-    if (verified) {
-      const updatedUser = await this.userRepo.updateUserStatus(email, true);
-      await this.otpRepo.deleteOtp(email);
-      return {
-        success: true,
-        message: "OTP verified successfully",
-        user: updatedUser,
-      };
-    } else {
-      throw new Error("Invalid OTP");
+  async verifyOtp(email: string, otp: string): Promise<otpResponse> {
+    try {
+      const otpRecord = await this.otpRepo.findOtp(email);
+      if (!otpRecord) {
+        throw new Error("OTP not found or has expired");
+      }
+  
+      const verified = await this.cryptoService.compareData(otp, otpRecord.otp);
+      if (verified) {
+        const updatedUser = await this.userRepo.updateUserStatus(email, true);
+        await this.otpRepo.deleteOtp(email);
+        return {
+          success: true,
+          message: "OTP verified successfully",
+          user: updatedUser,
+        };
+      } else {
+        throw new Error("Invalid OTP");
+      }
+    } catch (error) {
+      throw error;
     }
   }
 
@@ -88,39 +89,44 @@ export class UserUseCase implements IUserUseCase {
     email: string,
     password: string
   ): Promise<{ accessToken: string; refreshToken: string }> {
-    const user = await this.userRepo.findUserByEmail(email);
-    await this.userRepo.updateActivatedStatus(email, true);
-
-    if (!user) {
-      throw new Error("User not found");
+    try {
+      const user = await this.userRepo.findUserByEmail(email);
+      await this.userRepo.updateActivatedStatus(email, true);
+  
+      if (!user) {
+        throw new Error("User not found");
+      }
+  
+      if (!user.isVerified) {
+        throw new Error("Account not verified. Please verify your account.");
+      }
+  
+      if (user.isBlocked) {
+        throw new Error("Your account is blocked");
+      }
+      const isPasswordValid = await bcrypt.compare(
+        password,
+        user.password as string
+      );
+      if (!isPasswordValid) {
+        throw new Error("Invalid Password");
+      }
+      // Generate tokens
+      const payload = { userId: user._id };
+      console.log("payload", payload);
+      const accessToken = this.jwtService.generateAccessToken(payload);
+      console.log("accessToken", accessToken);
+      const refreshToken = this.jwtService.generateRefreshToken(payload);
+      console.log("refreshToken", refreshToken);
+      return { accessToken, refreshToken };
+    } catch (error) {
+      throw error;
     }
-
-    if (!user.isVerified) {
-      throw new Error("Account not verified. Please verify your account.");
-    }
-
-    if (user.isBlocked) {
-      throw new Error("Your account is blocked");
-    }
-    const isPasswordValid = await bcrypt.compare(
-      password,
-      user.password as string
-    );
-    if (!isPasswordValid) {
-      throw new Error("Invalid Password");
-    }
-    // Generate tokens
-    const payload = { userId: user._id };
-    console.log("payload", payload);
-    const accessToken = this.jwtService.generateAccessToken(payload);
-    console.log("accessToken", accessToken);
-    const refreshToken = this.jwtService.generateRefreshToken(payload);
-    console.log("refreshToken", refreshToken);
-    return { accessToken, refreshToken };
   }
 
   async forgotPassword(email: string): Promise<void> {
-    const user = await this.userRepo.findUserByEmail(email);
+    try {
+      const user = await this.userRepo.findUserByEmail(email);
     if (!user) {
       throw new Error("User not found!");
     }
@@ -131,6 +137,9 @@ export class UserUseCase implements IUserUseCase {
     await this.userRepo.savePasswordResetToken(user._id as string, token);
     const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
     await this.emailService.sendPasswordResetEmail(email, resetLink);
+    } catch (error) {
+      throw error
+    }
   }
 
   async resetPassword(token: string, newPassword: string): Promise<void> {
@@ -160,6 +169,7 @@ export class UserUseCase implements IUserUseCase {
       throw error;
     }
   }
+
   async execute(
     token: string
   ): Promise<{ accessToken: string; refreshToken: string }> {
@@ -210,15 +220,16 @@ export class UserUseCase implements IUserUseCase {
 
       return { accessToken, refreshToken };
     } catch (error) {
-      console.error("Error in execute method:", error);
-      throw new Error(
-        error instanceof Error ? error.message : "Something went wrong"
-      );
+      throw error;
     }
   }
 
   async getAllUsers(): Promise<IUser[]> {
-    return this.userRepo.getAllUsers();
+    try {
+      return this.userRepo.getAllUsers();
+    } catch (error) {
+      throw error
+    }
   }
 
   async isAuthenticated(
@@ -230,12 +241,12 @@ export class UserUseCase implements IUserUseCase {
       }
       const decoded = this.jwtService.verifyAccessToken(token) as JWTPayload;
       if (decoded.role?.toLowerCase() !== "user") {
-        //this user is in jwttoken's role.
         return { message: "Unauthorized: No token provided", status: 401 };
       }
       return { message: "User is Authenticated", status: 200 };
     } catch (error) {
-      return { message: "Forbidden: Invalid token", status: 403 };
+      // return { message: "Forbidden: Invalid token", status: 403 };
+      throw error;
     }
   }
 }

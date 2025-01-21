@@ -4,14 +4,27 @@ import { IOtpRepository } from "../interfaces/IOtp";
 
 export class OtpRepository implements IOtpRepository {
   async createOtp(email: string, otp: string): Promise<IOTP> {
-    const otpEntry = new Otp({ email, otp });
-    return await otpEntry.save();
-    // return otpEntry;
+    try {
+      const otpEntry = new Otp({ email, otp });
+      return await otpEntry.save();
+    } catch (error) {
+      throw error;
+    }
   }
+
   async findOtp(email: string): Promise<IOTP | null> {
-    return await Otp.findOne({ email });
- }
- async deleteOtp(email:string): Promise<void> {
-    await Otp.deleteMany({ email });
- }
+    try {
+      return await Otp.findOne({ email });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteOtp(email: string): Promise<void> {
+    try {
+      await Otp.deleteMany({ email });
+    } catch (error) {
+      throw error;
+    }
+  }
 }

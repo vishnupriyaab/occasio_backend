@@ -1,13 +1,18 @@
 import { Request, Response } from "express";
 import { EventUseCase } from "../usecase/eventUseCase";
-import { handleSuccess } from "../framework/utils/responseHandler";
-import { CloudinaryService } from "../framework/utils/claudinaryService";
+import { handleError, handleSuccess } from "../framework/utils/responseHandler";
+import { ICloudinaryService } from "../interfaces/IClaudinary";
+import { IEventUseCase } from "../interfaces/IEvent";
+import { HttpStatusCode } from "../constant/httpStatusCodes";
+import { ResponseMessage } from "../constant/responseMsg";
 
 export class EventController {
   constructor(
-    private eventUseCase: EventUseCase,
-    private cloudinaryService: CloudinaryService
+    private eventUseCase: IEventUseCase,
+    private cloudinaryService: ICloudinaryService
   ) {}
+
+  //addEvent
   async addEvent(req: Request, res: Response): Promise<void> {
     try {
       const { eventName, description } = req.body;
@@ -16,7 +21,7 @@ export class EventController {
       console.log(file, "file in event Controller");
 
       if (!file) {
-        res.status(400).json({ error: "No image file provided" });
+        res.status( HttpStatusCode.BAD_REQUEST ).json( handleError( ResponseMessage.FILE_NOT_FOUND, HttpStatusCode.BAD_REQUEST ));
         return;
       }
 
@@ -24,42 +29,25 @@ export class EventController {
         { eventName, description },
         file
       );
-
-      const response = handleSuccess(
-        "User registerd Successfully!",
-        201,
-        event
-      );
-      res.status(response.statusCode).json(response);
+      res.status( HttpStatusCode.CREATED ).json( handleSuccess( ResponseMessage.EVENT_CREATED, HttpStatusCode.CREATED, event ));
       return;
     } catch (error) {
-      res.status(500).json({
-        status: "error",
-        message:
-          error instanceof Error ? error.message : "Failed to create event",
-      });
+      console.log("Error occured: ",error);
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(handleError(ResponseMessage.EVENT_CREATION_FAILED,HttpStatusCode.INTERNAL_SERVER_ERROR))
     }
   }
-
+  
+  //getEvents
   async getEvents(req: Request, res: Response): Promise<void> {
     try {
       const events = await this.eventUseCase.getAllEvents();
-      // console.log(events,"events in controller....")
-      const response = handleSuccess(
-        "Events fetched successfully",
-        200,
-        events
-      );
-      res.status(response.statusCode).json(response);
+      res.status(HttpStatusCode.OK).json(handleSuccess(ResponseMessage.FETCH_EVENT,HttpStatusCode.OK,events));
     } catch (error) {
-      res.status(500).json({
-        status: "error",
-        message:
-          error instanceof Error ? error.message : "Failed to fetch events",
-      });
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(handleError(ResponseMessage.FETCH_EVENT_FAILURE,HttpStatusCode.INTERNAL_SERVER_ERROR))
     }
   }
 
+  //updtaeEvent
   async updateEvent(req: Request, res: Response): Promise<void> {
     try {
       const id = req.params.id;
@@ -76,61 +64,40 @@ export class EventController {
       }
 
       const updatedEvent = await this.eventUseCase.updateEvent(id, updatedData);
-      const response = handleSuccess(
-        "Event updated successfully!",
-        200,
-        updatedEvent
-      );
-      res.status(response.statusCode).json(response);
+      res.status(HttpStatusCode.OK).json(handleSuccess(ResponseMessage.EVENT_UPDATED,HttpStatusCode.OK,updatedEvent));
     } catch (error) {
-      res.status(500).json({
-        status: "error",
-        message:
-          error instanceof Error ? error.message : "Failed to update event",
-      });
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(handleError(ResponseMessage.EVENT_UPDATE_FAILED,HttpStatusCode.INTERNAL_SERVER_ERROR))
     }
   }
+
+  //blockEvent
   async blockEvent(req: Request, res: Response): Promise<void> {
     try {
       const eventId = req.params.id;
-      console.log(eventId, "eventidddddddddddd");
+      console.log(eventId, "eventid");
       const result: any = await this.eventUseCase.blockEvent(eventId);
 
-      const response = handleSuccess(
-        `Event ${result.isBlocked ? "blocked" : "unblocked"} successfully`,
-        200,
-        result
-      );
-      res.status(response.statusCode).json(response);
+      const response = result.isBlocked? ResponseMessage.EVENT_BLOCKED : ResponseMessage.EVENT_UNBLOCKED;
+      res.status( HttpStatusCode.OK ).json( handleSuccess( response, HttpStatusCode.OK, result ))
     } catch (error) {
-      res.status(500).json({
-        status: "error",
-        message:
-          error instanceof Error ? error.message : "Failed to block events",
-      });
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(handleError(ResponseMessage.EVENT_BLOCK_FAILURE,HttpStatusCode.INTERNAL_SERVER_ERROR))
     }
   }
 
+  //deleteEvent
   async deleteEvent(req: Request, res: Response): Promise<void> {
     try {
       const eventId = req.params.id;
       await this.eventUseCase.deleteEvent(eventId);
 
-      res.status(200).json({
-        status: "success",
-        statusCode: 200,
-        message: "Event deleted successfully",
-      });
+      res.status(HttpStatusCode.OK).json(handleSuccess(ResponseMessage.EVENT_DELETED,HttpStatusCode.OK))
     } catch (error) {
-      res.status(500).json({
-        status: "error",
-        message:
-          error instanceof Error ? error.message : "Failed to delete events",
-      });
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(handleError(ResponseMessage.EVENT_DELETION_FAILED,HttpStatusCode.INTERNAL_SERVER_ERROR))
     }
   }
 
-  async addPackage(req: Request, res: Response) {
+  //addPackage
+  async addPackage(req: Request, res: Response):Promise<void> {
     try {
       const { packageName, startingAmnt, eventId } = req.body;
       const file = req.file;
@@ -144,48 +111,35 @@ export class EventController {
       );
 
       if (!file) {
-        res.status(400).json({ error: "No image file provided" });
+        res.status(HttpStatusCode.BAD_REQUEST).json(handleError(ResponseMessage.FILE_NOT_FOUND,HttpStatusCode.BAD_REQUEST));
         return;
       }
       const newPackage = await this.eventUseCase.addPackage(
         { packageName, startingAmnt, eventId },
         file
       );
-      const response = handleSuccess(
-        "Package created Successfully!",
-        201,
-        newPackage
-      );
-      res.status(response.statusCode).json(response);
+      
+      res.status(HttpStatusCode.CREATED).json(handleSuccess(ResponseMessage.PACKAGE_CREATED, HttpStatusCode.CREATED, newPackage));
       return;
     } catch (error) {
-      res.status(500).json({
-        status: "error",
-        message:
-          error instanceof Error ? error.message : "Failed to create event",
-      });
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(handleError(ResponseMessage.PACKAGE_CREATION_FAILED,HttpStatusCode.INTERNAL_SERVER_ERROR))
     }
   }
-  async getPackages(req: Request, res: Response) {
+
+  //getPackage
+  async getPackages(req: Request, res: Response):Promise<void> {
     const eventId: string = req.params.id;
     try {
       console.log(eventId, "eventId");
       const packages = await this.eventUseCase.getAllPackages(eventId);
-      const response = handleSuccess(
-        "Events fetched successfully",
-        200,
-        packages
-      );
-      res.status(response.statusCode).json(response);
+      
+      res.status(HttpStatusCode.OK).json(handleSuccess(ResponseMessage.FETCH_PACKAGE, HttpStatusCode.OK, packages));
     } catch (error) {
-      res.status(500).json({
-        status: "error",
-        message:
-          error instanceof Error ? error.message : "Failed to fetch packages",
-      });
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(handleError(ResponseMessage.FETCH_PACKAGE_FAILURE,HttpStatusCode.INTERNAL_SERVER_ERROR));
     }
   }
 
+  //updatePackage
   async updatePackage(req: Request, res: Response): Promise<void> {
     try {
       const packageId = req.params.id;
@@ -194,62 +148,43 @@ export class EventController {
       console.log(packageName, startingAmnt, eventId, "req.bodyyyyyy");
       const file = req.file;
       const updatedData: any = { packageName, startingAmnt, eventId };
-      if(file){
+      if (file) {
         const imageUrl = await this.cloudinaryService.uploadImage(file);
         updatedData.image = imageUrl;
       }
-      const updatedPackage = await this.eventUseCase.updatedPackage(packageId,updatedData);
-      const response = handleSuccess(
-        "Package updated successfully!",
-        200,
-        updatedPackage
-      )
-      res.status(response.statusCode).json(response);
+      const updatedPackage = await this.eventUseCase.updatedPackage(
+        packageId,
+        updatedData
+      );
+      res.status(HttpStatusCode.OK).json(handleSuccess(ResponseMessage.PACKAGE_UPDATED,HttpStatusCode.OK,updatedPackage));
     } catch (error) {
-      res.status(500).json({
-        status: "error",
-        message:
-          error instanceof Error ? error.message : "Failed to update package",
-      });
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(handleError(ResponseMessage.PACKAGE_UPDATE_FAILED,HttpStatusCode.INTERNAL_SERVER_ERROR))
     }
   }
 
-  async deletePackage(req:Request,res:Response):Promise<void>{
+  //deletePackage
+  async deletePackage(req: Request, res: Response): Promise<void> {
     try {
       const packageId = req.params.id;
-      console.log(packageId,"packageId");
+      console.log(packageId, "packageId");
       await this.eventUseCase.deletePackage(packageId);
-      res.status(200).json({
-        status: "success",
-        statusCode: 200,
-        message: "Package deleted successfully",
-      });
+      res.status(HttpStatusCode.OK).json(handleSuccess(ResponseMessage.EVENT_DELETED,HttpStatusCode.OK))
     } catch (error) {
-      res.status(500).json({
-        status: "error",
-        message:
-          error instanceof Error ? error.message : "Failed to delete packages",
-      });
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(handleError(ResponseMessage.EVENT_DELETION_FAILED,HttpStatusCode.INTERNAL_SERVER_ERROR))
     }
   }
-  async blockPackage(req:Request,res:Response):Promise<void>{
+
+  //blockPackage
+  async blockPackage(req: Request, res: Response): Promise<void> {
     try {
       const packageId = req.params.id;
       console.log(packageId, "packageIddddddddddd");
       const result: any = await this.eventUseCase.blockPackage(packageId);
 
-      const response = handleSuccess(
-        `Package ${result.isBlocked ? "blocked" : "unblocked"} successfully`,
-        200,
-        result
-      );
-      res.status(response.statusCode).json(response);
+      const response = result.isBlocked? ResponseMessage.EVENT_BLOCKED : ResponseMessage.EVENT_UNBLOCKED;
+      res.status( HttpStatusCode.OK ).json( handleSuccess( response, HttpStatusCode.OK, result ))
     } catch (error) {
-      res.status(500).json({
-        status: "error",
-        message:
-          error instanceof Error ? error.message : "Failed to block package",
-      });
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(handleError(ResponseMessage.EVENT_BLOCK_FAILURE,HttpStatusCode.INTERNAL_SERVER_ERROR))
     }
   }
 }

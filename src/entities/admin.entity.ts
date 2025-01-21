@@ -12,3 +12,10 @@ export interface IAdminRegister {
     password: string;
   }
   
+
+  export type AdminLoginResponse = {
+    success: boolean;
+    accessToken?:string;
+    refreshToken?:string;
+    error?: string;
+}

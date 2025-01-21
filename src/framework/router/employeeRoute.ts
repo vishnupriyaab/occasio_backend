@@ -1,9 +1,14 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express from 'express';
 import { EmployeeRepository } from '../../repositories/employeeRepository';
 import { EmployeeUseCase } from '../../usecase/employeeUseCase';
 import { EmployeeController } from '../../controllers/employeeController';
 import { OtpRepository } from '../../repositories/otpRepository';
 import { JWTService } from '../utils/jwtServices';
+import { IEmployeeController, IEmployeeRepository, IEmployeeUseCase } from '../../interfaces/IEmployee';
+import { ICryptoService } from '../../interfaces/ICrypto';
+import { CryptoService } from '../utils/cryptoServices';
+import { IJWTService } from '../../interfaces/IJwt';
+import { IOtpRepository } from '../../interfaces/IOtp';
 
 
 const employeeRoute = express.Router()
@@ -14,23 +19,23 @@ const emailConfig = {
   frontendUrl: process.env.FRONTEND_URL
 };
 
-const employeeRepository = new EmployeeRepository();
-const otpRepository = new OtpRepository()
-const IjwtService = new JWTService()
-const employeeUseCase = new EmployeeUseCase(employeeRepository,otpRepository,emailConfig,IjwtService);
-const employeeController = new EmployeeController(employeeUseCase,IjwtService)
+const employeeRepository:IEmployeeRepository = new EmployeeRepository();
+const otpRepository:IOtpRepository = new OtpRepository()
+const IjwtService:IJWTService = new JWTService()
+const iCryptoService:ICryptoService = new CryptoService();
+const employeeUseCase:IEmployeeUseCase = new EmployeeUseCase(employeeRepository,otpRepository,emailConfig,IjwtService,iCryptoService);
+const employeeController:IEmployeeController = new EmployeeController(employeeUseCase,IjwtService)
 
-const asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => Promise<any>) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-      Promise.resolve(fn(req, res, next)).catch(next);
-  };
-};
 
-employeeRoute.post( '/register', asyncHandler(async (req: Request, res: Response) => {  return await employeeController.registerEmployee(req, res) }) );
-employeeRoute.post( '/login', asyncHandler(async (req: Request, res: Response) => {  return await employeeController.employeeLogin(req, res) }) );
-employeeRoute.post( '/verifyEmployeeOtp', asyncHandler(async (req: Request, res: Response) => {  return await employeeController.verifyOtp(req, res) }) );
-employeeRoute.post( '/forgotPassword', asyncHandler(async (req: Request, res: Response) => {  return await employeeController.forgotPassword(req, res) }) );
-employeeRoute.post( '/resetPassword', asyncHandler(async (req: Request, res: Response) => {  return await employeeController.resetPassword(req, res) }) );
+employeeRoute.post('/register',employeeController.registerEmployee.bind(employeeController));
+
+employeeRoute.post('/login',employeeController.employeeLogin.bind(employeeController));
+
+employeeRoute.post('/verifyEmployeeOtp',employeeController.verifyOtp.bind(employeeController));
+
+employeeRoute.post('/forgotPassword',employeeController.forgotPassword.bind(employeeController));
+
+employeeRoute.post('/resetPassword',employeeController.resetPassword.bind(employeeController));
 
 
 export default employeeRoute;

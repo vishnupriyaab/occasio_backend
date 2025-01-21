@@ -2,11 +2,11 @@ import { Request, Response } from "express";
 import { IEmployee, IRegisterEmployee } from "../entities/employee.entity";
 
 export interface IEmployeeController {
-  registerEmployee(req: Request, res: Response): Promise<Response | void>;
-  verifyOtp(req: Request, res: Response): Promise<Response | void>;
-  employeeLogin(req: Request, res: Response): Promise<Response | void>;
-  forgotPassword(req: Request, res: Response): Promise<Response | void>;
-  resetPassword(req: Request, res: Response): Promise<Response | void>;
+  registerEmployee(req: Request, res: Response):Promise<void>
+  verifyOtp(req: Request, res: Response):Promise<void>
+  employeeLogin(req: Request, res: Response):Promise<void>
+  forgotPassword(req: Request, res: Response):Promise<void>
+  resetPassword(req: Request, res: Response):Promise<void>
 }
 
 export interface IEmployeeUseCase {
