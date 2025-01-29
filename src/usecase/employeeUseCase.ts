@@ -1,11 +1,12 @@
 import { IEmployee, IRegisterEmployee } from "../entities/employee.entity";
-import { IEmployeeRepository, IEmployeeUseCase } from "../interfaces/IEmployee";
 import { EmailService } from "../framework/utils/emailService";
 import { ICryptoService } from "../interfaces/utils/ICrypto";
 import { IJWTService } from "../interfaces/utils/IJwt";
-import { IOtpRepository } from "../interfaces/IOtp";
 import bcrypt from "bcrypt";
 import { IEmailService } from "../interfaces/utils/IEmail";
+import { IEmployeeUseCase } from "../interfaces/useCase/employee.useCase";
+import IEmployeeRepository from "../interfaces/repository/employee.Repository";
+import IOtpRepository from "../interfaces/repository/otp.Repository";
 
 export class EmployeeUseCase implements IEmployeeUseCase {
   private emailService: IEmailService;

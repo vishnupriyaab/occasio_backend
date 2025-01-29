@@ -1,6 +1,6 @@
 import { IEmployee, IRegisterEmployee } from "../entities/employee.entity";
 import Employees from "../framework/models/employeeModel";
-import { IEmployeeRepository } from "../interfaces/IEmployee";
+import IEmployeeRepository from "../interfaces/repository/employee.Repository";
 
 export class EmployeeRepository implements IEmployeeRepository {
   

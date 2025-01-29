@@ -1,8 +1,7 @@
 import { IAddEventRegister, IEvent } from "../entities/event.entity";
 import { IPackage, IPackageRegister } from "../entities/package.entity";
+import IEventRepository from "../interfaces/repository/event.Repository";
 import { ICloudinaryService } from "../interfaces/utils/IClaudinary";
-import { IEventRepository } from "../interfaces/IEvent";
-import { EventRepository } from "../repositories/eventRepository";
 
 export class EventUseCase {
   constructor(

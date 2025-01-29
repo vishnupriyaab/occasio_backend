@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import { HttpStatusCode } from "../constant/httpStatusCodes";
 import { handleError, handleSuccess } from "../framework/utils/responseHandler";
-import { IEmployeeController, IEmployeeUseCase } from "../interfaces/IEmployee";
 import { IJWTService } from "../interfaces/utils/IJwt";
 import { ResponseMessage } from "../constant/responseMsg";
+import IEmployeeController from "../interfaces/controller/employee.controller";
+import { IEmployeeUseCase } from "../interfaces/useCase/employee.useCase";
 
 export class EmployeeController implements IEmployeeController {
 

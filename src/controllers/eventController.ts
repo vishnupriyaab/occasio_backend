@@ -2,9 +2,9 @@ import { Request, Response } from "express";
 import { EventUseCase } from "../usecase/eventUseCase";
 import { handleError, handleSuccess } from "../framework/utils/responseHandler";
 import { ICloudinaryService } from "../interfaces/utils/IClaudinary";
-import { IEventUseCase } from "../interfaces/IEvent";
 import { HttpStatusCode } from "../constant/httpStatusCodes";
 import { ResponseMessage } from "../constant/responseMsg";
+import { IEventUseCase } from "../interfaces/useCase/event.useCase";
 
 export class EventController {
   constructor(
