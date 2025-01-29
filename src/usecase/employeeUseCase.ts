@@ -1,9 +1,11 @@
 import { IEmployee, IRegisterEmployee } from "../entities/employee.entity";
 import { IEmployeeRepository, IEmployeeUseCase } from "../interfaces/IEmployee";
-import { EmailService, IEmailService } from "../framework/utils/emailService";
-import { ICryptoService } from "../interfaces/ICrypto";
-import { IJWTService } from "../interfaces/IJwt";
+import { EmailService } from "../framework/utils/emailService";
+import { ICryptoService } from "../interfaces/utils/ICrypto";
+import { IJWTService } from "../interfaces/utils/IJwt";
 import { IOtpRepository } from "../interfaces/IOtp";
+import bcrypt from "bcrypt";
+import { IEmailService } from "../interfaces/utils/IEmail";
 
 export class EmployeeUseCase implements IEmployeeUseCase {
   private emailService: IEmailService;
@@ -57,15 +59,14 @@ export class EmployeeUseCase implements IEmployeeUseCase {
     }
   }
 
-  async verifyOtp(email: string, otp: string) {
+  async verifyOtp(email: string, otp: string):Promise<any> {
     try {
       const otpRecord = await this.otpRepo.findOtp(email);
-      console.log(otpRecord?.otp, otp, "otpRecordManhhh!!!!!");
       if (!otpRecord) {
         throw new Error("OTP not found or has expired");
       }
       const verified = await this.cryptoService.compareData(otp, otpRecord.otp);
-      console.log(verified, "lalalalalalal");
+      console.log(verified, "verified");
       if (verified) {
         const updatedEmployee = await this.employeeRepo.updateEmployeeStatus(
           email,
@@ -86,9 +87,35 @@ export class EmployeeUseCase implements IEmployeeUseCase {
     }
   }
 
-  async findEmployeeByEmail(email: string): Promise<IEmployee | null> {
+  async loginEmployee(
+    email: string,
+    password: string
+  ): Promise<{ accessToken: string; refreshToken: string }> {
     try {
-      return await this.employeeRepo.findEmployeeByEmail(email);
+      const employee = await this.employeeRepo.findEmployeeByEmail(email);
+      await this.employeeRepo.updateActivatedStatus(email, true);
+      if (!employee) {
+        throw new Error("Employee not found");
+      }
+
+      if (!employee.isVerified) {
+        throw new Error("Account not verified. Please verify your account.");
+      }
+
+      if (employee.isBlocked) {
+        throw new Error("Your account is blocked");
+      }
+      const isPasswordValid = await bcrypt.compare(
+        password,
+        employee.password as string
+      );
+      if (!isPasswordValid) {
+        throw new Error("Invalid password");
+      }
+      const payload = { employeeId: employee._id, role: "employee" };
+      const accessToken = this.jwtService.generateAccessToken(payload);
+      const refreshToken = this.jwtService.generateRefreshToken(payload);
+      return { accessToken, refreshToken };
     } catch (error) {
       throw error;
     }

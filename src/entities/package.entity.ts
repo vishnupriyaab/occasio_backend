@@ -7,7 +7,7 @@ export interface IPackage{
     items: IPackageItem[];
     createdAt: Date;
     updatedAt: Date;
-    isActive: boolean;
+    // isActive: boolean;
     isBlocked: boolean;
 }
 

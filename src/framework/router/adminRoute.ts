@@ -1,10 +1,12 @@
-import express, { NextFunction, Request, Response } from "express"
+import express from "express"
 import { AdminRepository } from "../../repositories/adminRepository";
 import { AdminUseCase } from "../../usecase/adminUseCase";
 import { AdminController } from "../../controllers/adminController";
 import { JWTService } from "../utils/jwtServices";
-import { IAdminController, IAdminRepository, IAdminUseCase } from "../../interfaces/IAdmin";
-import { IJWTService } from "../../interfaces/IJwt";
+import { IJWTService } from "../../interfaces/utils/IJwt";
+import IAdminRepository from "../../interfaces/repository/admin.Repository";
+import IAdminUseCase from "../../interfaces/useCase/admin.useCase";
+import IAdminController from "../../interfaces/controller/admin.controller";
 
 const adminRoute = express.Router();
 

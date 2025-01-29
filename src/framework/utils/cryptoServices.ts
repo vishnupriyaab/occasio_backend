@@ -1,4 +1,4 @@
-import { ICryptoService } from "../../interfaces/ICrypto";
+import { ICryptoService } from "../../interfaces/utils/ICrypto";
 import * as crypto from 'crypto';
 import { compareOtp, hashOtp } from "./hashOtp";
 

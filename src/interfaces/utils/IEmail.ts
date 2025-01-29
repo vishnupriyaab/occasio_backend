@@ -1,6 +1,9 @@
+
+
+
 export interface IEmailService {
-  sendOtpEmail(email: string, otp: string): Promise<any>;
-  sendPasswordResetEmail(email: string, resetLink: string): Promise<any>;
+  sendOtpEmail(email: string, otp: string): Promise<string>;
+  sendPasswordResetEmail(email: string, resetLink: string): Promise<string>;
 }
 
 export interface EmailConfig {

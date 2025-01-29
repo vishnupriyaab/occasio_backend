@@ -1,6 +1,6 @@
 import IOTP from "../entities/otp.entity";
 import Otp from "../framework/models/otpModel";
-import { IOtpRepository } from "../interfaces/IOtp";
+import IOtpRepository from "../interfaces/repository/otp.Repository";
 
 export class OtpRepository implements IOtpRepository {
   async createOtp(email: string, otp: string): Promise<IOTP> {

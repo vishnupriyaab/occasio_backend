@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { IAddEventRegister, IEvent } from "../entities/event.entity";
 import { IPackage, IPackageRegister } from "../entities/package.entity";
 import Event from "../framework/models/EventModel";
@@ -74,6 +75,7 @@ export class EventRepository {
 
   async findByPackageName(packageName: string): Promise<IPackage | null> {
     try {
+      console.log("12221");
       return Package.findOne({ packageName });
     } catch (error) {
       throw error;
@@ -115,4 +117,118 @@ export class EventRepository {
     }
   }
 
-}
+  // async searchEvent(searchTerm:string, filterStatus:string | undefined, page:number, limit:number):Promise<IEvent[] | any>{
+  //   try {
+  //     // let query:any = { eventName: {$regex: searchTerm, $options: 'i'} };
+  //     // if(filterStatus === 'blocked'){
+  //     //   query.isBlocked = true;
+  //     // }else if(filterStatus === 'unblocked'){
+  //     //   query.isBlocked = false;
+  //     // }
+  //     // return await Event.find(query);
+  //     // Construct dynamic query
+  //   const query: any = {};
+
+  //   // Add search term if provided
+  //   if (searchTerm) {
+  //     query.eventName = { $regex: searchTerm, $options: 'i' };
+  //   }
+
+  //   // Add status filter if provided
+  //   if (filterStatus === 'blocked') {
+  //     query.isBlocked = true;
+  //   } else if (filterStatus === 'unblocked') {
+  //     query.isBlocked = false;
+  //   }
+
+  //   // Calculate skip value for pagination
+  //   const skip = (page - 1) * limit;
+
+  //   // Perform query with pagination
+  //   const events = await Event.find(query)
+  //     .skip(skip)
+  //     .limit(limit)
+  //     .sort({ createdAt: -1 }); // Optional: sort by most recent
+
+  //   // Count total matching documents
+  //   const totalEvents = await Event.countDocuments(query);
+
+  //   // Calculate total pages
+  //   const totalPages = Math.ceil(totalEvents / limit);
+
+  //   console.log(events,totalEvents,totalPages,page,"123456789010123456789010");
+    
+
+  //   return {
+  //     events,
+  //     totalEvents,
+  //     totalPages,
+  //     currentPage: page
+  //   };
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
+
+  async searchEvent(
+    searchTerm: string, 
+    filterStatus: string | undefined, 
+    page: number, 
+    limit: number
+  ): Promise<{
+    events: IEvent[], 
+    totalEvents: number, 
+    totalPages: number, 
+    currentPage: number
+  }> {
+    try {
+      // Construct dynamic query with type safety
+      const query: mongoose.FilterQuery<IEvent> = {};
+  
+      // Search term filtering (case-insensitive)
+      if (searchTerm && searchTerm.trim() !== '') {
+        query.eventName = { 
+          $regex: searchTerm.trim(), 
+          $options: 'i' 
+        };
+      }
+  
+      // Status filtering
+      if (filterStatus === 'blocked') {
+        query.isBlocked = true;
+      } else if (filterStatus === 'unblocked') {
+        query.isBlocked = false;
+      }
+  
+      // Pagination calculations
+      const skip = Math.max(0, (page - 1) * limit);
+  
+      // Perform parallel queries for efficiency
+      const [events, totalEvents] = await Promise.all([
+        Event.find(query)
+          .skip(skip)
+          .limit(limit)
+          .sort({ createdAt: -1 }) // Most recent first
+          .lean(), // Convert to plain JavaScript objects
+        Event.countDocuments(query)
+      ]);
+  
+      // Calculate total pages
+      const totalPages = Math.max(1, Math.ceil(totalEvents / limit));
+  
+      return {
+        events,
+        totalEvents,
+        totalPages,
+        currentPage: page
+      };
+    } catch (error) {
+      // Enhanced error handling
+      console.error('Repository Search Error:', error);
+      throw new Error(`Failed to search events: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  }
+
+// }

@@ -6,7 +6,7 @@ export interface IEvent {
     image: string;
     createdAt: Date;
     updatedAt: Date;
-    isActive: boolean;
+    // isActive: boolean;
     isBlocked: boolean;
   }
 

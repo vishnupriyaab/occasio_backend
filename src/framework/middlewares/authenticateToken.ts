@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { JWTService } from "../utils/jwtServices";
-import { JWTPayload } from "../../interfaces/IJwt";
+import { JWTPayload } from "../../interfaces/utils/IJwt";
 
 export interface AuthenticatedRequest extends Request {
   user?: DecodedUser;

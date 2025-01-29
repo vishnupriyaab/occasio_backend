@@ -1,7 +1,7 @@
 
 // services/JWTService.ts
 import jwt from 'jsonwebtoken';
-import { IJWTService, JWTPayload } from '../../interfaces/IJwt';
+import { IJWTService, JWTPayload } from '../../interfaces/utils/IJwt';
 
 export class JWTService implements IJWTService {
   private readonly accessTokenSecret: string;

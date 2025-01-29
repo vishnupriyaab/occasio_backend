@@ -1,16 +1,18 @@
 import { IRegisterUser, IUser } from "../entities/user.entity";
-import { EmailService, IEmailService } from "../framework/utils/emailService";
-import { IJWTService, JWTPayload } from "../interfaces/IJwt";
-import { IUserRepository, IUserUseCase } from "../interfaces/IUser";
-import { ICryptoService } from "../interfaces/ICrypto";
+import { EmailService } from "../framework/utils/emailService";
+import { IJWTService, JWTPayload } from "../interfaces/utils/IJwt";
+import { ICryptoService } from "../interfaces/utils/ICrypto";
 import { CryptoService } from "../framework/utils/cryptoServices";
-import { IOtpRepository } from "../interfaces/IOtp";
 import bcrypt from "bcrypt";
 import { CloudinaryService } from "../framework/utils/claudinaryService";
-import { IsAuthenticatedUseCaseRES } from "../interfaces/IIsAuthenticated";
-import { IGoogleAuthService } from "../interfaces/IGoogleVerification";
-import { ICloudinaryService } from "../interfaces/IClaudinary";
+import { IsAuthenticatedUseCaseRES } from "../interfaces/common/IIsAuthenticated";
+import { IGoogleAuthService } from "../interfaces/utils/IGoogleVerification";
+import { ICloudinaryService } from "../interfaces/utils/IClaudinary";
 import { otpResponse } from "../entities/otp.entity";
+import { IEmailService } from "../interfaces/utils/IEmail";
+import IUserUseCase from "../interfaces/useCase/user.useCase";
+import IUserRepository from "../interfaces/repository/user.Repository";
+import IOtpRepository from "../interfaces/repository/otp.Repository";
 
 export class UserUseCase implements IUserUseCase {
   private emailService: IEmailService;
@@ -111,13 +113,9 @@ export class UserUseCase implements IUserUseCase {
       if (!isPasswordValid) {
         throw new Error("Invalid Password");
       }
-      // Generate tokens
-      const payload = { userId: user._id };
-      console.log("payload", payload);
+      const payload = { userId: user._id , role: "user"};
       const accessToken = this.jwtService.generateAccessToken(payload);
-      console.log("accessToken", accessToken);
       const refreshToken = this.jwtService.generateRefreshToken(payload);
-      console.log("refreshToken", refreshToken);
       return { accessToken, refreshToken };
     } catch (error) {
       throw error;
@@ -240,8 +238,9 @@ export class UserUseCase implements IUserUseCase {
         return { message: "Unauthorized: No token provided", status: 401 };
       }
       const decoded = this.jwtService.verifyAccessToken(token) as JWTPayload;
+      console.log(decoded,"decodeeeeeeeeeeeeeeeeee");
       if (decoded.role?.toLowerCase() !== "user") {
-        return { message: "Unauthorized: No token provided", status: 401 };
+        return { message: "No access user", status: 401 };
       }
       return { message: "User is Authenticated", status: 200 };
     } catch (error) {
@@ -249,4 +248,13 @@ export class UserUseCase implements IUserUseCase {
       throw error;
     }
   }
+
+  async searchUser(searchTerm:string):Promise<IUser[] | null>{
+      try {
+        return await this.userRepo.searchUser(searchTerm);
+      } catch (error) {
+        throw error;
+      }
+    }
+
 }

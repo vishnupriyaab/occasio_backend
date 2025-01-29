@@ -4,11 +4,13 @@ import { EmployeeUseCase } from '../../usecase/employeeUseCase';
 import { EmployeeController } from '../../controllers/employeeController';
 import { OtpRepository } from '../../repositories/otpRepository';
 import { JWTService } from '../utils/jwtServices';
-import { IEmployeeController, IEmployeeRepository, IEmployeeUseCase } from '../../interfaces/IEmployee';
-import { ICryptoService } from '../../interfaces/ICrypto';
+import { ICryptoService } from '../../interfaces/utils/ICrypto';
 import { CryptoService } from '../utils/cryptoServices';
-import { IJWTService } from '../../interfaces/IJwt';
-import { IOtpRepository } from '../../interfaces/IOtp';
+import { IJWTService } from '../../interfaces/utils/IJwt';
+import IEmployeeRepository from '../../interfaces/repository/employee.Repository';
+import IOtpRepository from '../../interfaces/repository/otp.Repository';
+import { IEmployeeUseCase } from '../../interfaces/useCase/employee.useCase';
+import IEmployeeController from '../../interfaces/controller/employee.controller';
 
 
 const employeeRoute = express.Router()

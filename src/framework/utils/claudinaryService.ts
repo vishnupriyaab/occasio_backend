@@ -1,6 +1,6 @@
 // src/infrastructure/services/cloudinaryService.ts
 import axios from "axios";
-import { ICloudinaryService } from "../../interfaces/IClaudinary";
+import { ICloudinaryService } from "../../interfaces/utils/IClaudinary";
 import { configureCloudinary } from "../config/claudinary";
 
 export class CloudinaryService implements ICloudinaryService {

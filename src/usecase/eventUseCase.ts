@@ -1,6 +1,6 @@
 import { IAddEventRegister, IEvent } from "../entities/event.entity";
 import { IPackage, IPackageRegister } from "../entities/package.entity";
-import { ICloudinaryService } from "../interfaces/IClaudinary";
+import { ICloudinaryService } from "../interfaces/utils/IClaudinary";
 import { IEventRepository } from "../interfaces/IEvent";
 import { EventRepository } from "../repositories/eventRepository";
 
@@ -103,7 +103,7 @@ export class EventUseCase {
       const newPackage: IPackageRegister = {
         ...packageData,
         isBlocked: false,
-        isActive: true,
+        // isActive: true,
         image: imageUrl,
       };
 
@@ -182,5 +182,46 @@ export class EventUseCase {
     }
   }
 
-  
+  // async searchEvent(searchTerm:string, filterStatus:string | undefined, page:number, limit:number):Promise<any>{
+  //   try {
+  //     return await this.eventRepo.searchEvent(searchTerm, filterStatus, page, limit);
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
+
+
+  async searchEvent(
+    searchTerm: string, 
+    filterStatus: string | undefined, 
+    page: number, 
+    limit: number
+  ): Promise<{
+    events: IEvent[], 
+    totalEvents: number, 
+    totalPages: number, 
+    currentPage: number
+  }> {
+    try {
+      // Any additional business logic can be added here
+      // For example, input validation, authorization checks, etc.
+      
+      // Validate inputs
+      if (page < 1) throw new Error('Page number must be positive');
+      if (limit < 1) throw new Error('Limit must be positive');
+
+      // Delegate to repository
+      return await this.eventRepo.searchEvent(
+        searchTerm, 
+        filterStatus, 
+        page, 
+        limit
+      );
+    } catch (error) {
+      // Transform or handle errors from repository
+      throw new Error(`Use case search failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
 }
+  
+

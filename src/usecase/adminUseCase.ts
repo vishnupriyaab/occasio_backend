@@ -1,8 +1,9 @@
 import { AdminLoginResponse, IAdmin } from "../entities/admin.entity";
 import { IUser } from "../entities/user.entity";
-import { IAdminRepository, IAdminUseCase } from "../interfaces/IAdmin";
-import { IsAuthenticatedUseCaseRES } from "../interfaces/IIsAuthenticated";
-import { IJWTService, JWTPayload } from "../interfaces/IJwt";
+import { IsAuthenticatedUseCaseRES } from "../interfaces/common/IIsAuthenticated";
+import { IJWTService, JWTPayload } from "../interfaces/utils/IJwt";
+import IAdminRepository from "../interfaces/repository/admin.Repository";
+import IAdminUseCase from "../interfaces/useCase/admin.useCase";
 
 export class AdminUseCase implements IAdminUseCase {
   constructor(
@@ -26,7 +27,7 @@ export class AdminUseCase implements IAdminUseCase {
         throw new Error('Invalid credentials')
       }
 
-      const payload = { adminId: admin._id };
+      const payload = { adminId: admin._id ,role: "admin"};
       const accessToken = this.IjwtSevice.generateAccessToken(payload);
       const refreshToken = this.IjwtSevice.generateRefreshToken(payload);
 
@@ -62,10 +63,11 @@ export class AdminUseCase implements IAdminUseCase {
           return { message: "Unauthorized: No token provided", status: 401 };
         }
         const decoded = this.IjwtSevice.verifyAccessToken(token) as JWTPayload;
+        console.log(decoded,"23456789000987654")
         if (decoded.role?.toLowerCase() !== "admin") {
-          return { message: "Unauthorized: No token provided", status: 401 };
+          return { message: "No access admin", status: 401 };
         }
-        return { message: "User is Authenticated", status: 200 };
+        return { message: "Admin is Authenticated", status: 200 };
       } catch (error) {
         // return { message: "Forbidden: Invalid token", status: 403 };
         throw error;

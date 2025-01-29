@@ -3,12 +3,14 @@ import { UserController } from "../../controllers/userController";
 import { UserRepository } from "../../repositories/userRepository";
 import { UserUseCase } from "../../usecase/userUseCase";
 import { OtpRepository } from "../../repositories/otpRepository";
-import { IUserController, IUserRepository, IUserUseCase } from "../../interfaces/IUser";
-import { IOtpRepository } from "../../interfaces/IOtp";
-import { IJWTService } from "../../interfaces/IJwt";
+import { IJWTService } from "../../interfaces/utils/IJwt";
 import { JWTService } from "../utils/jwtServices";
-import { IGoogleAuthService } from "../../interfaces/IGoogleVerification";
+import { IGoogleAuthService } from "../../interfaces/utils/IGoogleVerification";
 import { GoogleAuthService } from "../utils/googleVerification";
+import IUserRepository from "../../interfaces/repository/user.Repository";
+import IUserUseCase from "../../interfaces/useCase/user.useCase";
+import IUserController from "../../interfaces/controller/user.controller";
+import IOtpRepository from "../../interfaces/repository/otp.Repository";
 
 const userRoute = express.Router();
 
@@ -46,5 +48,6 @@ userRoute.get('/isAuthenticate',userController.isAuthenticated.bind(userControll
 
 userRoute.get('/getUsers',userController.getUsers.bind(userController));
 
+userRoute.get('/searchUser',userController.searchUser.bind(userController));
 
 export default userRoute;

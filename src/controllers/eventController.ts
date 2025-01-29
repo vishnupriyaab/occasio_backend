@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { EventUseCase } from "../usecase/eventUseCase";
 import { handleError, handleSuccess } from "../framework/utils/responseHandler";
-import { ICloudinaryService } from "../interfaces/IClaudinary";
+import { ICloudinaryService } from "../interfaces/utils/IClaudinary";
 import { IEventUseCase } from "../interfaces/IEvent";
 import { HttpStatusCode } from "../constant/httpStatusCodes";
 import { ResponseMessage } from "../constant/responseMsg";
@@ -37,9 +37,67 @@ export class EventController {
     }
   }
   
+  //Search Event
+   async searchEvent(req: Request, res: Response): Promise<void> {
+    try {
+      // Parse and validate query parameters
+      const searchTerm = (req.query.searchTerm as string | undefined) || '';
+      const filterStatus = req.query.filterStatus as string | undefined;
+      
+      // Robust page and limit parsing
+      const page = req.query.page 
+        ? parseInt(req.query.page as string, 10) 
+        : 1;
+      const limit = req.query.limit 
+        ? parseInt(req.query.limit as string, 10) 
+        : 10;
+
+      // Validate parsed values
+      if (isNaN(page) || isNaN(limit)) {
+        res.status(HttpStatusCode.BAD_REQUEST).json(
+          handleError('Invalid page or limit parameters', HttpStatusCode.BAD_REQUEST)
+        );
+        return;
+      }
+
+      // Call use case
+      const result = await this.eventUseCase.searchEvent(
+        searchTerm, 
+        filterStatus, 
+        page, 
+        limit
+      );
+      console.log(result,"qwertyui")
+
+      // Successful response
+      res.status(HttpStatusCode.OK).json(
+        handleSuccess(
+          ResponseMessage.FETCH_EVENT, 
+          HttpStatusCode.OK, 
+          result
+        )
+      );
+    } catch (error) {
+      // Error handling
+      console.error('Search Event Error:', error);
+
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(
+        handleError(
+          ResponseMessage.FETCH_EVENT_FAILURE, 
+          HttpStatusCode.INTERNAL_SERVER_ERROR,
+          // error instanceof Error ? error.message : 'Unknown error'
+        )
+      );
+    }
+  }
+
   //getEvents
   async getEvents(req: Request, res: Response): Promise<void> {
     try {
+      const page = (req.query.page as string | undefined) || '';
+      console.log(page,"page");
+      const limit = (req.query.limit as string | undefined) || '';
+      console.log(limit,"limit");
       const events = await this.eventUseCase.getAllEvents();
       res.status(HttpStatusCode.OK).json(handleSuccess(ResponseMessage.FETCH_EVENT,HttpStatusCode.OK,events));
     } catch (error) {

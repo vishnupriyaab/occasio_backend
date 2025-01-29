@@ -4,8 +4,10 @@ import { EventController } from "../../controllers/eventController";
 import { EventUseCase } from "../../usecase/eventUseCase";
 import { CloudinaryService } from "../utils/claudinaryService";
 import { upload } from "../middlewares/claudinaryUpload";
-import { IEventController, IEventRepository, IEventUseCase } from "../../interfaces/IEvent";
-import { ICloudinaryService } from "../../interfaces/IClaudinary";
+import { ICloudinaryService } from "../../interfaces/utils/IClaudinary";
+import IEventRepository from "../../interfaces/repository/event.Repository";
+import { IEventUseCase } from "../../interfaces/useCase/event.useCase";
+import { IEventController } from "../../interfaces/controller/event.controller";
 
 const eventRoute = express.Router();
 
@@ -15,6 +17,8 @@ const eventUseCase:IEventUseCase = new EventUseCase(claudinaryService, eventRepo
 const eventController:IEventController = new EventController(eventUseCase,claudinaryService);
 
   //event
+  eventRoute.get('/searchEvent',eventController.searchEvent.bind(eventController));
+
   eventRoute.get('/getEvents', eventController.getEvents.bind(eventController));
   
   eventRoute.post('/addEvent', upload.single('img'), eventController.addEvent.bind(eventController));

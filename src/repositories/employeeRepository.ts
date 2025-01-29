@@ -35,6 +35,21 @@ export class EmployeeRepository implements IEmployeeRepository {
     }
   }
 
+  async updateActivatedStatus(email:string, isActivated:boolean):Promise <IEmployee | null>{
+    try {
+      const updatedActivatedStatus = await Employees.findOneAndUpdate(
+        { email: email },
+        { $set: { isActivated: isActivated } },
+        { new: true }
+      ).exec();
+
+      return updatedActivatedStatus ? updatedActivatedStatus.toObject() : null;
+    } catch (error) {
+      console.error("Error updating user status:", error);
+      throw error;
+    }
+  }
+
   async updateEmployeeStatus(
     email: string,
     isVerified: boolean

@@ -1,5 +1,5 @@
 import { LoginTicket, OAuth2Client, TokenPayload } from "google-auth-library";
-import { IGoogleAuthService } from "../../interfaces/IGoogleVerification";
+import { IGoogleAuthService } from "../../interfaces/utils/IGoogleVerification";
 
 export class GoogleAuthService implements IGoogleAuthService {
     private client: OAuth2Client;

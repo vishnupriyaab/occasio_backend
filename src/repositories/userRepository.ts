@@ -1,6 +1,6 @@
 import Users from "../framework/models/userModel";
 import { IRegisterUser, IUser } from "../entities/user.entity";
-import { IUserRepository } from "../interfaces/IUser";
+import IUserRepository from "../interfaces/repository/user.Repository";
 
 export class UserRepository implements IUserRepository {
     
@@ -142,6 +142,14 @@ export class UserRepository implements IUserRepository {
   async getAllUsers(): Promise<IUser[]> {
     try {
       return Users.find().sort({ createdAt: -1 });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async searchUser(searchTerm:string):Promise<IUser[] | null>{
+    try {
+      return await Users.find( { name: { $regex: searchTerm, $options: 'i' } } );
     } catch (error) {
       throw error;
     }

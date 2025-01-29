@@ -2,8 +2,8 @@ import { IAdmin, IAdminRegister } from "../entities/admin.entity";
 import { IUser } from "../entities/user.entity";
 import Admin from "../framework/models/adminModel";
 import Users from "../framework/models/userModel";
-import { IAdminRepository } from "../interfaces/IAdmin";
 import bcrypt from "bcrypt";
+import IAdminRepository from "../interfaces/repository/admin.Repository";
 
 export class AdminRepository implements IAdminRepository {
 

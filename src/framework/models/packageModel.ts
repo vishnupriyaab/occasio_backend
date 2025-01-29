@@ -27,10 +27,10 @@ const packageSchema: Schema = new Schema<IPackage>(
       type: String,
       required: true,
     },
-    isActive: {
-      type: Boolean,
-      default: true,
-    },
+    // isActive: {
+    //   type: Boolean,
+    //   default: true,
+    // },
     isBlocked: {
       type: Boolean,
       default: false,
