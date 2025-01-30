@@ -24,13 +24,13 @@ export class EventRepository {
     }
   }
 
-  async getAllEvents(): Promise<IEvent[]> {
-    try {
-      return Event.find().sort({ createdAt: -1 });
-    } catch (error) {
-      throw error;
-    }
-  }
+  // async getAllEvents(): Promise<IEvent[]> {
+  //   try {
+  //     return Event.find().sort({ createdAt: -1 });
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 
   async updateEvent(id: string, updatedData: any): Promise<IEvent | null> {
     try {
@@ -116,59 +116,6 @@ export class EventRepository {
       throw error;
     }
   }
-
-  // async searchEvent(searchTerm:string, filterStatus:string | undefined, page:number, limit:number):Promise<IEvent[] | any>{
-  //   try {
-  //     // let query:any = { eventName: {$regex: searchTerm, $options: 'i'} };
-  //     // if(filterStatus === 'blocked'){
-  //     //   query.isBlocked = true;
-  //     // }else if(filterStatus === 'unblocked'){
-  //     //   query.isBlocked = false;
-  //     // }
-  //     // return await Event.find(query);
-  //     // Construct dynamic query
-  //   const query: any = {};
-
-  //   // Add search term if provided
-  //   if (searchTerm) {
-  //     query.eventName = { $regex: searchTerm, $options: 'i' };
-  //   }
-
-  //   // Add status filter if provided
-  //   if (filterStatus === 'blocked') {
-  //     query.isBlocked = true;
-  //   } else if (filterStatus === 'unblocked') {
-  //     query.isBlocked = false;
-  //   }
-
-  //   // Calculate skip value for pagination
-  //   const skip = (page - 1) * limit;
-
-  //   // Perform query with pagination
-  //   const events = await Event.find(query)
-  //     .skip(skip)
-  //     .limit(limit)
-  //     .sort({ createdAt: -1 }); // Optional: sort by most recent
-
-  //   // Count total matching documents
-  //   const totalEvents = await Event.countDocuments(query);
-
-  //   // Calculate total pages
-  //   const totalPages = Math.ceil(totalEvents / limit);
-
-  //   console.log(events,totalEvents,totalPages,page,"123456789010123456789010");
-    
-
-  //   return {
-  //     events,
-  //     totalEvents,
-  //     totalPages,
-  //     currentPage: page
-  //   };
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
 
   async searchEvent(
     searchTerm: string, 

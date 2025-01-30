@@ -92,18 +92,18 @@ export class EventController {
   }
 
   //getEvents
-  async getEvents(req: Request, res: Response): Promise<void> {
-    try {
-      const page = (req.query.page as string | undefined) || '';
-      console.log(page,"page");
-      const limit = (req.query.limit as string | undefined) || '';
-      console.log(limit,"limit");
-      const events = await this.eventUseCase.getAllEvents();
-      res.status(HttpStatusCode.OK).json(handleSuccess(ResponseMessage.FETCH_EVENT,HttpStatusCode.OK,events));
-    } catch (error) {
-      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(handleError(ResponseMessage.FETCH_EVENT_FAILURE,HttpStatusCode.INTERNAL_SERVER_ERROR))
-    }
-  }
+  // async getEvents(req: Request, res: Response): Promise<void> {
+  //   try {
+  //     const page = (req.query.page as string | undefined) || '';
+  //     console.log(page,"page");
+  //     const limit = (req.query.limit as string | undefined) || '';
+  //     console.log(limit,"limit");
+  //     const events = await this.eventUseCase.getAllEvents();
+  //     res.status(HttpStatusCode.OK).json(handleSuccess(ResponseMessage.FETCH_EVENT,HttpStatusCode.OK,events));
+  //   } catch (error) {
+  //     res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(handleError(ResponseMessage.FETCH_EVENT_FAILURE,HttpStatusCode.INTERNAL_SERVER_ERROR))
+  //   }
+  // }
 
   //updtaeEvent
   async updateEvent(req: Request, res: Response): Promise<void> {

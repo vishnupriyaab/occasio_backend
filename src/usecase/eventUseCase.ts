@@ -39,13 +39,13 @@ export class EventUseCase {
     }
   }
 
-  async getAllEvents(): Promise<IEvent[] | undefined> {
-    try {
-      return this.eventRepo.getAllEvents();
-    } catch (error) {
-      throw error;
-    }
-  }
+  // async getAllEvents(): Promise<IEvent[] | undefined> {
+  //   try {
+  //     return this.eventRepo.getAllEvents();
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 
   async updateEvent(id: string, updatedData: any): Promise<IEvent | undefined | null> {
     try {

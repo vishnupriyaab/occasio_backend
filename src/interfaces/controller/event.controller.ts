@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 
 export interface IEventController{
     addEvent(req: Request, res: Response): Promise<void>
-    getEvents(req: Request, res: Response): Promise<void>
+    // getEvents(req: Request, res: Response): Promise<void>
     updateEvent(req: Request, res: Response): Promise<void>
     blockEvent(req: Request, res: Response): Promise<void>
     deleteEvent(req: Request, res: Response): Promise<void>

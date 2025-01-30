@@ -4,7 +4,7 @@ import { IPackage, IPackageRegister } from "../../entities/package.entity"
 export default interface IEventRepository{
     addEvent(event: IAddEventRegister): Promise<IEvent | void>
     findByEventName(eventName: string): Promise<IEvent | null>
-    getAllEvents(): Promise<IEvent[]>
+    // getAllEvents(): Promise<IEvent[]>
     updateEvent(id: string, updatedData: any): Promise<IEvent | null>
     findByEventId(id:string):Promise<IEvent | null>
     searchEvent(searchTerm:string, filterStatus:string | undefined,page:number, limit:number):Promise<{ events: IEvent[],  totalEvents: number,  totalPages: number,  currentPage: number }>

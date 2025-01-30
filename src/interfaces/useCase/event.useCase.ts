@@ -3,7 +3,7 @@ import { IPackage } from "../../entities/package.entity"
 
 export interface IEventUseCase{
     addEvent(eventData: any, file: Express.Multer.File):Promise<any>
-    getAllEvents(): Promise<IEvent[] | undefined>
+    // getAllEvents(): Promise<IEvent[] | undefined>
     updateEvent(id: string, updatedData: any): Promise<IEvent | undefined | null>
     blockEvent(eventId: string): Promise<IEvent | null>
     deleteEvent(eventId: string):Promise<void>
