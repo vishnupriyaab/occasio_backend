@@ -19,8 +19,6 @@ const eventController:IEventController = new EventController(eventUseCase,claudi
   //event
   eventRoute.get('/searchEvent',eventController.searchEvent.bind(eventController));
 
-  // eventRoute.get('/getEvents', eventController.getEvents.bind(eventController));
-  
   eventRoute.post('/addEvent', upload.single('img'), eventController.addEvent.bind(eventController));
   
   eventRoute.put('/updateEvent/:id', upload.single('img'), eventController.updateEvent.bind(eventController));
@@ -38,8 +36,16 @@ const eventController:IEventController = new EventController(eventUseCase,claudi
   eventRoute.put('/updatePackage/:id', upload.single('img'), eventController.updatePackage.bind(eventController));
   
   eventRoute.patch('/blockPackage/:id', eventController.blockPackage.bind(eventController));
-
+  
   eventRoute.delete('/deletePackage/:id', eventController.deletePackage.bind(eventController));
+  
+  
+  //Features
+  eventRoute.get('/getPackageDetails/:id', eventController.getPackageDetails.bind(eventController));
+  
+  eventRoute.patch('/blockFeature/:packageId', eventController.blockFeature.bind(eventController));
+  
+  eventRoute.delete('/deleteFeature/:packageId', eventController.deleteFeature.bind(eventController));
 
 
 export default eventRoute;

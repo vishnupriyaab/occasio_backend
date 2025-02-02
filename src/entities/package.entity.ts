@@ -1,27 +1,29 @@
-export interface IPackage{
-    _id:string;
-    eventId: string;
-    packageName: string;
-    startingAmnt: number;
-    image: string;
-    items: IPackageItem[];
-    createdAt: Date;
-    updatedAt: Date;
-    // isActive: boolean;
+export interface IPackage {
+  _id: string;
+  eventId: string;
+  packageName: string;
+  startingAmnt: number;
+  image: string;
+  items: {
+    _id:string
+    name: string;
+    amount: number;
     isBlocked: boolean;
+  }[];
+  createdAt: Date;
+  updatedAt: Date;
+  isBlocked: boolean;
 }
 
-
-export interface IPackageItem {
-    itemName: string;
-    price: number;
-    status: boolean;
-  }
-
 export interface IPackageRegister {
-    _id: string;
-    packageName: string;
-    startingAmnt: number;
-    img: string;
-    eventId: string;
-  }
+  // _id: string;
+  packageName: string;
+  startingAmnt: number;
+  eventId: string;
+  items:{
+    name: string;
+    isBlocked: boolean;
+    amount: number; 
+  }[];
+  image: string;
+}

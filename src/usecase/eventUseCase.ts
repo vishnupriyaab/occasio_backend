@@ -9,7 +9,7 @@ export class EventUseCase {
     private eventRepo: IEventRepository
   ) {}
 
-  async addEvent(eventData: any, file: Express.Multer.File):Promise<any> {
+  async addEvent(eventData: any, file: Express.Multer.File): Promise<any> {
     try {
       const normalizedEventName = eventData.eventName.toLowerCase();
 
@@ -39,15 +39,10 @@ export class EventUseCase {
     }
   }
 
-  // async getAllEvents(): Promise<IEvent[] | undefined> {
-  //   try {
-  //     return this.eventRepo.getAllEvents();
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
-
-  async updateEvent(id: string, updatedData: any): Promise<IEvent | undefined | null> {
+  async updateEvent(
+    id: string,
+    updatedData: any
+  ): Promise<IEvent | undefined | null> {
     try {
       return this.eventRepo.updateEvent(id, updatedData);
     } catch (error) {
@@ -61,7 +56,7 @@ export class EventUseCase {
       if (!event) {
         throw new Error("Event not found");
       }
-  
+
       event.isBlocked = !event.isBlocked;
       return await this.eventRepo.updateEvent(eventId, {
         isBlocked: event.isBlocked,
@@ -71,21 +66,21 @@ export class EventUseCase {
     }
   }
 
-  async deleteEvent(eventId: string):Promise<void> {
+  async deleteEvent(eventId: string): Promise<void> {
     try {
       const event = await this.eventRepo.findByEventId(eventId);
       if (!event) {
         throw new Error("Event not found");
       }
-  
-       await this.eventRepo.deleteEvent(eventId);
-       return
+
+      await this.eventRepo.deleteEvent(eventId);
+      return;
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 
-  async addPackage(packageData: any, file: Express.Multer.File):Promise<any> {
+  async addPackage(packageData: any, file: Express.Multer.File): Promise<any> {
     console.log(packageData, file, "data in useCase");
     try {
       const existingPackage = await this.eventRepo.findByPackageName(
@@ -99,10 +94,21 @@ export class EventUseCase {
       const imageUrl = await this.cloudinaryService.uploadImage(file);
       console.log(imageUrl, "imageUrl");
 
+      const featuresName = packageData.items[0].name;
+      // const featuresAmount = packageData.items[0].amount;
+      console.log("features", featuresName);
+
       const newPackage: IPackageRegister = {
-        ...packageData,
-        isBlocked: false,
-        // isActive: true,
+        packageName: packageData.packageName,
+        startingAmnt: packageData.startingAmnt,
+        eventId: packageData.eventId,
+        items: packageData.items.map(
+          (item: { name: string; amount: number; isBlocked: boolean }) => ({
+            name: item.name,
+            amount: Number(0),
+            isBlocked: item.isBlocked || false,
+          })
+        ),
         image: imageUrl,
       };
 
@@ -118,7 +124,7 @@ export class EventUseCase {
     try {
       return this.eventRepo.getAllPackages(eventId);
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 
@@ -150,15 +156,15 @@ export class EventUseCase {
       throw error;
     }
   }
-  
-  async deletePackage(packageId:string):Promise<void>{
+
+  async deletePackage(packageId: string): Promise<void> {
     try {
       const packagee = await this.eventRepo.findByPackageId(packageId);
-      if(!packagee){
+      if (!packagee) {
         throw new Error("Package not found");
       }
-       await this.eventRepo.deletePackage(packageId);
-       return
+      await this.eventRepo.deletePackage(packageId);
+      return;
     } catch (error) {
       throw error;
     }
@@ -166,61 +172,133 @@ export class EventUseCase {
 
   async blockPackage(packageId: string): Promise<IPackage | null> {
     try {
-
       const packagee = await this.eventRepo.findByPackageId(packageId);
       if (!packagee) {
-        throw new Error("Event not found");
+        throw new Error("Package not found");
       }
       packagee.isBlocked = !packagee.isBlocked;
       return await this.eventRepo.updatedPackage(packageId, {
         isBlocked: packagee.isBlocked,
       });
-
     } catch (error) {
       throw error;
     }
   }
 
-  // async searchEvent(searchTerm:string, filterStatus:string | undefined, page:number, limit:number):Promise<any>{
-  //   try {
-  //     return await this.eventRepo.searchEvent(searchTerm, filterStatus, page, limit);
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
-
-
   async searchEvent(
-    searchTerm: string, 
-    filterStatus: string | undefined, 
-    page: number, 
+    searchTerm: string,
+    filterStatus: string | undefined,
+    page: number,
     limit: number
   ): Promise<{
-    events: IEvent[], 
-    totalEvents: number, 
-    totalPages: number, 
-    currentPage: number
+    events: IEvent[];
+    totalEvents: number;
+    totalPages: number;
+    currentPage: number;
   }> {
     try {
-      // Any additional business logic can be added here
-      // For example, input validation, authorization checks, etc.
-      
-      // Validate inputs
-      if (page < 1) throw new Error('Page number must be positive');
-      if (limit < 1) throw new Error('Limit must be positive');
+      if (page < 1) throw new Error("Page number must be positive");
+      if (limit < 1) throw new Error("Limit must be positive");
 
-      // Delegate to repository
       return await this.eventRepo.searchEvent(
-        searchTerm, 
-        filterStatus, 
-        page, 
+        searchTerm,
+        filterStatus,
+        page,
         limit
       );
     } catch (error) {
-      // Transform or handle errors from repository
-      throw new Error(`Use case search failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Use case search failed: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
+    }
+  }
+
+  async searchFeature(
+    packageId: string,
+    searchTerm: string,
+    filterStatus: string | undefined,
+    page: number,
+    limit: number
+  ): Promise<{
+    // packageDetails: {
+    packageName: string;
+    // image: string;
+    // startingAmnt: number;
+    // };
+    features: Array<{
+      name: string;
+      isBlocked: boolean;
+      amount: number;
+    }>;
+    totalFeatures: number;
+    totalPages: number;
+    currentPage: number;
+  }> {
+    try {
+      if (page < 1) throw new Error("Page number must be positive");
+      if (limit < 1) throw new Error("Limit must be positive");
+
+      return await this.eventRepo.searchFeatures(
+        packageId,
+        searchTerm,
+        filterStatus,
+        page,
+        limit
+      );
+    } catch (error) {
+      throw new Error(
+        `Use case search failed: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
+    }
+  }
+
+  async blockFeature(packageId: string, featureId: string): Promise<IPackage | null> {
+    try {
+      console.log(packageId, featureId);
+
+      const existingPackage = await this.eventRepo.findById(packageId);
+      if (!existingPackage) {
+        throw new Error("Package not found");
+      }
+
+      console.log(existingPackage, "yuio");
+
+      const feature = existingPackage.items.find(
+        (item) => item._id.toString() === featureId
+      );
+      console.log(feature, "rtyui");
+      if (!feature) {
+        throw new Error("Feature not found in the package");
+      }
+
+      return await this.eventRepo.featureBlock( packageId, featureId );
+    
+    } catch (error) {
+      throw error;
+    }
+  }
+  async deleteFeature(packageId:string, featureId:string):Promise<IPackage | null>{
+    try {
+      console.log(packageId,featureId);
+      const existingPackage = await this.eventRepo.findById(packageId);
+      if (!existingPackage) {
+        throw new Error("Package not found");
+      }
+      const feature = existingPackage.items.find(
+        (item) => item._id.toString() === featureId
+      );
+      console.log(feature, "rtyui");
+      if (!feature) {
+        throw new Error("Feature not found in the package");
+      }
+
+      return await this.eventRepo.deleteFeature(packageId,featureId)
+    } catch (error) {
+      throw error;
     }
   }
 }
-  
-
