@@ -39,5 +39,7 @@ employeeRoute.post('/forgotPassword',employeeController.forgotPassword.bind(empl
 
 employeeRoute.post('/resetPassword',employeeController.resetPassword.bind(employeeController));
 
+employeeRoute.get('/isAuthenticate',employeeController.isAuthenticated.bind(employeeController));
+
 
 export default employeeRoute;

@@ -141,4 +141,26 @@ export class EmployeeController implements IEmployeeController {
       res.status(HttpStatusCode.BAD_REQUEST).json(handleError(ResponseMessage.PASSWORD_RESET_FAILURE,HttpStatusCode.BAD_REQUEST));
     }
   }
+
+  //isAuthenticated
+  async isAuthenticated(req: Request, res: Response): Promise<void> {
+    try {
+      console.log(req.cookies, "qwertyu");
+      const token = req.cookies.access_token;
+      console.log(token, "authenticatedToken");
+      const responseObj = await this.employeeUseCase.isAuthenticated(token);
+      res
+        .status(responseObj.status)
+        .json(handleSuccess(responseObj.message, responseObj.status));
+    } catch (error) {
+      res
+        .status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+        .json(
+          handleError(
+            ResponseMessage.AUTHENTICATION_FAILURE,
+            HttpStatusCode.INTERNAL_SERVER_ERROR
+          )
+        );
+    }
+  }
 }
