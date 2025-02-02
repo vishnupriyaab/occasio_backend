@@ -12,8 +12,8 @@ export class JWTService implements IJWTService {
   constructor() {
     this.accessTokenSecret = process.env.JWT_SECRET || 'accessSecretKey';
     this.refreshTokenSecret = process.env.JWT_REFRESH_SECRET || 'refreshSecretKey';
-    this.accessTokenExpiry = '30m';
-    this.refreshTokenExpiry = '7d';
+    this.accessTokenExpiry = '1d';
+    this.refreshTokenExpiry = '30d';
   }
 
   generateAccessToken(payload: JWTPayload): string {

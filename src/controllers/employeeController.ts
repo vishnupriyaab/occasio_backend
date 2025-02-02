@@ -142,6 +142,36 @@ export class EmployeeController implements IEmployeeController {
     }
   }
 
+    //logOut
+    async logOut(req: Request, res: Response): Promise<void> {
+      try {
+        res
+          .clearCookie("refresh_token", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+          })
+          .clearCookie("access_token", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+          });
+        console.log(123);
+        res
+          .status(HttpStatusCode.OK)
+          .json(handleSuccess(ResponseMessage.LOGOUT_SUCCESS, HttpStatusCode.OK));
+      } catch (error) {
+        res
+          .status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+          .json(
+            handleError(
+              ResponseMessage.LOGOUT_FAILURE,
+              HttpStatusCode.INTERNAL_SERVER_ERROR
+            )
+          );
+      }
+    }
+
   //isAuthenticated
   async isAuthenticated(req: Request, res: Response): Promise<void> {
     try {

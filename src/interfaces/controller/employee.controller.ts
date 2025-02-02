@@ -6,5 +6,6 @@ export default interface IEmployeeController {
   employeeLogin(req: Request, res: Response):Promise<void>
   forgotPassword(req: Request, res: Response):Promise<void>
   resetPassword(req: Request, res: Response):Promise<void>
+  logOut(req: Request, res: Response): Promise<void>
   isAuthenticated(req: Request, res: Response): Promise<void>
 }
