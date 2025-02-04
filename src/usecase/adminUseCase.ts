@@ -4,6 +4,7 @@ import { IsAuthenticatedUseCaseRES } from "../interfaces/common/IIsAuthenticated
 import { IJWTService, JWTPayload } from "../interfaces/utils/IJwt";
 import IAdminRepository from "../interfaces/repository/admin.Repository";
 import IAdminUseCase from "../interfaces/useCase/admin.useCase";
+import IUserRepository from "../interfaces/repository/user.Repository";
 
 export class AdminUseCase implements IAdminUseCase {
   constructor(
@@ -69,7 +70,6 @@ export class AdminUseCase implements IAdminUseCase {
         }
         return { message: "Admin is Authenticated", status: 200 };
       } catch (error) {
-        // return { message: "Forbidden: Invalid token", status: 403 };
         throw error;
       }
     }

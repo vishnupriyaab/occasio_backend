@@ -13,7 +13,7 @@ const eventSchema: Schema = new Schema<IEvent>(
     image: {
       type: String,
     },
-    isBlocked: {  
+    isBlocked: {
       type: Boolean,
       default: false,
     },

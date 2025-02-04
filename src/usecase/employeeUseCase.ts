@@ -24,7 +24,6 @@ export class EmployeeUseCase implements IEmployeeUseCase {
     },
     jwtService: IJWTService,
     cryptoService: ICryptoService,
-    // private IjwtSevice:IJWTService
   ) {
     this.emailService = new EmailService(emailConfig);
     this.cryptoService = cryptoService;
@@ -71,7 +70,7 @@ export class EmployeeUseCase implements IEmployeeUseCase {
       const verified = await this.cryptoService.compareData(otp, otpRecord.otp);
       console.log(verified, "verified");
       if (verified) {
-        const updatedEmployee = await this.employeeRepo.updateEmployeeStatus(
+        const updatedEmployee = await this.employeeRepo.updateActivatedStatus(
           email,
           true
         );
@@ -95,7 +94,7 @@ export class EmployeeUseCase implements IEmployeeUseCase {
     password: string
   ): Promise<{ accessToken: string; refreshToken: string }> {
     try {
-      const employee = await this.employeeRepo.findEmployeeByEmail(email);
+      const employee = await this.employeeRepo.findByEmail(email);
       await this.employeeRepo.updateActivatedStatus(email, true);
       if (!employee) {
         throw new Error("Employee not found");
@@ -127,7 +126,7 @@ export class EmployeeUseCase implements IEmployeeUseCase {
   async forgotPassword(email: string): Promise<void> {
     try {
       const employee: IEmployee | null =
-        await this.employeeRepo.findEmployeeByEmail(email);
+        await this.employeeRepo.findByEmail(email);
       console.log("employee", employee);
       if (!employee) {
         console.log("qwert");
@@ -200,7 +199,6 @@ export class EmployeeUseCase implements IEmployeeUseCase {
           }
           return { message: "Employee is Authenticated", status: 200 };
         } catch (error) {
-          // return { message: "Forbidden: Invalid token", status: 403 };
           throw error;
         }
       }

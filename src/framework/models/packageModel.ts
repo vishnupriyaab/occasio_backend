@@ -1,7 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import { IPackage } from "../../entities/package.entity";
 
-
 const packageSchema: Schema = new Schema<IPackage>(
   {
     eventId: {
@@ -15,20 +14,20 @@ const packageSchema: Schema = new Schema<IPackage>(
     startingAmnt: {
       type: Number,
     },
-    items: [{
-      name: {
-        type: String,
-        // required: true,
+    items: [
+      {
+        name: {
+          type: String,
+        },
+        isBlocked: {
+          type: Boolean,
+          default: false,
+        },
+        amount: {
+          type: Number,
+        },
       },
-      isBlocked: {
-        type: Boolean,
-        default: false,
-      },
-      amount: {
-        type: Number,
-        // required: true,
-      }
-    }],
+    ],
     image: {
       type: String,
       required: true,

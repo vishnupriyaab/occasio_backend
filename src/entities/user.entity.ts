@@ -2,16 +2,16 @@ export interface IUser {
   _id: string;
   name: string;
   email: string;
-  imageUrl:string;
+  imageUrl: string;
   mobile: number;
   password: string;
   createdAt: Date;
   updatedAt: Date;
-  isActivated:boolean;
+  isActivated: boolean;
   isVerified: boolean;
   isBlocked: boolean;
   resetPasswordToken?: string;
-  isGoogleAuth:boolean;
+  isGoogleAuth: boolean;
 }
 
 export interface IRegisterUser {
@@ -20,4 +20,3 @@ export interface IRegisterUser {
   mobile: number;
   password: string;
 }
-

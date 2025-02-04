@@ -1,4 +1,4 @@
-import { IAdmin, IAdminRegister } from "../entities/admin.entity";
+import { IAdmin } from "../entities/admin.entity";
 import { IUser } from "../entities/user.entity";
 import Admin from "../framework/models/adminModel";
 import Users from "../framework/models/userModel";

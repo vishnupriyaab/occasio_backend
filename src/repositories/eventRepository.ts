@@ -4,7 +4,7 @@ import { IPackage, IPackageRegister } from "../entities/package.entity";
 import Event from "../framework/models/EventModel";
 import Package from "../framework/models/packageModel";
 
-export class EventRepository {
+export class EventRepository  {
   async addEvent(event: IAddEventRegister): Promise<IEvent | void> {
     try {
       console.log(event, "qwertyuioertyuio");
@@ -241,14 +241,12 @@ export class EventRepository {
   async featureBlock(packageId: string, featureId: string):Promise<IPackage | null>{
     try {
       
-      // Find the package
       const packagee = await Package.findById(packageId);
         
       if (!packagee) {
         throw new Error("Package not found");
       }
   
-      // Find the feature in the items array
       const feature = packagee.items.find(
         item => item._id.toString() === featureId
       );
@@ -257,11 +255,8 @@ export class EventRepository {
       if (!feature) {
         throw new Error("Feature not found");
       }
-  
-      // Toggle the isBlocked status
+      
       feature.isBlocked = !feature.isBlocked;
-  
-      // Save the changes
       return await Package.findOneAndUpdate(
         { _id: packageId },
         { items: packagee.items },
@@ -289,6 +284,4 @@ export class EventRepository {
       throw error;
     }
   }
-  
-
 }

@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 
 export interface IEmployee {
   _id: string;
@@ -9,7 +8,7 @@ export interface IEmployee {
   createdAt: Date;
   updatedAt: Date;
   isBlocked: boolean;
-  isVerified:boolean;
+  isVerified: boolean;
   resetPasswordToken: string;
   isEmployee?: "Approved" | "Pending" | "Rejected";
 }

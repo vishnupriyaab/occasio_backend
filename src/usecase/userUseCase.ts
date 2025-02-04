@@ -209,7 +209,7 @@ export class UserUseCase implements IUserUseCase {
         await this.userRepo.createGoogleUser(userData);
         console.log("New user created successfully");
       }
-      const payload = { userId: existingUser?._id };
+      const payload = { userId: existingUser?._id , role: "user"};
       console.log(payload, "payload");
       const accessToken = this.jwtService.generateAccessToken(payload);
       const refreshToken = this.jwtService.generateRefreshToken(payload);
@@ -244,7 +244,6 @@ export class UserUseCase implements IUserUseCase {
       }
       return { message: "User is Authenticated", status: 200 };
     } catch (error) {
-      // return { message: "Forbidden: Invalid token", status: 403 };
       throw error;
     }
   }

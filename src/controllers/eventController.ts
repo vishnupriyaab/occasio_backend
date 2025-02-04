@@ -6,10 +6,7 @@ import { ResponseMessage } from "../constant/responseMsg";
 import { IEventUseCase } from "../interfaces/useCase/event.useCase";
 
 export class EventController {
-  constructor(
-    private eventUseCase: IEventUseCase,
-    private cloudinaryService: ICloudinaryService
-  ) {}
+  constructor( private eventUseCase: IEventUseCase, private cloudinaryService: ICloudinaryService ) {}
 
   //addEvent
   async addEvent(req: Request, res: Response): Promise<void> {
@@ -403,7 +400,7 @@ export class EventController {
             }`,
             HttpStatusCode.INTERNAL_SERVER_ERROR
           )
-        )
+        );
     }
   }
 
@@ -412,24 +409,37 @@ export class EventController {
     console.log("0987654");
     try {
       const packageId = req.params.packageId;
-      const featureId: string = (req.query.featureId as string);
+      const featureId: string = req.query.featureId as string;
       if (!packageId) {
-         res.status(HttpStatusCode.BAD_REQUEST).json(
-          handleError(ResponseMessage.PACKAGE_ID_REQUIRED, HttpStatusCode.BAD_REQUEST)
-        );
-        return
+        res
+          .status(HttpStatusCode.BAD_REQUEST)
+          .json(
+            handleError(
+              ResponseMessage.PACKAGE_ID_REQUIRED,
+              HttpStatusCode.BAD_REQUEST
+            )
+          );
+        return;
       }
 
       if (!featureId) {
-         res.status(HttpStatusCode.BAD_REQUEST).json(
-          handleError(ResponseMessage.FEATURE_ID_REQUIRED, HttpStatusCode.BAD_REQUEST)
-        );
-        return
+        res
+          .status(HttpStatusCode.BAD_REQUEST)
+          .json(
+            handleError(
+              ResponseMessage.FEATURE_ID_REQUIRED,
+              HttpStatusCode.BAD_REQUEST
+            )
+          );
+        return;
       }
-      console.log( packageId, "wertyui", featureId, "1234567890" )
+      console.log(packageId, "wertyui", featureId, "1234567890");
 
-      const result:any = await this.eventUseCase.blockFeature(packageId, featureId); 
-      console.log(result,"12345678901234567891234567890")
+      const result: any = await this.eventUseCase.blockFeature(
+        packageId,
+        featureId
+      );
+      console.log(result, "12345678901234567891234567890");
       const response = result.isBlocked
         ? ResponseMessage.FEATURE_BLOCKED
         : ResponseMessage.FEATURE_UNBLOCKED;
@@ -439,30 +449,44 @@ export class EventController {
     } catch (error) {}
   }
 
-  async deleteFeature(req:Request,res:Response):Promise<void>{
+  async deleteFeature(req: Request, res: Response): Promise<void> {
     try {
       const packageId = req.params.packageId;
-      const featureId: string = (req.query.featureId as string);
-      console.log(packageId,featureId);
-      
+      const featureId: string = req.query.featureId as string;
+      console.log(packageId, featureId);
+
       if (!packageId) {
-         res.status(HttpStatusCode.BAD_REQUEST).json(
-          handleError(ResponseMessage.PACKAGE_ID_REQUIRED, HttpStatusCode.BAD_REQUEST)
-        );
-        return
+        res
+          .status(HttpStatusCode.BAD_REQUEST)
+          .json(
+            handleError(
+              ResponseMessage.PACKAGE_ID_REQUIRED,
+              HttpStatusCode.BAD_REQUEST
+            )
+          );
+        return;
       }
 
       if (!featureId) {
-         res.status(HttpStatusCode.BAD_REQUEST).json(
-          handleError(ResponseMessage.FEATURE_ID_REQUIRED, HttpStatusCode.BAD_REQUEST)
-        );
-        return
+        res
+          .status(HttpStatusCode.BAD_REQUEST)
+          .json(
+            handleError(
+              ResponseMessage.FEATURE_ID_REQUIRED,
+              HttpStatusCode.BAD_REQUEST
+            )
+          );
+        return;
       }
-      await this.eventUseCase.deleteFeature(packageId,featureId);
-      res.status(HttpStatusCode.OK).json(handleSuccess(ResponseMessage.FEATURE_DELETED, HttpStatusCode.INTERNAL_SERVER_ERROR))
-
-    } catch (error) {
-      
-    }
+      await this.eventUseCase.deleteFeature(packageId, featureId);
+      res
+        .status(HttpStatusCode.OK)
+        .json(
+          handleSuccess(
+            ResponseMessage.FEATURE_DELETED,
+            HttpStatusCode.INTERNAL_SERVER_ERROR
+          )
+        );
+    } catch (error) {}
   }
 }

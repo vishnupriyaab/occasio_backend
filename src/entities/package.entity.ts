@@ -5,7 +5,7 @@ export interface IPackage {
   startingAmnt: number;
   image: string;
   items: {
-    _id:string
+    _id: string;
     name: string;
     amount: number;
     isBlocked: boolean;
@@ -16,14 +16,13 @@ export interface IPackage {
 }
 
 export interface IPackageRegister {
-  // _id: string;
   packageName: string;
   startingAmnt: number;
   eventId: string;
-  items:{
+  items: {
     name: string;
     isBlocked: boolean;
-    amount: number; 
+    amount: number;
   }[];
   image: string;
 }

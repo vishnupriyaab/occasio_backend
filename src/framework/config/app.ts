@@ -1,15 +1,15 @@
 import express from "express";
-import cors from 'cors'
+import cors from "cors";
 import morgan from "morgan";
 import userRoute from "../router/userRoute";
 import employeeRoute from "../router/employeeRoute";
 import adminRoute from "../router/adminRoute";
 import eventRoute from "../router/eventRoute";
-import cookieParser from 'cookie-parser'
+import cookieParser from "cookie-parser";
 
 const app = express();
 
-app.use(morgan('dev'));
+app.use(morgan("dev"));
 
 const corsOptions = {
   origin: "http://localhost:4200",
@@ -28,12 +28,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use("/user",userRoute);
+app.use("/user", userRoute);
 
-app.use("/employee",employeeRoute)
+app.use("/employee", employeeRoute);
 
-app.use("/admin",adminRoute)
+app.use("/admin", adminRoute);
 
-app.use("/event",eventRoute)
+app.use("/event", eventRoute);
 
 export default app;

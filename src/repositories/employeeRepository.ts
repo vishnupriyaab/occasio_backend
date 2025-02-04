@@ -29,7 +29,7 @@ export class EmployeeRepository implements IEmployeeRepository {
   async findEmployeeById(employeeId: string): Promise<IEmployee | null> {
     try {
       console.log(1234523456);
-      return await Employees.findById(employeeId).exec();
+      return await Employees.findById(employeeId);
     } catch (error) {
       throw error;
     }
@@ -50,32 +50,6 @@ export class EmployeeRepository implements IEmployeeRepository {
     }
   }
 
-  async updateEmployeeStatus(
-    email: string,
-    isVerified: boolean
-  ): Promise<IEmployee | null> {
-    try {
-      const updatedUser = await Employees.findOneAndUpdate(
-        { email: email },
-        { $set: { isVerified: isVerified } },
-        { new: true }
-      ).exec();
-
-      return updatedUser ? updatedUser.toObject() : null;
-    } catch (error) {
-      console.error("Error updating user status:", error);
-      throw error;
-    }
-  }
-
-  async findEmployeeByEmail(email: string): Promise<IEmployee | null> {
-    try {
-      console.log(email, "employeeRepo");
-      return await Employees.findOne({ email });
-    } catch (error) {
-      throw error;
-    }
-  }
 
   async savePasswordResetToken(
     employeeId: string,
@@ -95,8 +69,7 @@ export class EmployeeRepository implements IEmployeeRepository {
   async getPasswordResetToken(employeeId: string): Promise<string | null> {
     try {
       const employee = await Employees.findById(employeeId)
-      .select("resetPasswordToken")
-      .exec();
+      .select("resetPasswordToken");
     return employee?.resetPasswordToken || null;
     } catch (error) {
       throw error;

@@ -1,4 +1,4 @@
-export interface IsAuthenticatedUseCaseRES{
-    message:string;
-    status:number;
+export interface IsAuthenticatedUseCaseRES {
+  message: string;
+  status: number;
 }

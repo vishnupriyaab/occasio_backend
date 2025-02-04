@@ -15,7 +15,12 @@ export class UserController implements IUserController {
       if (!name || !email || !mobile || !password) {
         res
           .status(HttpStatusCode.BAD_REQUEST)
-          .json(handleError(ResponseMessage.FIELDS_REQUIRED, HttpStatusCode.BAD_REQUEST));
+          .json(
+            handleError(
+              ResponseMessage.FIELDS_REQUIRED,
+              HttpStatusCode.BAD_REQUEST
+            )
+          );
         return;
       }
       const user = await this.userUserCase.registerUser({
@@ -24,11 +29,24 @@ export class UserController implements IUserController {
         mobile,
         password,
       });
-       res
+      res
         .status(HttpStatusCode.CREATED)
-        .json(handleSuccess(ResponseMessage.USER_REGISTER_SUCCESS, HttpStatusCode.CREATED, user));
+        .json(
+          handleSuccess(
+            ResponseMessage.USER_REGISTER_SUCCESS,
+            HttpStatusCode.CREATED,
+            user
+          )
+        );
     } catch (error) {
-      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(handleError(ResponseMessage.USER_REGISTER_FAILURE,HttpStatusCode.INTERNAL_SERVER_ERROR))
+      res
+        .status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+        .json(
+          handleError(
+            ResponseMessage.USER_REGISTER_FAILURE,
+            HttpStatusCode.INTERNAL_SERVER_ERROR
+          )
+        );
     }
   }
 
@@ -38,9 +56,20 @@ export class UserController implements IUserController {
       const { email, otp } = req.body;
       console.log(email, otp, "req.body");
       const result = await this.userUserCase.verifyOtp(email, otp);
-      res.status(HttpStatusCode.OK).json(handleSuccess(ResponseMessage.OTP_VERIFIED,HttpStatusCode.OK,result));
+      res
+        .status(HttpStatusCode.OK)
+        .json(
+          handleSuccess(ResponseMessage.OTP_VERIFIED, HttpStatusCode.OK, result)
+        );
     } catch (error) {
-      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(handleError(ResponseMessage.OTP_VERIFICATION_FAILED,HttpStatusCode.INTERNAL_SERVER_ERROR))
+      res
+        .status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+        .json(
+          handleError(
+            ResponseMessage.OTP_VERIFICATION_FAILED,
+            HttpStatusCode.INTERNAL_SERVER_ERROR
+          )
+        );
     }
   }
 
@@ -67,9 +96,22 @@ export class UserController implements IUserController {
           maxAge: 24 * 60 * 60 * 1000, // 1 day
         })
         .status(HttpStatusCode.OK)
-        .json(handleSuccess(ResponseMessage.LOGIN_SUCCESS,HttpStatusCode.OK,{ accessToken, refreshToken }));
+        .json(
+          handleSuccess(ResponseMessage.LOGIN_SUCCESS, HttpStatusCode.OK, {
+            accessToken,
+            refreshToken,
+          })
+        );
+      console.log(accessToken, refreshToken, "qwertyui");
     } catch (error: any) {
-      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(handleError(ResponseMessage.LOGIN_FAILURE,HttpStatusCode.INTERNAL_SERVER_ERROR))
+      res
+        .status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+        .json(
+          handleError(
+            ResponseMessage.LOGIN_FAILURE,
+            HttpStatusCode.INTERNAL_SERVER_ERROR
+          )
+        );
     }
   }
 
@@ -81,9 +123,21 @@ export class UserController implements IUserController {
       await this.userUserCase.forgotPassword(email);
       res
         .status(HttpStatusCode.OK)
-        .json(handleSuccess(ResponseMessage.PASSWORD_RESET_LINK_SENT, HttpStatusCode.OK));
+        .json(
+          handleSuccess(
+            ResponseMessage.PASSWORD_RESET_LINK_SENT,
+            HttpStatusCode.OK
+          )
+        );
     } catch (error) {
-      res.status(HttpStatusCode.BAD_REQUEST).json(handleError(ResponseMessage.PASSWORD_RESET_LINK_SENT,HttpStatusCode.BAD_REQUEST))
+      res
+        .status(HttpStatusCode.BAD_REQUEST)
+        .json(
+          handleError(
+            ResponseMessage.PASSWORD_RESET_LINK_SENT,
+            HttpStatusCode.BAD_REQUEST
+          )
+        );
     }
   }
 
@@ -94,9 +148,21 @@ export class UserController implements IUserController {
       await this.userUserCase.resetPassword(token, password);
       res
         .status(HttpStatusCode.OK)
-        .json(handleSuccess(ResponseMessage.PASSWORD_RESET_SUCCESS, HttpStatusCode.OK));
+        .json(
+          handleSuccess(
+            ResponseMessage.PASSWORD_RESET_SUCCESS,
+            HttpStatusCode.OK
+          )
+        );
     } catch (error) {
-      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(handleError(ResponseMessage.PASSWORD_RESET_FAILURE,HttpStatusCode.INTERNAL_SERVER_ERROR))
+      res
+        .status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+        .json(
+          handleError(
+            ResponseMessage.PASSWORD_RESET_FAILURE,
+            HttpStatusCode.INTERNAL_SERVER_ERROR
+          )
+        );
     }
   }
 
@@ -106,15 +172,51 @@ export class UserController implements IUserController {
       const { credential } = req.body;
       const jwtToken = credential.credential;
       if (!jwtToken) {
-        res.status(HttpStatusCode.BAD_REQUEST).json(handleError(ResponseMessage.GOOGLE_CREDENTIAL_REQUIRED,HttpStatusCode.BAD_REQUEST));
+        res
+          .status(HttpStatusCode.BAD_REQUEST)
+          .json(
+            handleError(
+              ResponseMessage.GOOGLE_CREDENTIAL_REQUIRED,
+              HttpStatusCode.BAD_REQUEST
+            )
+          );
       }
 
-      const tokens = await this.userUserCase.execute(jwtToken);
+      const { accessToken, refreshToken } = await this.userUserCase.execute(
+        jwtToken
+      );
+      console.log(accessToken, refreshToken);
+
       res
+        .cookie("refresh_token", refreshToken, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict",
+          maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+        })
+        .cookie("access_token", accessToken, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict",
+          maxAge: 24 * 60 * 60 * 1000, // 1 day
+        })
         .status(HttpStatusCode.OK)
-        .json(handleSuccess(ResponseMessage.GOOGLE_LOGIN_SUCCESS, HttpStatusCode.OK, tokens));
+        .json(
+          handleSuccess(
+            ResponseMessage.GOOGLE_LOGIN_SUCCESS,
+            HttpStatusCode.OK,
+            { accessToken, refreshToken }
+          )
+        );
     } catch (error) {
-      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(handleError(ResponseMessage.GOOGLE_LOGIN_FAILURE,HttpStatusCode.INTERNAL_SERVER_ERROR))
+      res
+        .status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+        .json(
+          handleError(
+            ResponseMessage.GOOGLE_LOGIN_FAILURE,
+            HttpStatusCode.INTERNAL_SERVER_ERROR
+          )
+        );
     }
   }
 
@@ -122,9 +224,20 @@ export class UserController implements IUserController {
   async getUsers(req: Request, res: Response): Promise<void> {
     try {
       const users = await this.userUserCase.getAllUsers();
-      res.status(HttpStatusCode.OK).json(handleSuccess(ResponseMessage.FETCH_USER,HttpStatusCode.OK,users));
+      res
+        .status(HttpStatusCode.OK)
+        .json(
+          handleSuccess(ResponseMessage.FETCH_USER, HttpStatusCode.OK, users)
+        );
     } catch (error) {
-      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(handleError(ResponseMessage.FETCH_USER_FAILURE,HttpStatusCode.INTERNAL_SERVER_ERROR))
+      res
+        .status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+        .json(
+          handleError(
+            ResponseMessage.FETCH_USER_FAILURE,
+            HttpStatusCode.INTERNAL_SERVER_ERROR
+          )
+        );
     }
   }
 
@@ -142,34 +255,64 @@ export class UserController implements IUserController {
           secure: process.env.NODE_ENV === "production",
           sameSite: "strict",
         });
-      res.status(HttpStatusCode.OK).json(handleSuccess(ResponseMessage.LOGOUT_SUCCESS,HttpStatusCode.OK));
+      res
+        .status(HttpStatusCode.OK)
+        .json(handleSuccess(ResponseMessage.LOGOUT_SUCCESS, HttpStatusCode.OK));
     } catch (error) {
-      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(handleError(ResponseMessage.LOGOUT_FAILURE,HttpStatusCode.INTERNAL_SERVER_ERROR))
+      res
+        .status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+        .json(
+          handleError(
+            ResponseMessage.LOGOUT_FAILURE,
+            HttpStatusCode.INTERNAL_SERVER_ERROR
+          )
+        );
     }
   }
 
   //isAuthenticated
   async isAuthenticated(req: Request, res: Response): Promise<void> {
     try {
+      console.log(req.cookies, "1234567890-");
       const token = req.cookies.access_token;
-      console.log(token,"authenticatedToken")
-      const responseObj = await this.userUserCase.isAuthenticated(token)
-      res.status(responseObj.status).json(handleSuccess(responseObj.message,responseObj.status))
+      console.log(token, "authenticatedToken");
+      const responseObj = await this.userUserCase.isAuthenticated(token);
+      res
+        .status(responseObj.status)
+        .json(handleSuccess(responseObj.message, responseObj.status));
     } catch (error) {
-      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json( handleError( ResponseMessage.AUTHENTICATION_FAILURE, HttpStatusCode.INTERNAL_SERVER_ERROR) );
+      res
+        .status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+        .json(
+          handleError(
+            ResponseMessage.AUTHENTICATION_FAILURE,
+            HttpStatusCode.INTERNAL_SERVER_ERROR
+          )
+        );
     }
   }
 
-  async searchUser(req:Request,res:Response):Promise<void>{
+  async searchUser(req: Request, res: Response): Promise<void> {
     try {
-      console.log(req.query.searchTerm,"qwertyuio");
+      console.log(req.query.searchTerm, "qwertyuio");
       const searchTerm = req.query.searchTerm as string;
       const result = await this.userUserCase.searchUser(searchTerm);
-      console.log(result,"123456789")
-      res.status(HttpStatusCode.OK).json(handleSuccess(ResponseMessage.FETCH_EVENT,HttpStatusCode.OK, result));
+      console.log(result, "123456789");
+      res
+        .status(HttpStatusCode.OK)
+        .json(
+          handleSuccess(ResponseMessage.FETCH_EVENT, HttpStatusCode.OK, result)
+        );
     } catch (error) {
-      console.log(error,"errorrrrrr");
-      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(handleError(ResponseMessage.FETCH_EVENT_FAILURE,HttpStatusCode.INTERNAL_SERVER_ERROR))
+      console.log(error, "errorrrrrr");
+      res
+        .status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+        .json(
+          handleError(
+            ResponseMessage.FETCH_EVENT_FAILURE,
+            HttpStatusCode.INTERNAL_SERVER_ERROR
+          )
+        );
     }
   }
 }

@@ -4,18 +4,17 @@ export interface IAdmin {
   email: string;
   password: string;
   createdAt: Date;
-  updatedAt:Date;
+  updatedAt: Date;
 }
 
 export interface IAdminRegister {
-    email: string;
-    password: string;
-  }
-  
-
-  export type AdminLoginResponse = {
-    success: boolean;
-    accessToken?:string;
-    refreshToken?:string;
-    error?: string;
+  email: string;
+  password: string;
 }
+
+export type AdminLoginResponse = {
+  success: boolean;
+  accessToken?: string;
+  refreshToken?: string;
+  error?: string;
+};

@@ -26,7 +26,7 @@ const otpRepository:IOtpRepository = new OtpRepository()
 const IjwtService:IJWTService = new JWTService()
 const iCryptoService:ICryptoService = new CryptoService();
 const employeeUseCase:IEmployeeUseCase = new EmployeeUseCase(employeeRepository,otpRepository,emailConfig,IjwtService,iCryptoService);
-const employeeController:IEmployeeController = new EmployeeController(employeeUseCase,IjwtService)
+const employeeController:IEmployeeController = new EmployeeController(employeeUseCase)
 
 
 employeeRoute.post('/register',employeeController.registerEmployee.bind(employeeController));

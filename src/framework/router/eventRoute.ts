@@ -8,16 +8,22 @@ import { ICloudinaryService } from "../../interfaces/utils/IClaudinary";
 import IEventRepository from "../../interfaces/repository/event.Repository";
 import { IEventUseCase } from "../../interfaces/useCase/event.useCase";
 import { IEventController } from "../../interfaces/controller/event.controller";
+import { JWTService } from "../utils/jwtServices";
+import AuthMiddleware from "../middlewares/authenticateToken";
+import { IJWTService } from "../../interfaces/utils/IJwt";
 
 const eventRoute = express.Router();
 
 const claudinaryService:ICloudinaryService = new CloudinaryService()
 const eventRepository:IEventRepository = new EventRepository();
+const iJwtServices:IJWTService = new JWTService();
+const authMiddleware = new AuthMiddleware("admin", iJwtServices);
 const eventUseCase:IEventUseCase = new EventUseCase(claudinaryService, eventRepository);
 const eventController:IEventController = new EventController(eventUseCase,claudinaryService);
 
+
   //event
-  eventRoute.get('/searchEvent',eventController.searchEvent.bind(eventController));
+  eventRoute.get('/searchEvent', eventController.searchEvent.bind(eventController));
 
   eventRoute.post('/addEvent', upload.single('img'), eventController.addEvent.bind(eventController));
   

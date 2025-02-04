@@ -32,8 +32,8 @@ const employeeSchema: Schema = new Schema<IEmployee>(
     },
     resetPasswordToken: {
       type: String,
-      default: null
-    }
+      default: null,
+    },
   },
   { timestamps: true }
 );
