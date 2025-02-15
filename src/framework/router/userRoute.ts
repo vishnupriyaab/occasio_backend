@@ -44,6 +44,8 @@ userRoute.post('/resetPassword',userController.resetPassword.bind(userController
 
 userRoute.post('/verifyOtp',userController.verifyOtp.bind(userController));
 
+userRoute.post('/resendOtp',userController.resendOtp.bind(userController));
+
 userRoute.get('/isAuthenticate',userController.isAuthenticated.bind(userController));
 
 userRoute.get('/getUsers',userController.getUsers.bind(userController));

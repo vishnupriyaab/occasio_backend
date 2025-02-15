@@ -3,7 +3,8 @@ import { IUser } from "./user.entity";
 export interface IOTP {
   email: string;
   otp: string;
-  createdAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export default IOTP;

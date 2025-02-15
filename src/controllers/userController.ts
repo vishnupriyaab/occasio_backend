@@ -73,6 +73,33 @@ export class UserController implements IUserController {
     }
   }
 
+  //resendOtp
+  async resendOtp(req:Request,res:Response):Promise<void>{
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        res.status(HttpStatusCode.BAD_REQUEST).json(
+          handleError('Email is required', HttpStatusCode.BAD_REQUEST)
+        );
+        return;
+      }
+
+      const result = await this.userUserCase.resendOtp(email);
+      
+      res.status(HttpStatusCode.OK).json(
+        handleSuccess('OTP resent successfully', HttpStatusCode.OK, result)
+      );
+    } catch (error: any) {
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(
+        handleError(
+          error.message || 'Failed to resend OTP',
+          HttpStatusCode.INTERNAL_SERVER_ERROR
+        )
+      );
+    }
+  }
+
   //User-Login
   async userLogin(req: Request, res: Response): Promise<void> {
     const { email, password } = req.body;

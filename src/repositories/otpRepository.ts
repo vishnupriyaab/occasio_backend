@@ -5,6 +5,10 @@ import IOtpRepository from "../interfaces/repository/otp.Repository";
 export class OtpRepository implements IOtpRepository {
   async createOtp(email: string, otp: string): Promise<IOTP> {
     try {
+
+      // Delete any existing OTP first for this email
+      await this.deleteOtp(email);
+
       const otpEntry = new Otp({ email, otp });
       return await otpEntry.save();
     } catch (error) {
@@ -14,6 +18,7 @@ export class OtpRepository implements IOtpRepository {
 
   async findOtp(email: string): Promise<IOTP | null> {
     try {
+      
       return await Otp.findOne({ email });
     } catch (error) {
       throw error;

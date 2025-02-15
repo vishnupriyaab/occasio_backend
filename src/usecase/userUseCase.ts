@@ -87,6 +87,37 @@ export class UserUseCase implements IUserUseCase {
     }
   }
 
+  async resendOtp(email: string): Promise<otpResponse> {
+    try {
+      const existingUser = await this.userRepo.findUserByEmail(email);
+      if (!existingUser) {
+        throw new Error("User not found");
+      }
+
+      // Delete any existing OTP
+      await this.otpRepo.deleteOtp(email);
+
+      // Generate new OTP
+    const otp = this.cryptoService.generateOtp();
+    console.log(otp, "new otp generated");
+    const hashedOtp = await this.cryptoService.hashData(otp);
+
+    // Save new OTP
+    await this.otpRepo.createOtp(email, hashedOtp);
+
+    // Send OTP via email
+    await this.emailService.sendOtpEmail(email, otp);
+
+    return {
+      success: true,
+      message: "OTP resent successfully",
+      user: existingUser
+    }
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async loginUser(
     email: string,
     password: string
