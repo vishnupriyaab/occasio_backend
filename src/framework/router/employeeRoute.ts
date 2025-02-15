@@ -43,5 +43,8 @@ employeeRoute.get('/isAuthenticate',employeeController.isAuthenticated.bind(empl
 
 employeeRoute.post('/logOut',employeeController.logOut.bind(employeeController));
 
+employeeRoute.get('/searchEmployee',employeeController.searchEmployee.bind(employeeController));
+
+employeeRoute.patch('/blockEmployee/:id',employeeController.blockEmployee.bind(employeeController));
 
 export default employeeRoute;

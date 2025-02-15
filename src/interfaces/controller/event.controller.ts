@@ -7,6 +7,7 @@ export interface IEventController {
   blockEvent(req: Request, res: Response): Promise<void>;
   deleteEvent(req: Request, res: Response): Promise<void>;
   searchEvent(req: Request, res: Response): Promise<void>;
+  getEvent(req:Request,res:Response):Promise<void>
 
   //package
   addPackage(req: Request, res: Response): Promise<void>;

@@ -1,9 +1,9 @@
 import Users from "../framework/models/userModel";
 import { IRegisterUser, IUser } from "../entities/user.entity";
 import IUserRepository from "../interfaces/repository/user.Repository";
+import mongoose from "mongoose";
 
 export class UserRepository implements IUserRepository {
-    
   async createUser(user: IRegisterUser): Promise<IUser | never> {
     try {
       const newUser = new Users(user);
@@ -24,7 +24,10 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  async updateUserStatus( email: string, isVerified: boolean ): Promise<IUser | null> {
+  async updateUserStatus(
+    email: string,
+    isVerified: boolean
+  ): Promise<IUser | null> {
     try {
       const updatedUser = await Users.findOneAndUpdate(
         { email: email },
@@ -39,7 +42,10 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  async updateActivatedStatus(email:string, isActivated:boolean):Promise <IUser | null>{
+  async updateActivatedStatus(
+    email: string,
+    isActivated: boolean
+  ): Promise<IUser | null> {
     try {
       const updatedActivatedStatus = await Users.findOneAndUpdate(
         { email: email },
@@ -59,7 +65,7 @@ export class UserRepository implements IUserRepository {
       console.log(email, "userrepooo");
       return await Users.findOne({ email });
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 
@@ -67,7 +73,10 @@ export class UserRepository implements IUserRepository {
     try {
       await Users.updateOne(
         { _id: userId },
-        { resetPasswordToken: token, resetPasswordExpires: Date.now() + 3600000 },
+        {
+          resetPasswordToken: token,
+          resetPasswordExpires: Date.now() + 3600000,
+        },
         { upsert: true }
       );
     } catch (error) {
@@ -94,12 +103,12 @@ export class UserRepository implements IUserRepository {
         },
         { new: true }
       ).exec();
-  
+
       if (!result) {
         throw new Error("Failed to update password");
       }
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 
@@ -110,7 +119,7 @@ export class UserRepository implements IUserRepository {
         .exec();
       return user?.resetPasswordToken || null;
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 
@@ -122,16 +131,16 @@ export class UserRepository implements IUserRepository {
         },
       }).exec();
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 
   async createGoogleUser(userData: IUser): Promise<IUser> {
     console.log("qwertyu12345678dfghjkl");
     try {
-      console.log(userData,"userdatatatatatat")
+      console.log(userData, "userdatatatatatat");
       const user = new Users(userData);
-      console.log("new user is createddd!!",user);
+      console.log("new user is createddd!!", user);
       return await user.save();
     } catch (error) {
       console.log("Error creating user...", error);
@@ -147,12 +156,51 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  async searchUser(searchTerm:string):Promise<IUser[] | null>{
+  async searchUser(
+    searchTerm: string,
+    filterStatus: string | undefined,
+    page: number,
+    limit: number
+  ): Promise<{
+    users: IUser[];
+    totalUsers: number;
+    totalPages: number;
+    currentPage: number;
+  }> {
     try {
-      return await Users.find( { name: { $regex: searchTerm, $options: 'i' } } );
+      const query: mongoose.FilterQuery<IUser> = {};
+      if (searchTerm && searchTerm.trim() !== "") {
+        query.name = {
+          $regex: searchTerm.trim(),
+          $options: "i",
+        };
+      }
+
+      if (filterStatus === "blocked") {
+        query.isBlocked = true;
+      } else if (filterStatus === "unblocked") {
+        query.isBlocked = false;
+      }
+      const skip = Math.max(0, (page - 1) * limit);
+      const [users, totalUsers] = await Promise.all([
+        Users.find(query)
+          .skip(skip)
+          .limit(limit)
+          .sort({ createdAt: -1 })
+          .lean(),
+          Users.countDocuments(query),
+      ]);
+      const totalPages = Math.max(1, Math.ceil(totalUsers / limit))
+
+      return{
+        users,
+        totalUsers,
+        totalPages,
+        currentPage: page,
+      }
+
     } catch (error) {
       throw error;
     }
   }
-
 }

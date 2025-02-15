@@ -54,6 +54,14 @@ export class EventRepository  {
     }
   }
 
+  async getEvents():Promise<IEvent[]>{
+    try {
+      return Event.find().sort({createdAt:-1})
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async deletePackage(id: string): Promise<void> {
     try {
       await Package.findByIdAndDelete(id);

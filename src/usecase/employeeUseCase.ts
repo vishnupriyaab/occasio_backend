@@ -23,7 +23,7 @@ export class EmployeeUseCase implements IEmployeeUseCase {
       frontendUrl: string | undefined;
     },
     jwtService: IJWTService,
-    cryptoService: ICryptoService,
+    cryptoService: ICryptoService
   ) {
     this.emailService = new EmailService(emailConfig);
     this.cryptoService = cryptoService;
@@ -61,7 +61,7 @@ export class EmployeeUseCase implements IEmployeeUseCase {
     }
   }
 
-  async verifyOtp(email: string, otp: string):Promise<any> {
+  async verifyOtp(email: string, otp: string): Promise<any> {
     try {
       const otpRecord = await this.otpRepo.findOtp(email);
       if (!otpRecord) {
@@ -125,8 +125,9 @@ export class EmployeeUseCase implements IEmployeeUseCase {
 
   async forgotPassword(email: string): Promise<void> {
     try {
-      const employee: IEmployee | null =
-        await this.employeeRepo.findByEmail(email);
+      const employee: IEmployee | null = await this.employeeRepo.findByEmail(
+        email
+      );
       console.log("employee", employee);
       if (!employee) {
         console.log("qwert");
@@ -185,21 +186,46 @@ export class EmployeeUseCase implements IEmployeeUseCase {
     }
   }
 
-    async isAuthenticated(
-        token: string | undefined
-      ): Promise<IsAuthenticatedUseCaseRES> {
-        try {
-          if (!token) {
-            return { message: "Unauthorized: No token provided", status: 401 };
-          }
-          const decoded = this.jwtService.verifyAccessToken(token) as JWTPayload;
-          console.log(decoded,"23456789000987654")
-          if (decoded.role?.toLowerCase() !== "employee") {
-            return { message: "No access employee", status: 401 };
-          }
-          return { message: "Employee is Authenticated", status: 200 };
-        } catch (error) {
-          throw error;
-        }
+  async isAuthenticated(
+    token: string | undefined
+  ): Promise<IsAuthenticatedUseCaseRES> {
+    try {
+      if (!token) {
+        return { message: "Unauthorized: No token provided", status: 401 };
       }
+      const decoded = this.jwtService.verifyAccessToken(token) as JWTPayload;
+      console.log(decoded, "23456789000987654");
+      if (decoded.role?.toLowerCase() !== "employee") {
+        return { message: "No access employee", status: 401 };
+      }
+      return { message: "Employee is Authenticated", status: 200 };
+    } catch (error) {
+      throw error;
+    }
+  }
+  async searchEmployee(
+    searchTerm: string,
+    filterStatus: string | undefined,
+    page: number,
+    limit: number
+  ): Promise<{
+    employee: IEmployee[];
+    totalEmployees: number;
+    totalPages: number;
+    currentPage: number;
+  }> {
+    try {
+      if (page < 1) throw new Error("Page number must be positive");
+      if (limit < 1) throw new Error("Limit must be positive");
+
+      return await this.employeeRepo.searchEmployee(
+        searchTerm,
+        filterStatus,
+        page,
+        limit
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
 }

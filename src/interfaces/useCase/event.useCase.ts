@@ -2,6 +2,7 @@ import { IEvent } from "../../entities/event.entity";
 import { IPackage } from "../../entities/package.entity";
 
 export interface IEventUseCase {
+  getEvents():Promise<IEvent[]>
   addEvent(eventData: any, file: Express.Multer.File): Promise<any>;
   updateEvent(id: string, updatedData: any): Promise<IEvent | undefined | null>;
   blockEvent(eventId: string): Promise<IEvent | null>;

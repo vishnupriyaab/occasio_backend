@@ -8,4 +8,6 @@ export default interface IEmployeeController {
   resetPassword(req: Request, res: Response): Promise<void>;
   logOut(req: Request, res: Response): Promise<void>;
   isAuthenticated(req: Request, res: Response): Promise<void>;
+  searchEmployee(req:Request,res:Response):Promise<void>
+  blockEmployee(req:Request,res:Response):Promise<void>
 }

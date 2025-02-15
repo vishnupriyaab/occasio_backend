@@ -69,7 +69,7 @@ export class UserUseCase implements IUserUseCase {
       if (!otpRecord) {
         throw new Error("OTP not found or has expired");
       }
-  
+
       const verified = await this.cryptoService.compareData(otp, otpRecord.otp);
       if (verified) {
         const updatedUser = await this.userRepo.updateUserStatus(email, true);
@@ -94,15 +94,15 @@ export class UserUseCase implements IUserUseCase {
     try {
       const user = await this.userRepo.findUserByEmail(email);
       await this.userRepo.updateActivatedStatus(email, true);
-  
+
       if (!user) {
         throw new Error("User not found");
       }
-  
+
       if (!user.isVerified) {
         throw new Error("Account not verified. Please verify your account.");
       }
-  
+
       if (user.isBlocked) {
         throw new Error("Your account is blocked");
       }
@@ -113,7 +113,7 @@ export class UserUseCase implements IUserUseCase {
       if (!isPasswordValid) {
         throw new Error("Invalid Password");
       }
-      const payload = { userId: user._id , role: "user"};
+      const payload = { userId: user._id, role: "user" };
       const accessToken = this.jwtService.generateAccessToken(payload);
       const refreshToken = this.jwtService.generateRefreshToken(payload);
       return { accessToken, refreshToken };
@@ -125,18 +125,18 @@ export class UserUseCase implements IUserUseCase {
   async forgotPassword(email: string): Promise<void> {
     try {
       const user = await this.userRepo.findUserByEmail(email);
-    if (!user) {
-      throw new Error("User not found!");
-    }
-    const token = this.jwtService.generateAccessToken({
-      userId: user._id,
-      role: "user",
-    });
-    await this.userRepo.savePasswordResetToken(user._id as string, token);
-    const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
-    await this.emailService.sendPasswordResetEmail(email, resetLink);
+      if (!user) {
+        throw new Error("User not found!");
+      }
+      const token = this.jwtService.generateAccessToken({
+        userId: user._id,
+        role: "user",
+      });
+      await this.userRepo.savePasswordResetToken(user._id as string, token);
+      const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
+      await this.emailService.sendPasswordResetEmail(email, resetLink);
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 
@@ -209,7 +209,7 @@ export class UserUseCase implements IUserUseCase {
         await this.userRepo.createGoogleUser(userData);
         console.log("New user created successfully");
       }
-      const payload = { userId: existingUser?._id , role: "user"};
+      const payload = { userId: existingUser?._id, role: "user" };
       console.log(payload, "payload");
       const accessToken = this.jwtService.generateAccessToken(payload);
       const refreshToken = this.jwtService.generateRefreshToken(payload);
@@ -226,7 +226,7 @@ export class UserUseCase implements IUserUseCase {
     try {
       return this.userRepo.getAllUsers();
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 
@@ -238,7 +238,7 @@ export class UserUseCase implements IUserUseCase {
         return { message: "Unauthorized: No token provided", status: 401 };
       }
       const decoded = this.jwtService.verifyAccessToken(token) as JWTPayload;
-      console.log(decoded,"decodeeeeeeeeeeeeeeeeee");
+      console.log(decoded, "decodeeeeeeeeeeeeeeeeee");
       if (decoded.role?.toLowerCase() !== "user") {
         return { message: "No access user", status: 401 };
       }
@@ -248,12 +248,30 @@ export class UserUseCase implements IUserUseCase {
     }
   }
 
-  async searchUser(searchTerm:string):Promise<IUser[] | null>{
-      try {
-        return await this.userRepo.searchUser(searchTerm);
-      } catch (error) {
-        throw error;
-      }
-    }
+  async searchUser(
+    searchTerm: string,
+    filterStatus: string | undefined,
+    page: number,
+    limit: number
+  ): Promise<{
+    users: IUser[];
+    totalUsers: number;
+    totalPages: number;
+    currentPage: number;
+  }> {
+    try {
+      if (page < 1) throw new Error("Page number must be positive");
+      if (limit < 1) throw new Error("Limit must be positive");
 
+      return await this.userRepo.searchUser(
+        searchTerm,
+        filterStatus,
+        page,
+        limit
+      );
+      // return await this.userRepo.searchUser(searchTerm);
+    } catch (error) {
+      throw error;
+    }
+  }
 }

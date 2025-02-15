@@ -2,6 +2,7 @@ import { IAddEventRegister, IEvent } from "../../entities/event.entity";
 import { IPackage, IPackageRegister } from "../../entities/package.entity";
 
 export default interface IEventRepository {
+  getEvents():Promise<IEvent[]>
   addEvent(event: IAddEventRegister): Promise<IEvent | void>;
   findByEventName(eventName: string): Promise<IEvent | null>;
   updateEvent(id: string, updatedData: any): Promise<IEvent | null>;

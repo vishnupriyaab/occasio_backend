@@ -295,8 +295,30 @@ export class UserController implements IUserController {
   async searchUser(req: Request, res: Response): Promise<void> {
     try {
       console.log(req.query.searchTerm, "qwertyuio");
-      const searchTerm = req.query.searchTerm as string;
-      const result = await this.userUserCase.searchUser(searchTerm);
+      const searchTerm = (req.query.searchTerm as string | undefined) || "";
+      const filterStatus = req.query.filterStatus as string | undefined;
+
+      const page = req.query.page ? parseInt(req.query.page as string, 10) : 1;
+      const limit = req.query.limit ? parseInt(req.query.limit as string, 10): 10;
+
+      if (isNaN(page) || isNaN(limit)) {
+        res
+          .status(HttpStatusCode.BAD_REQUEST)
+          .json(
+            handleError(
+              "Invalid page or limit parameters",
+              HttpStatusCode.BAD_REQUEST
+            )
+          );
+        return;
+      }
+
+      const result = await this.userUserCase.searchUser(
+        searchTerm,
+        filterStatus,
+        page,
+        limit
+      );
       console.log(result, "123456789");
       res
         .status(HttpStatusCode.OK)

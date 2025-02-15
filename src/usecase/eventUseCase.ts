@@ -215,6 +215,14 @@ export class EventUseCase {
     }
   }
 
+  async getEvents():Promise<IEvent[]>{
+    try {
+      return this.eventRepo.getEvents();
+    } catch (error) {
+      throw error
+    }
+  }
+
   async searchFeature(
     packageId: string,
     searchTerm: string,

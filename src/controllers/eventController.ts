@@ -55,6 +55,16 @@ export class EventController {
     }
   }
 
+  //getEvent
+  async getEvent(req:Request,res:Response):Promise<void>{
+    try {
+      const events = await this.eventUseCase.getEvents();
+      res.status(HttpStatusCode.OK).json(handleSuccess(ResponseMessage.FETCH_EVENT,HttpStatusCode.OK,events))
+    } catch (error) {
+      
+    }
+  }
+
   //Search Event
   async searchEvent(req: Request, res: Response): Promise<void> {
     try {
@@ -83,13 +93,13 @@ export class EventController {
         filterStatus,
         page,
         limit
-      );
-      console.log(result, "qwertyui");
+      )
+      console.log(result, "qwertyui")
       res
         .status(HttpStatusCode.OK)
         .json(
           handleSuccess(ResponseMessage.FETCH_EVENT, HttpStatusCode.OK, result)
-        );
+        )
     } catch (error) {
       console.error("Search Event Error:", error);
 

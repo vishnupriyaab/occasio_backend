@@ -25,6 +25,8 @@ const eventController:IEventController = new EventController(eventUseCase,claudi
   //event
   eventRoute.get('/searchEvent', eventController.searchEvent.bind(eventController));
 
+  eventRoute.get('/getEvent', eventController.getEvent.bind(eventController));
+
   eventRoute.post('/addEvent', upload.single('img'), eventController.addEvent.bind(eventController));
   
   eventRoute.put('/updateEvent/:id', upload.single('img'), eventController.updateEvent.bind(eventController));

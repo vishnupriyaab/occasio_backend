@@ -34,6 +34,11 @@ export enum ResponseMessage {
   EMPLOYEE_REGISTER_SUCCESS = "Employee registered successfully!",
   EMPLOYEE_REGISTER_FAILURE = "Failed to register employee",
   EMPLOYEE_NOT_FOUND = "Employee not found",
+  FETCH_EMPLOYEE = "Employees fetched successfully",
+  FETCH_EMPLOYEE_FAILURE = "Failed to fetch employees",
+  EMPLOYEE_BLOCKED = "Employee blocked successfully",
+  EMPLOYEE_UNBLOCKED = "Employee unblocked successfully",
+  EMPLOYEE_BLOCK_FAILURE = "Failed to block/unblock employee",
 
   //Event
   EVENT_CREATED = "Event created successfully",
