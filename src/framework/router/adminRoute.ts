@@ -11,7 +11,6 @@ import AuthMiddleware from "../middlewares/authenticateToken";
 
 const adminRoute = express.Router();
 
-
 const adminRepository:IAdminRepository = new AdminRepository();
 const iJwtServices:IJWTService = new JWTService();
 const authMiddleware = new AuthMiddleware("admin", iJwtServices);
@@ -19,12 +18,15 @@ const adminUseCase:IAdminUseCase = new AdminUseCase(adminRepository,iJwtServices
 const adminController:IAdminController = new AdminController(adminUseCase);
 
   adminRoute.post('/login',adminController.adminLogin.bind(adminController));
+
+  adminRoute.get('/isAuthenticate',adminController.isAuthenticated.bind(adminController));
+
+  adminRoute.use(authMiddleware.authenticateToken.bind(authMiddleware));
   
-  adminRoute.patch('/blockUser/:id', authMiddleware.authenticateToken.bind(authMiddleware) ,adminController.blockUsers.bind(adminController));
+  adminRoute.patch('/blockUser/:id',adminController.blockUsers.bind(adminController));
 
   adminRoute.post('/logOut',adminController.logOut.bind(adminController));
 
-  adminRoute.get('/isAuthenticate',adminController.isAuthenticated.bind(adminController));
 
 
 export default adminRoute;

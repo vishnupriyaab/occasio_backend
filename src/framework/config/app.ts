@@ -6,6 +6,8 @@ import employeeRoute from "../router/employeeRoute";
 import adminRoute from "../router/adminRoute";
 import eventRoute from "../router/eventRoute";
 import cookieParser from "cookie-parser";
+import foodRoute from "../router/foodRoute";
+import refreshTokenRoute from "../router/refreshTokenRoute";
 
 const app = express();
 
@@ -35,5 +37,9 @@ app.use("/employee", employeeRoute);
 app.use("/admin", adminRoute);
 
 app.use("/event", eventRoute);
+
+app.use("/food", foodRoute);
+
+app.use("/refreshToken", refreshTokenRoute);
 
 export default app;

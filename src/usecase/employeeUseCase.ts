@@ -114,7 +114,7 @@ export class EmployeeUseCase implements IEmployeeUseCase {
       if (!isPasswordValid) {
         throw new Error("Invalid password");
       }
-      const payload = { employeeId: employee._id, role: "employee" };
+      const payload = { id: employee._id, role: "employee" };
       const accessToken = this.jwtService.generateAccessToken(payload);
       const refreshToken = this.jwtService.generateRefreshToken(payload);
       return { accessToken, refreshToken };
@@ -135,7 +135,7 @@ export class EmployeeUseCase implements IEmployeeUseCase {
       }
 
       const token = this.jwtService.generateAccessToken({
-        employeeId: employee._id,
+        id: employee._id,
         role: "employee",
       });
       console.log(employee._id, "employeeIdddddddddddd");
@@ -154,12 +154,12 @@ export class EmployeeUseCase implements IEmployeeUseCase {
 
       console.log(decoded, "decodeddddddd");
 
-      if (!decoded.employeeId) {
+      if (!decoded.id) {
         throw new Error("Invalid reset token");
       }
 
       const employee = await this.employeeRepo.findEmployeeById(
-        decoded.employeeId
+        decoded.id
       );
       console.log(employee, "employee of employeeUseCase");
       if (!employee) {
@@ -167,7 +167,7 @@ export class EmployeeUseCase implements IEmployeeUseCase {
       }
 
       const storedToken = await this.employeeRepo.getPasswordResetToken(
-        decoded.employeeId
+        decoded.id
       );
       console.log(storedToken, "storedToken in EmployeeuseCse");
       if (!storedToken || storedToken !== token) {
@@ -177,10 +177,10 @@ export class EmployeeUseCase implements IEmployeeUseCase {
       const hashedPassword = await this.cryptoService.hashData(newPassword);
       console.log(hashedPassword, "hashedPassword in employeeUseCase");
       await this.employeeRepo.updatePassword(
-        decoded.employeeId,
+        decoded.id,
         hashedPassword
       );
-      await this.employeeRepo.clearPasswordResetToken(decoded.employeeId);
+      await this.employeeRepo.clearPasswordResetToken(decoded.id);
     } catch (error) {
       throw error;
     }

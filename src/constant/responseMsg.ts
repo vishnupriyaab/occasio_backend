@@ -72,4 +72,8 @@ export enum ResponseMessage {
   FEATURE_UNBLOCKED = "Feature unblocked successfully.",
   FEATURE_DELETED = "Package deleted successfully",
   FEATURE_DELETION_FAILED = "Failed to delete package",
+
+  //Food
+  FOOD_CREATED = "Food created successfully",
+  FOOD_CREATION_FAILED = "Failed to create food",
 }

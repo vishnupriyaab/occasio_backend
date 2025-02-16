@@ -28,7 +28,7 @@ export class AdminUseCase implements IAdminUseCase {
         throw new Error('Invalid credentials')
       }
 
-      const payload = { adminId: admin._id ,role: "admin"};
+      const payload = { id: admin._id ,role: "admin"};
       const accessToken = this.IjwtSevice.generateAccessToken(payload);
       const refreshToken = this.IjwtSevice.generateRefreshToken(payload);
 

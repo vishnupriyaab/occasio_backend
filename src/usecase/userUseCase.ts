@@ -144,7 +144,7 @@ export class UserUseCase implements IUserUseCase {
       if (!isPasswordValid) {
         throw new Error("Invalid Password");
       }
-      const payload = { userId: user._id, role: "user" };
+      const payload = { id: user._id, role: "user" };
       const accessToken = this.jwtService.generateAccessToken(payload);
       const refreshToken = this.jwtService.generateRefreshToken(payload);
       return { accessToken, refreshToken };
@@ -160,7 +160,7 @@ export class UserUseCase implements IUserUseCase {
         throw new Error("User not found!");
       }
       const token = this.jwtService.generateAccessToken({
-        userId: user._id,
+        id: user._id,
         role: "user",
       });
       await this.userRepo.savePasswordResetToken(user._id as string, token);
@@ -175,25 +175,25 @@ export class UserUseCase implements IUserUseCase {
     try {
       const decoded = this.jwtService.verifyAccessToken(token);
 
-      if (!decoded.userId) {
+      if (!decoded.id) {
         throw new Error("Invalid reset token");
       }
 
-      const user = await this.userRepo.findUserById(decoded.userId);
+      const user = await this.userRepo.findUserById(decoded.id);
       if (!user) {
         throw new Error("User not found");
       }
 
       const storedToken = await this.userRepo.getPasswordResetToken(
-        decoded.userId
+        decoded.id
       );
       if (!storedToken || storedToken !== token) {
         throw new Error("Invalid or expired reset token");
       }
 
       const hashedPassword = await this.cryptoService.hashData(newPassword);
-      await this.userRepo.updatePassword(decoded.userId, hashedPassword);
-      await this.userRepo.clearPasswordResetToken(decoded.userId);
+      await this.userRepo.updatePassword(decoded.id, hashedPassword);
+      await this.userRepo.clearPasswordResetToken(decoded.id);
     } catch (error) {
       throw error;
     }
@@ -240,7 +240,7 @@ export class UserUseCase implements IUserUseCase {
         await this.userRepo.createGoogleUser(userData);
         console.log("New user created successfully");
       }
-      const payload = { userId: existingUser?._id, role: "user" };
+      const payload = { id: existingUser!._id, role: "user" };
       console.log(payload, "payload");
       const accessToken = this.jwtService.generateAccessToken(payload);
       const refreshToken = this.jwtService.generateRefreshToken(payload);

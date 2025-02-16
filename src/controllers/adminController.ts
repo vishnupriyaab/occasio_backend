@@ -4,6 +4,7 @@ import { handleError, handleSuccess } from "../framework/utils/responseHandler";
 import { ResponseMessage } from "../constant/responseMsg";
 import IAdminController from "../interfaces/controller/admin.controller";
 import IAdminUseCase from "../interfaces/useCase/admin.useCase";
+import { AuthenticatedRequest } from "../framework/middlewares/authenticateToken";
 
 export class AdminController implements IAdminController {
   constructor(private adminUseCase: IAdminUseCase) {}
@@ -54,28 +55,16 @@ export class AdminController implements IAdminController {
   }
 
   //blockUser
-  async blockUsers(req: Request, res: Response): Promise<void> {
+  async blockUsers(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
+
+      // console.log(req.id,"sdfghjkl") //edit profile 
+
       const userId = req.params.id;
       console.log(userId, "qwertyu");
 
+
       const result: any = await this.adminUseCase.blockUser(userId);
-
-      if (result.isBlocked) {
-        res
-          .clearCookie("refresh_token", {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
-          })
-          .clearCookie("access_token", {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
-          });
-        console.log("Cookies cleared for blocked user");
-      }
-
       const response = result.isBlocked
         ? ResponseMessage.USER_BLOCKED
         : ResponseMessage.USER_UNBLOCKED;
@@ -95,7 +84,7 @@ export class AdminController implements IAdminController {
   }
 
   //logOut
-  async logOut(req: Request, res: Response): Promise<void> {
+  async logOut(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
       res
         .clearCookie("refresh_token", {
