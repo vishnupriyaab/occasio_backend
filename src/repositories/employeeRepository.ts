@@ -112,6 +112,34 @@ export class EmployeeRepository implements IEmployeeRepository {
     }
   }
 
+  async updateUserProfile(userId: string, updateData: Partial<IEmployee>): Promise<IEmployee | null> {
+    try {
+        const updatedUser = await Employees.findByIdAndUpdate(
+            userId,
+            { $set: updateData },
+            { new: true }
+        );
 
+        return updatedUser ? updatedUser.toObject() : null;
+    } catch (error) {
+        console.error("Error updating user profile:", error);
+        throw error;
+    }
+}
+
+async updateUserProfileImage(userId: string, imageUrl: string): Promise<IEmployee | null> {
+  try {
+    const updatedUser = await Employees.findByIdAndUpdate(
+      userId,
+      { $set: { imageUrl: imageUrl } },
+      { new: true }
+    );
+    
+    return updatedUser ? updatedUser.toObject() : null;
+  } catch (error) {
+    console.error("Error updating user profile image:", error);
+    throw error;
+  }
+}
 
 }

@@ -8,6 +8,7 @@ import { IEmployeeUseCase } from "../interfaces/useCase/employee.useCase";
 import IEmployeeRepository from "../interfaces/repository/employee.Repository";
 import IOtpRepository from "../interfaces/repository/otp.Repository";
 import { IsAuthenticatedUseCaseRES } from "../interfaces/common/IIsAuthenticated";
+import { IProfile } from "../entities/user.entity";
 
 export class EmployeeUseCase implements IEmployeeUseCase {
   private emailService: IEmailService;
@@ -185,6 +186,70 @@ export class EmployeeUseCase implements IEmployeeUseCase {
       throw error;
     }
   }
+
+    async showProfile(userId: string): Promise<IProfile> {
+      try {
+        const user = await this.employeeRepo.findEmployeeById(userId);
+        // console.log(user,'qwertyuio');
+        if (!user) {
+          throw new Error('User not found');
+        }
+        const userProfile = {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          mobile: user.mobile,
+          imageUrl: user.imageUrl,
+          isVerified: user.isVerified,
+          isActivated: user.isActivated,
+          createdAt: user.createdAt,
+        };
+        return userProfile;
+      } catch (error) {
+        throw error;
+      }
+    }
+
+      async updateProfile(userId: string, updateData: Partial<IEmployee>): Promise<IEmployee | null> {
+        try {
+            const { name, email, password } = updateData;
+    
+            if (email) {
+                const existingUser = await this.employeeRepo.findByEmail(email);
+                if (existingUser && existingUser._id.toString() !== userId) {
+                    throw new Error("Email already in use by another user");
+                }
+            }
+            if (password) {
+                const hashedPassword = await this.cryptoService.hashData(password);
+                updateData.password = hashedPassword;
+            }
+    
+            const updatedUser = await this.employeeRepo.updateUserProfile(userId, updateData);
+            if (!updatedUser) {
+                throw new Error("User not found or update failed");
+            }
+    
+            return updatedUser;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+      async updateProfileImage(image:string, userId: string):Promise<IEmployee | null>{
+        try {
+        console.log(image,"qwqwqwqwqw")
+        const updatedUser = await this.employeeRepo.updateUserProfileImage(userId, image);
+        console.log(updatedUser,".,mnpokj")
+        if (!updatedUser) {
+          throw new Error('User not found or update failed');
+        }
+        return updatedUser;
+        } catch (error) {
+          console.error('Error in updateProfileImage:', error);
+          throw error;
+        }
+      }
 
   async isAuthenticated(
     token: string | undefined

@@ -1,7 +1,6 @@
 import Users from "../framework/models/userModel";
 import { IRegisterUser, IUser } from "../entities/user.entity";
 import IUserRepository from "../interfaces/repository/user.Repository";
-import mongoose from "mongoose";
 
 export class UserRepository implements IUserRepository {
   async createUser(user: IRegisterUser): Promise<IUser | never> {
@@ -155,6 +154,37 @@ export class UserRepository implements IUserRepository {
       throw error;
     }
   }
+
+  async updateUserProfileImage(userId: string, imageUrl: string): Promise<IUser | null> {
+    try {
+      const updatedUser = await Users.findByIdAndUpdate(
+        userId,
+        { $set: { imageUrl: imageUrl } },
+        { new: true }
+      );
+      
+      return updatedUser ? updatedUser.toObject() : null;
+    } catch (error) {
+      console.error("Error updating user profile image:", error);
+      throw error;
+    }
+  }
+
+  async updateUserProfile(userId: string, updateData: Partial<IUser>): Promise<IUser | null> {
+    try {
+        const updatedUser = await Users.findByIdAndUpdate(
+            userId,
+            { $set: updateData },
+            { new: true }
+        );
+
+        return updatedUser ? updatedUser.toObject() : null;
+    } catch (error) {
+        console.error("Error updating user profile:", error);
+        throw error;
+    }
+}
+
 
 
 }

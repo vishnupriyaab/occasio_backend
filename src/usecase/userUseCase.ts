@@ -1,4 +1,4 @@
-import { IRegisterUser, IUser } from "../entities/user.entity";
+import { IProfile, IRegisterUser, IUser } from "../entities/user.entity";
 import { EmailService } from "../framework/utils/emailService";
 import { IJWTService, JWTPayload } from "../interfaces/utils/IJwt";
 import { ICryptoService } from "../interfaces/utils/ICrypto";
@@ -260,6 +260,71 @@ export class UserUseCase implements IUserUseCase {
       throw error;
     }
   }
+
+  async showProfile(userId: string): Promise<IProfile> {
+    try {
+      const user = await this.userRepo.findUserById(userId);
+      // console.log(user,'qwertyuio');
+      if (!user) {
+        throw new Error('User not found');
+      }
+      const userProfile = {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        mobile: user.mobile,
+        imageUrl: user.imageUrl,
+        isVerified: user.isVerified,
+        isActivated: user.isActivated,
+        createdAt: user.createdAt,
+      };
+      console.log(userProfile,"12345678901")
+      return userProfile;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateProfileImage(image:string, userId: string):Promise<IUser | null>{
+    try {
+    
+    const updatedUser = await this.userRepo.updateUserProfileImage(userId, image);
+    if (!updatedUser) {
+      throw new Error('User not found or update failed');
+    }
+    return updatedUser;
+    } catch (error) {
+      console.error('Error in updateProfileImage:', error);
+      throw error;
+    }
+  }
+
+  async updateProfile(userId: string, updateData: Partial<IUser>): Promise<IUser | null> {
+    try {
+        const { name, email, password } = updateData;
+
+        if (email) {
+            const existingUser = await this.userRepo.findByEmail(email);
+            if (existingUser && existingUser._id.toString() !== userId) {
+                throw new Error("Email already in use by another user");
+            }
+        }
+        if (password) {
+            const hashedPassword = await this.cryptoService.hashData(password);
+            updateData.password = hashedPassword;
+        }
+
+        const updatedUser = await this.userRepo.updateUserProfile(userId, updateData);
+        if (!updatedUser) {
+            throw new Error("User not found or update failed");
+        }
+
+        return updatedUser;
+    } catch (error) {
+        throw error;
+    }
+}
+
 
   async isAuthenticated(
     token: string | undefined

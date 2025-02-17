@@ -4,6 +4,7 @@ import { handleError, handleSuccess } from "../framework/utils/responseHandler";
 import { ResponseMessage } from "../constant/responseMsg";
 import IUserUseCase from "../interfaces/useCase/user.useCase";
 import IUserController from "../interfaces/controller/user.controller";
+import { AuthenticatedRequest } from "../framework/middlewares/authenticateToken";
 
 export class UserController implements IUserController {
   constructor(private userUserCase: IUserUseCase) {}
@@ -74,29 +75,33 @@ export class UserController implements IUserController {
   }
 
   //resendOtp
-  async resendOtp(req:Request,res:Response):Promise<void>{
+  async resendOtp(req: Request, res: Response): Promise<void> {
     try {
       const { email } = req.body;
-      
+
       if (!email) {
-        res.status(HttpStatusCode.BAD_REQUEST).json(
-          handleError('Email is required', HttpStatusCode.BAD_REQUEST)
-        );
+        res
+          .status(HttpStatusCode.BAD_REQUEST)
+          .json(handleError("Email is required", HttpStatusCode.BAD_REQUEST));
         return;
       }
 
       const result = await this.userUserCase.resendOtp(email);
-      
-      res.status(HttpStatusCode.OK).json(
-        handleSuccess('OTP resent successfully', HttpStatusCode.OK, result)
-      );
+
+      res
+        .status(HttpStatusCode.OK)
+        .json(
+          handleSuccess("OTP resent successfully", HttpStatusCode.OK, result)
+        );
     } catch (error: any) {
-      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(
-        handleError(
-          error.message || 'Failed to resend OTP',
-          HttpStatusCode.INTERNAL_SERVER_ERROR
-        )
-      );
+      res
+        .status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+        .json(
+          handleError(
+            error.message || "Failed to resend OTP",
+            HttpStatusCode.INTERNAL_SERVER_ERROR
+          )
+        );
     }
   }
 
@@ -319,5 +324,109 @@ export class UserController implements IUserController {
     }
   }
 
+  async showProfile(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      console.log(req.id, "Vishnu12345"); //editProfile
+      const userId = req.id;
+      if (!userId) {
+        res
+          .status(HttpStatusCode.BAD_REQUEST)
+          .json(handleError("User ID is required", HttpStatusCode.BAD_REQUEST));
+        return;
+      }
 
+      const profile = await this.userUserCase.showProfile(userId);
+      res
+        .status(HttpStatusCode.OK)
+        .json(
+          handleSuccess(
+            "Profile fetched successfully",
+            HttpStatusCode.OK,
+            profile
+          )
+        );
+    } catch (error) {
+      res
+        .status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+        .json(
+          handleError(
+            ResponseMessage.AUTHENTICATION_FAILURE,
+            HttpStatusCode.INTERNAL_SERVER_ERROR
+          )
+        );
+    }
+  }
+
+  async updateProfileImage(
+    req: AuthenticatedRequest,
+    res: Response
+  ): Promise<void> {
+    try {
+      const userId: string = req.id!;
+      const image = req.file?.path;
+
+      if (!image) {
+        res
+          .status(HttpStatusCode.BAD_REQUEST)
+          .json(handleError("Image is required", HttpStatusCode.BAD_REQUEST));
+        return;
+      }
+
+      const updatedUser = await this.userUserCase.updateProfileImage(
+        image,
+        userId
+      );
+      res
+        .status(HttpStatusCode.OK)
+        .json(handleSuccess("Profile image upadted", HttpStatusCode.OK));
+    } catch (error) {}
+  }
+
+  async updateProfile(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const userId:string = req.id || "";
+      const { name, email, password, confirmPassword } = req.body;
+      console.log(name, email, password, confirmPassword, "1111111111111");
+      if (!name || !email || !password || !confirmPassword) {
+        res
+          .status(HttpStatusCode.BAD_REQUEST)
+          .json(
+            handleError("All fields are required", HttpStatusCode.BAD_REQUEST)
+          );
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        res
+          .status(HttpStatusCode.BAD_REQUEST)
+          .json(
+            handleError("Passwords do not match", HttpStatusCode.BAD_REQUEST)
+          );
+        return;
+      }
+      const updatedUser = await this.userUserCase.updateProfile(userId, {
+        name,
+        email,
+        password,
+      });
+      res
+        .status(HttpStatusCode.OK)
+        .json(
+          handleSuccess(
+            "Profile updated successfully",
+            HttpStatusCode.OK,
+            updatedUser
+          )
+        )
+    } catch (error: any) {
+      res
+        .status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+        .json(
+          handleError(
+            error.message || "Failed to update profile",
+            HttpStatusCode.INTERNAL_SERVER_ERROR
+          )
+        );
+    }
+  }
 }

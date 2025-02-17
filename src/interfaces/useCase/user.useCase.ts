@@ -1,5 +1,5 @@
 import { otpResponse } from "../../entities/otp.entity";
-import { IRegisterUser, IUser } from "../../entities/user.entity";
+import { IProfile, IRegisterUser, IUser } from "../../entities/user.entity";
 import { IsAuthenticatedUseCaseRES } from "../common/IIsAuthenticated";
 
 export default interface IUserUseCase {
@@ -12,6 +12,8 @@ export default interface IUserUseCase {
     execute(credential:any):Promise<{ accessToken: string; refreshToken: string }>;
     getAllUsers():Promise<IUser[]>;
     isAuthenticated(token: string | undefined): Promise<IsAuthenticatedUseCaseRES>
-
+    showProfile(userId: string): Promise<IProfile>
+    updateProfileImage(image:string, userId: string):Promise<any>
+    updateProfile(userId: string, updateData: Partial<IUser>): Promise<IUser | null>
   }
   

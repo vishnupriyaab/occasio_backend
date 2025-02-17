@@ -12,5 +12,6 @@ export default interface IEmployeeRepository {
   getPasswordResetToken(employeeId: string): Promise<string | null>;
   updatePassword(employeeId: string, hashedPassword: string): Promise<void>;
   clearPasswordResetToken(employeeId: string): Promise<void>;
-
+  updateUserProfile(userId: string, updateData: Partial<IEmployee>): Promise<IEmployee | null>
+  updateUserProfileImage(userId: string, imageUrl: string): Promise<IEmployee | null>
 }

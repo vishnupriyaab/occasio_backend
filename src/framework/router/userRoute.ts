@@ -12,6 +12,7 @@ import IUserUseCase from "../../interfaces/useCase/user.useCase";
 import IUserController from "../../interfaces/controller/user.controller";
 import IOtpRepository from "../../interfaces/repository/otp.Repository";
 import AuthMiddleware from "../middlewares/authenticateToken";
+import { upload } from "../middlewares/claudinaryUpload";
 
 const userRoute = express.Router();
 
@@ -40,20 +41,25 @@ userRoute.post('/google-login',userController.googleLogin.bind(userController));
 
 userRoute.get('/isAuthenticate',userController.isAuthenticated.bind(userController));
 
-
-
-userRoute.post('/logOut',userController.logOut.bind(userController));
-
-userRoute.post('/forgotPassword',userController.forgotPassword.bind(userController));
-
-userRoute.post('/resetPassword',userController.resetPassword.bind(userController));
-
 userRoute.post('/verifyOtp',userController.verifyOtp.bind(userController));
 
 userRoute.post('/resendOtp',userController.resendOtp.bind(userController));
 
+userRoute.post('/forgotPassword',userController.forgotPassword.bind(userController));
+
+userRoute.use(authMiddleware.authenticateToken.bind(authMiddleware));
+
+userRoute.post('/logOut',userController.logOut.bind(userController));
+
+userRoute.post('/resetPassword',userController.resetPassword.bind(userController));
+
 userRoute.get('/getUsers',userController.getUsers.bind(userController));
 
+userRoute.get('/showProfile',userController.showProfile.bind(userController));
+
+userRoute.put('/updateProfile',  userController.updateProfile.bind(userController));
+
+userRoute.put('/profileImage', upload.single('img'), userController.updateProfileImage.bind(userController));
 
 
 export default userRoute;

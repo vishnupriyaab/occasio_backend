@@ -16,5 +16,6 @@ export default interface IUserRepository {
   clearPasswordResetToken(userId: string): Promise<void>;
   createGoogleUser(userData: IUser): Promise<IUser>;
   getAllUsers(): Promise<IUser[]>;
-
+  updateUserProfileImage(userId: string, imageUrl: string): Promise<IUser | null>
+  updateUserProfile(userId: string, updateData: Partial<IUser>): Promise<IUser | null>
 }

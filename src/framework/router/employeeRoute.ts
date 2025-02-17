@@ -12,6 +12,7 @@ import IOtpRepository from '../../interfaces/repository/otp.Repository';
 import { IEmployeeUseCase } from '../../interfaces/useCase/employee.useCase';
 import IEmployeeController from '../../interfaces/controller/employee.controller';
 import AuthMiddleware from '../middlewares/authenticateToken';
+import { upload } from '../middlewares/claudinaryUpload';
 
 
 const employeeRoute = express.Router()
@@ -46,6 +47,14 @@ employeeRoute.post('/forgotPassword',employeeController.forgotPassword.bind(empl
 employeeRoute.post('/resetPassword',employeeController.resetPassword.bind(employeeController));
 
 employeeRoute.post('/logOut',employeeController.logOut.bind(employeeController));
+
+employeeRoute.get('/showProfile',employeeController.showProfile.bind(employeeController));
+
+employeeRoute.put('/updateProfile',  employeeController.updateProfile.bind(employeeController));
+
+employeeRoute.put('/profileImage', upload.single('img'), employeeController.updateProfileImage.bind(employeeController));
+
+
 
 
 export default employeeRoute;

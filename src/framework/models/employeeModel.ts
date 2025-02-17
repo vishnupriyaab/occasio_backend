@@ -15,6 +15,9 @@ const employeeSchema: Schema = new Schema<IEmployee>(
       type: Number,
       required: true,
     },
+    imageUrl: {
+      type: String,
+    },
     password: {
       type: String,
     },

@@ -4,6 +4,7 @@ export interface IEmployee {
   name: string;
   email: string;
   mobile: number;
+  imageUrl:string;
   password: string;
   createdAt: Date;
   updatedAt: Date;

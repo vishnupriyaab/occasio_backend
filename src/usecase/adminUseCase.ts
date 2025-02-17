@@ -43,17 +43,25 @@ export class AdminUseCase implements IAdminUseCase {
   }
 
   async findAdminByEmail(email: string): Promise<IAdmin | null> {
-    return await this.adminRepo.findAdminByEmail(email);
+    try {
+      return await this.adminRepo.findAdminByEmail(email);
+    } catch (error) {
+      throw error
+    }
   }
 
   async blockUser(userId:string):Promise<IUser | null>{
-    const user = await this.adminRepo.findById(userId);
-    if (!user) {
-      throw new Error('Event not found');
+    try {
+      const user = await this.adminRepo.findById(userId);
+      if (!user) {
+        throw new Error('User not found');
+      }
+      
+      user.isBlocked = !user.isBlocked;
+      return await this.adminRepo.updateStatus(userId, { isBlocked: user.isBlocked });
+    } catch (error) {
+      throw error
     }
-    
-    user.isBlocked = !user.isBlocked;
-    return await this.adminRepo.updateStatus(userId, { isBlocked: user.isBlocked });
   }
 
   async isAuthenticated(
@@ -127,12 +135,16 @@ export class AdminUseCase implements IAdminUseCase {
     }
 
     async blockEmployee(employeeId:string):Promise<IEmployee | null>{
-      const user = await this.adminRepo.findByEmployeeId(employeeId);
-      if (!user) {
-        throw new Error('employee not found');
+      try {
+        const user = await this.adminRepo.findByEmployeeId(employeeId);
+        if (!user) {
+          throw new Error('employee not found');
+        }
+        user.isBlocked = !user.isBlocked;
+        return await this.adminRepo.updateEmployeeStatus(employeeId, { isBlocked: user.isBlocked });
+      } catch (error) {
+        throw error;
       }
-      user.isBlocked = !user.isBlocked;
-      return await this.adminRepo.updateEmployeeStatus(employeeId, { isBlocked: user.isBlocked });
     }
 
 }

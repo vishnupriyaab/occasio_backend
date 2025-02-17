@@ -4,6 +4,7 @@ import { handleError, handleSuccess } from "../framework/utils/responseHandler";
 import { ResponseMessage } from "../constant/responseMsg";
 import IEmployeeController from "../interfaces/controller/employee.controller";
 import { IEmployeeUseCase } from "../interfaces/useCase/employee.useCase";
+import { AuthenticatedRequest } from "../framework/middlewares/authenticateToken";
 
 export class EmployeeController implements IEmployeeController {
   constructor( private employeeUseCase: IEmployeeUseCase ) {}
@@ -203,6 +204,112 @@ export class EmployeeController implements IEmployeeController {
         );
     }
   }
+
+  async showProfile(req: AuthenticatedRequest, res: Response): Promise<void> {
+      try {
+        console.log(req.id, "Vishnu12345"); //editProfile
+        const userId = req.id;
+        if (!userId) {
+          res
+            .status(HttpStatusCode.BAD_REQUEST)
+            .json(handleError("User ID is required", HttpStatusCode.BAD_REQUEST));
+          return;
+        }
+  
+        const profile = await this.employeeUseCase.showProfile(userId);
+        res
+          .status(HttpStatusCode.OK)
+          .json(
+            handleSuccess(
+              "Profile fetched successfully",
+              HttpStatusCode.OK,
+              profile
+            )
+          );
+      } catch (error) {
+        res
+          .status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+          .json(
+            handleError(
+              ResponseMessage.AUTHENTICATION_FAILURE,
+              HttpStatusCode.INTERNAL_SERVER_ERROR
+            )
+          );
+      }
+    }
+
+    async updateProfile(req: AuthenticatedRequest, res: Response): Promise<void> {
+      try {
+        const userId:string = req.id || "";
+        const { name, email, password, confirmPassword } = req.body;
+        console.log(name, email, password, confirmPassword, "1111111111111");
+        if (!name || !email || !password || !confirmPassword) {
+          res
+            .status(HttpStatusCode.BAD_REQUEST)
+            .json(
+              handleError("All fields are required", HttpStatusCode.BAD_REQUEST)
+            );
+          return;
+        }
+  
+        if (password !== confirmPassword) {
+          res
+            .status(HttpStatusCode.BAD_REQUEST)
+            .json(
+              handleError("Passwords do not match", HttpStatusCode.BAD_REQUEST)
+            );
+          return;
+        }
+        const updatedUser = await this.employeeUseCase.updateProfile(userId, {
+          name,
+          email,
+          password,
+        });
+        res
+          .status(HttpStatusCode.OK)
+          .json(
+            handleSuccess(
+              "Profile updated successfully",
+              HttpStatusCode.OK,
+              updatedUser
+            )
+          )
+      } catch (error: any) {
+        res
+          .status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+          .json(
+            handleError(
+              error.message || "Failed to update profile",
+              HttpStatusCode.INTERNAL_SERVER_ERROR
+            )
+          );
+      }
+    }
+
+    async updateProfileImage(
+      req: AuthenticatedRequest,
+      res: Response
+    ): Promise<void> {
+      try {
+        const userId: string = req.id!;
+        const image = req.file?.path;
+  
+        if (!image) {
+          res
+            .status(HttpStatusCode.BAD_REQUEST)
+            .json(handleError("Image is required", HttpStatusCode.BAD_REQUEST));
+          return;
+        }
+  
+        const updatedUser = await this.employeeUseCase.updateProfileImage(
+          image,
+          userId
+        );
+        res
+          .status(HttpStatusCode.OK)
+          .json(handleSuccess("Profile image upadted", HttpStatusCode.OK));
+      } catch (error) {}
+    }
 
   //isAuthenticated
   async isAuthenticated(req: Request, res: Response): Promise<void> {
