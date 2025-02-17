@@ -5,6 +5,7 @@ import { IJWTService, JWTPayload } from "../interfaces/utils/IJwt";
 import IAdminRepository from "../interfaces/repository/admin.Repository";
 import IAdminUseCase from "../interfaces/useCase/admin.useCase";
 import IUserRepository from "../interfaces/repository/user.Repository";
+import { IEmployee } from "../entities/employee.entity";
 
 export class AdminUseCase implements IAdminUseCase {
   constructor(
@@ -69,6 +70,32 @@ export class AdminUseCase implements IAdminUseCase {
           return { message: "No access admin", status: 401 };
         }
         return { message: "Admin is Authenticated", status: 200 };
+      } catch (error) {
+        throw error;
+      }
+    }
+
+    async searchEmployee(
+      searchTerm: string,
+      filterStatus: string | undefined,
+      page: number,
+      limit: number
+    ): Promise<{
+      employee: IEmployee[];
+      totalEmployees: number;
+      totalPages: number;
+      currentPage: number;
+    }> {
+      try {
+        if (page < 1) throw new Error("Page number must be positive");
+        if (limit < 1) throw new Error("Limit must be positive");
+  
+        return await this.adminRepo.searchEmployee(
+          searchTerm,
+          filterStatus,
+          page,
+          limit
+        );
       } catch (error) {
         throw error;
       }

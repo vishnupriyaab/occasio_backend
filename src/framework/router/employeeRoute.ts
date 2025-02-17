@@ -29,9 +29,11 @@ const employeeUseCase:IEmployeeUseCase = new EmployeeUseCase(employeeRepository,
 const employeeController:IEmployeeController = new EmployeeController(employeeUseCase)
 
 
-employeeRoute.post('/register',employeeController.registerEmployee.bind(employeeController));
-
 employeeRoute.post('/login',employeeController.employeeLogin.bind(employeeController));
+
+employeeRoute.get('/isAuthenticate',employeeController.isAuthenticated.bind(employeeController));
+
+employeeRoute.post('/register',employeeController.registerEmployee.bind(employeeController));
 
 employeeRoute.post('/verifyEmployeeOtp',employeeController.verifyOtp.bind(employeeController));
 
@@ -39,12 +41,8 @@ employeeRoute.post('/forgotPassword',employeeController.forgotPassword.bind(empl
 
 employeeRoute.post('/resetPassword',employeeController.resetPassword.bind(employeeController));
 
-employeeRoute.get('/isAuthenticate',employeeController.isAuthenticated.bind(employeeController));
-
 employeeRoute.post('/logOut',employeeController.logOut.bind(employeeController));
 
-employeeRoute.get('/searchEmployee',employeeController.searchEmployee.bind(employeeController));
 
-employeeRoute.patch('/blockEmployee/:id',employeeController.blockEmployee.bind(employeeController));
 
 export default employeeRoute;

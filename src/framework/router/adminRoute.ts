@@ -27,6 +27,9 @@ const adminController:IAdminController = new AdminController(adminUseCase);
 
   adminRoute.post('/logOut',adminController.logOut.bind(adminController));
 
+  adminRoute.get('/searchEmployee',adminController.searchEmployee.bind(adminController));
+
+  adminRoute.patch('/blockEmployee/:id',adminController.blockEmployee.bind(adminController));
 
 
 export default adminRoute;

@@ -12,15 +12,5 @@ export default interface IEmployeeRepository {
   getPasswordResetToken(employeeId: string): Promise<string | null>;
   updatePassword(employeeId: string, hashedPassword: string): Promise<void>;
   clearPasswordResetToken(employeeId: string): Promise<void>;
-  searchEmployee(
-    searchTerm: string,
-    filterStatus: string | undefined,
-    page: number,
-    limit: number
-  ): Promise<{
-    employee: IEmployee[];
-    totalEmployees: number;
-    totalPages: number;
-    currentPage: number;
-  }>;
+
 }

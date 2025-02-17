@@ -203,29 +203,5 @@ export class EmployeeUseCase implements IEmployeeUseCase {
       throw error;
     }
   }
-  async searchEmployee(
-    searchTerm: string,
-    filterStatus: string | undefined,
-    page: number,
-    limit: number
-  ): Promise<{
-    employee: IEmployee[];
-    totalEmployees: number;
-    totalPages: number;
-    currentPage: number;
-  }> {
-    try {
-      if (page < 1) throw new Error("Page number must be positive");
-      if (limit < 1) throw new Error("Limit must be positive");
 
-      return await this.employeeRepo.searchEmployee(
-        searchTerm,
-        filterStatus,
-        page,
-        limit
-      );
-    } catch (error) {
-      throw error;
-    }
-  }
 }
