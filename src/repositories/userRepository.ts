@@ -156,51 +156,5 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  async searchUser(
-    searchTerm: string,
-    filterStatus: string | undefined,
-    page: number,
-    limit: number
-  ): Promise<{
-    users: IUser[];
-    totalUsers: number;
-    totalPages: number;
-    currentPage: number;
-  }> {
-    try {
-      const query: mongoose.FilterQuery<IUser> = {};
-      if (searchTerm && searchTerm.trim() !== "") {
-        query.name = {
-          $regex: searchTerm.trim(),
-          $options: "i",
-        };
-      }
 
-      if (filterStatus === "blocked") {
-        query.isBlocked = true;
-      } else if (filterStatus === "unblocked") {
-        query.isBlocked = false;
-      }
-      const skip = Math.max(0, (page - 1) * limit);
-      const [users, totalUsers] = await Promise.all([
-        Users.find(query)
-          .skip(skip)
-          .limit(limit)
-          .sort({ createdAt: -1 })
-          .lean(),
-          Users.countDocuments(query),
-      ]);
-      const totalPages = Math.max(1, Math.ceil(totalUsers / limit))
-
-      return{
-        users,
-        totalUsers,
-        totalPages,
-        currentPage: page,
-      }
-
-    } catch (error) {
-      throw error;
-    }
-  }
 }

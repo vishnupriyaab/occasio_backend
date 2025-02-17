@@ -36,10 +36,28 @@ export class AdminRepository implements IAdminRepository {
       throw error
     }
   }
+  async findByEmployeeId(id:string):Promise<IEmployee | null> {
+    try {
+      return await Employees.findById(id);
+    } catch (error) {
+      throw error
+    }
+  }
 
   async updateStatus(id:string, updateData:any):Promise<IUser | null> {
     try {
       return await Users.findByIdAndUpdate(
+        id,
+        updateData,
+        { new: true, runValidators: true }
+      );
+    } catch (error) {
+      throw error
+    }
+  }
+  async updateEmployeeStatus(id:string, updateData:any):Promise<IEmployee | null> {
+    try {
+      return await Employees.findByIdAndUpdate(
         id,
         updateData,
         { new: true, runValidators: true }
@@ -84,12 +102,62 @@ export class AdminRepository implements IAdminRepository {
     ]);
     const totalPages = Math.max(1, Math.ceil(totalEmployees / limit))
 
+    console.log(employee,totalEmployees,totalPages,page,"drftgyhuijko")
+
     return{
       employee,
       totalEmployees,
       totalPages,
       currentPage: page,
     }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async searchUser(
+    searchTerm: string,
+    filterStatus: string | undefined,
+    page: number,
+    limit: number
+  ): Promise<{
+    users: IUser[];
+    totalUsers: number;
+    totalPages: number;
+    currentPage: number;
+  }> {
+    try {
+      const query: mongoose.FilterQuery<IUser> = {};
+      if (searchTerm && searchTerm.trim() !== "") {
+        query.name = {
+          $regex: searchTerm.trim(),
+          $options: "i",
+        };
+      }
+
+      if (filterStatus === "blocked") {
+        query.isBlocked = true;
+      } else if (filterStatus === "unblocked") {
+        query.isBlocked = false;
+      }
+      const skip = Math.max(0, (page - 1) * limit);
+      const [users, totalUsers] = await Promise.all([
+        Users.find(query)
+          .skip(skip)
+          .limit(limit)
+          .sort({ createdAt: -1 })
+          .lean(),
+          Users.countDocuments(query),
+      ]);
+      const totalPages = Math.max(1, Math.ceil(totalUsers / limit))
+
+      return{
+        users,
+        totalUsers,
+        totalPages,
+        currentPage: page,
+      }
+
     } catch (error) {
       throw error;
     }

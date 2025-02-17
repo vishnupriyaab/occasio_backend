@@ -11,6 +11,7 @@ import IEmployeeRepository from '../../interfaces/repository/employee.Repository
 import IOtpRepository from '../../interfaces/repository/otp.Repository';
 import { IEmployeeUseCase } from '../../interfaces/useCase/employee.useCase';
 import IEmployeeController from '../../interfaces/controller/employee.controller';
+import AuthMiddleware from '../middlewares/authenticateToken';
 
 
 const employeeRoute = express.Router()
@@ -25,6 +26,7 @@ const employeeRepository:IEmployeeRepository = new EmployeeRepository();
 const otpRepository:IOtpRepository = new OtpRepository()
 const IjwtService:IJWTService = new JWTService()
 const iCryptoService:ICryptoService = new CryptoService();
+const authMiddleware = new AuthMiddleware("employee",IjwtService);
 const employeeUseCase:IEmployeeUseCase = new EmployeeUseCase(employeeRepository,otpRepository,emailConfig,IjwtService,iCryptoService);
 const employeeController:IEmployeeController = new EmployeeController(employeeUseCase)
 
@@ -32,6 +34,8 @@ const employeeController:IEmployeeController = new EmployeeController(employeeUs
 employeeRoute.post('/login',employeeController.employeeLogin.bind(employeeController));
 
 employeeRoute.get('/isAuthenticate',employeeController.isAuthenticated.bind(employeeController));
+
+employeeRoute.use(authMiddleware.authenticateToken.bind(authMiddleware));
 
 employeeRoute.post('/register',employeeController.registerEmployee.bind(employeeController));
 
@@ -42,7 +46,6 @@ employeeRoute.post('/forgotPassword',employeeController.forgotPassword.bind(empl
 employeeRoute.post('/resetPassword',employeeController.resetPassword.bind(employeeController));
 
 employeeRoute.post('/logOut',employeeController.logOut.bind(employeeController));
-
 
 
 export default employeeRoute;

@@ -18,4 +18,17 @@ export default interface IAdminRepository {
     totalPages: number;
     currentPage: number;
   }>;
+  updateEmployeeStatus(id:string, updateData:any):Promise<IEmployee | null>
+  findByEmployeeId(id:string):Promise<IEmployee | null>
+  searchUser(
+    searchTerm: string,
+    filterStatus: string | undefined,
+    page: number,
+    limit: number
+  ): Promise<{
+    users: IUser[];
+    totalUsers: number;
+    totalPages: number;
+    currentPage: number;
+  }>;
 }

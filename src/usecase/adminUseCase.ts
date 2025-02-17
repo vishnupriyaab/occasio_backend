@@ -1,10 +1,9 @@
-import { AdminLoginResponse, IAdmin } from "../entities/admin.entity";
+import { IAdmin } from "../entities/admin.entity";
 import { IUser } from "../entities/user.entity";
 import { IsAuthenticatedUseCaseRES } from "../interfaces/common/IIsAuthenticated";
 import { IJWTService, JWTPayload } from "../interfaces/utils/IJwt";
 import IAdminRepository from "../interfaces/repository/admin.Repository";
 import IAdminUseCase from "../interfaces/useCase/admin.useCase";
-import IUserRepository from "../interfaces/repository/user.Repository";
 import { IEmployee } from "../entities/employee.entity";
 
 export class AdminUseCase implements IAdminUseCase {
@@ -99,6 +98,41 @@ export class AdminUseCase implements IAdminUseCase {
       } catch (error) {
         throw error;
       }
+    }
+
+    async searchUser(
+      searchTerm: string,
+      filterStatus: string | undefined,
+      page: number,
+      limit: number
+    ): Promise<{
+      users: IUser[];
+      totalUsers: number;
+      totalPages: number;
+      currentPage: number;
+    }> {
+      try {
+        if (page < 1) throw new Error("Page number must be positive");
+        if (limit < 1) throw new Error("Limit must be positive");
+  
+        return await this.adminRepo.searchUser(
+          searchTerm,
+          filterStatus,
+          page,
+          limit
+        );
+      } catch (error) {
+        throw error;
+      }
+    }
+
+    async blockEmployee(employeeId:string):Promise<IEmployee | null>{
+      const user = await this.adminRepo.findByEmployeeId(employeeId);
+      if (!user) {
+        throw new Error('employee not found');
+      }
+      user.isBlocked = !user.isBlocked;
+      return await this.adminRepo.updateEmployeeStatus(employeeId, { isBlocked: user.isBlocked });
     }
 
 }

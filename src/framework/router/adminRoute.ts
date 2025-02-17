@@ -31,5 +31,7 @@ const adminController:IAdminController = new AdminController(adminUseCase);
 
   adminRoute.patch('/blockEmployee/:id',adminController.blockEmployee.bind(adminController));
 
+  adminRoute.get('/searchUser',adminController.searchUser.bind(adminController));
+
 
 export default adminRoute;

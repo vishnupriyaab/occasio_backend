@@ -279,30 +279,5 @@ export class UserUseCase implements IUserUseCase {
     }
   }
 
-  async searchUser(
-    searchTerm: string,
-    filterStatus: string | undefined,
-    page: number,
-    limit: number
-  ): Promise<{
-    users: IUser[];
-    totalUsers: number;
-    totalPages: number;
-    currentPage: number;
-  }> {
-    try {
-      if (page < 1) throw new Error("Page number must be positive");
-      if (limit < 1) throw new Error("Limit must be positive");
 
-      return await this.userRepo.searchUser(
-        searchTerm,
-        filterStatus,
-        page,
-        limit
-      );
-      // return await this.userRepo.searchUser(searchTerm);
-    } catch (error) {
-      throw error;
-    }
-  }
 }

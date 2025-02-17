@@ -5,7 +5,6 @@ export interface AuthenticatedRequest extends Request{
   id?:string
 }
 
-
 export default class AuthMiddleware {
   constructor(role: string, private jwtService: IJWTService) {
     this.role = role;

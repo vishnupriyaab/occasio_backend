@@ -15,4 +15,12 @@ export default interface IAdminUseCase {
     totalPages: number;
     currentPage: number;
   }>
+  blockEmployee(employeeId:string):Promise<IEmployee | null>
+  searchUser(searchTerm:string, filterStatus:string | undefined, page:number, limit:number )
+  :Promise<{
+    users: IUser[];
+    totalUsers:number;
+    totalPages: number;
+    currentPage: number;
+  }>
 }

@@ -12,12 +12,6 @@ export default interface IUserUseCase {
     execute(credential:any):Promise<{ accessToken: string; refreshToken: string }>;
     getAllUsers():Promise<IUser[]>;
     isAuthenticated(token: string | undefined): Promise<IsAuthenticatedUseCaseRES>
-    searchUser(searchTerm:string, filterStatus:string | undefined, page:number, limit:number )
-    :Promise<{
-      users: IUser[];
-      totalUsers:number;
-      totalPages: number;
-      currentPage: number;
-    }>
+
   }
   

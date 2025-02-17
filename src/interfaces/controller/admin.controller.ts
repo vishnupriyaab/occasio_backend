@@ -7,4 +7,5 @@ export default interface IAdminController {
   blockEmployee(req:Request,res:Response):Promise<void>
   searchEmployee(req:Request,res:Response):Promise<void>
   logOut(req: Request, res: Response): Promise<void>;
+  searchUser(req: Request, res: Response): Promise<void>;
 }
