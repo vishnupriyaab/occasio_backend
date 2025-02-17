@@ -14,5 +14,8 @@ const foodController: IFoodController = new FoodController(foodUseCase);
 
 foodRoute.post('/addFood', foodController.addFood.bind(foodController));
 
+foodRoute.put('/editFood/:id', foodController.editFood.bind(foodController));
+
+foodRoute.get('/searchFood',foodController.SearchFood.bind(foodController))
 
 export default foodRoute;   

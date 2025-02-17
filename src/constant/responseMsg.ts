@@ -76,4 +76,8 @@ export enum ResponseMessage {
   //Food
   FOOD_CREATED = "Food created successfully",
   FOOD_CREATION_FAILED = "Failed to create food",
+  FETCH_FOOD = "Foods fetched successfully",
+  FETCH_FOOD_FAILURE = "Failed to fetch foods",
+  FOOD_UPDATED = "Food updated successfully",
+  FOOD_UPDATE_FAILED = "Failed to update food",
 }

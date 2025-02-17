@@ -102,7 +102,6 @@ export class EventController {
         )
     } catch (error) {
       console.error("Search Event Error:", error);
-
       res
         .status(HttpStatusCode.INTERNAL_SERVER_ERROR)
         .json(
