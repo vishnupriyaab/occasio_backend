@@ -32,34 +32,28 @@ const authMiddleware = new AuthMiddleware("user",iJwtService);
 const userUseCase:IUserUseCase = new UserUseCase( userRepository, otpRepository, emailConfig ,iJwtService, googleAuthService);
 const userController:IUserController = new UserController(userUseCase);
 
+//PublicRoute
+userRoute
+  .get('/isAuthenticate',userController.isAuthenticated.bind(userController))
+  .post('/register',userController.registerUser.bind(userController))
+  .post('/login',userController.userLogin.bind(userController))
+  .post('/google-login',userController.googleLogin.bind(userController))
+  .post('/verifyOtp',userController.verifyOtp.bind(userController))
+  .post('/resendOtp',userController.resendOtp.bind(userController))
+  .post('/forgotPassword',userController.forgotPassword.bind(userController));
 
-userRoute.post('/register',userController.registerUser.bind(userController));
 
-userRoute.post('/login',userController.userLogin.bind(userController));
-
-userRoute.post('/google-login',userController.googleLogin.bind(userController));
-
-userRoute.get('/isAuthenticate',userController.isAuthenticated.bind(userController));
-
-userRoute.post('/verifyOtp',userController.verifyOtp.bind(userController));
-
-userRoute.post('/resendOtp',userController.resendOtp.bind(userController));
-
-userRoute.post('/forgotPassword',userController.forgotPassword.bind(userController));
-
+//middleware
 userRoute.use(authMiddleware.authenticateToken.bind(authMiddleware));
 
-userRoute.post('/logOut',userController.logOut.bind(userController));
-
-userRoute.post('/resetPassword',userController.resetPassword.bind(userController));
-
-userRoute.get('/getUsers',userController.getUsers.bind(userController));
-
-userRoute.get('/showProfile',userController.showProfile.bind(userController));
-
-userRoute.put('/updateProfile',  userController.updateProfile.bind(userController));
-
-userRoute.put('/profileImage', upload.single('img'), userController.updateProfileImage.bind(userController));
+//ProtectedRoute
+userRoute
+  .get('/getUsers',userController.getUsers.bind(userController))
+  .get('/showProfile',userController.showProfile.bind(userController))
+  .put('/updateProfile',  userController.updateProfile.bind(userController))
+  .put('/profileImage', upload.single('img'), userController.updateProfileImage.bind(userController))
+  .post('/resetPassword',userController.resetPassword.bind(userController))
+  .post('/logOut',userController.logOut.bind(userController))
 
 
 export default userRoute;

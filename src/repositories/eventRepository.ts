@@ -3,8 +3,9 @@ import { IAddEventRegister, IEvent } from "../entities/event.entity";
 import { IPackage, IPackageRegister } from "../entities/package.entity";
 import Event from "../framework/models/EventModel";
 import Package from "../framework/models/packageModel";
+import IEventRepository from "../interfaces/repository/event.Repository";
 
-export class EventRepository  {
+export class EventRepository  implements IEventRepository{
   async addEvent(event: IAddEventRegister): Promise<IEvent | void> {
     try {
       console.log(event, "qwertyuioertyuio");
@@ -242,6 +243,8 @@ export class EventRepository  {
     }
   }
 
+
+
   async findById(packageId:string):Promise<IPackage | null>{
     return await Package.findById(packageId);
   }
@@ -292,4 +295,51 @@ export class EventRepository  {
       throw error;
     }
   }
+
+  // In EventRepository class:
+
+async addFeature(packageId: string, featureData: { name: string; amount: number; isBlocked: boolean }): Promise<IPackage | null> {
+  try {
+    console.log(packageId, featureData, "Repository data");
+    return await Package.findByIdAndUpdate(
+      packageId,
+      { 
+        $push: { 
+          items: {
+            name: featureData.name,
+            amount: featureData.amount,
+            isBlocked: featureData.isBlocked
+          } 
+        } 
+      },
+      { new: true }
+    );
+  } catch (error) {
+    console.log("Error in addFeature repository:", error);
+    throw error;
+  }
+}
+
+async updateFeature(packageId: string, featureId: string, featureData: { name: string; amount: number }): Promise<IPackage | null> {
+  try {
+    console.log(packageId, featureId, featureData, "Repository update data");
+    const result = await Package.findOneAndUpdate(
+      { 
+        _id: packageId,
+        "items._id": featureId 
+      },
+      { 
+        $set: {
+          "items.$.name": featureData.name,
+          "items.$.amount": featureData.amount
+        }
+      },
+      { new: true }
+    );
+    return result;
+  } catch (error) {
+    console.log("Error in updateFeature repository:", error);
+    throw error;
+  }
+}
 }

@@ -18,6 +18,8 @@ export interface IEventController {
 
   //features
   getPackageDetails(req: Request, res: Response): Promise<void>;
+  addFeature(req:Request,res:Response):Promise<void>
+  updateFeature(req:Request,res:Response):Promise<void>
   blockFeature(req: Request, res: Response): Promise<void>;
   deleteFeature(req: Request, res: Response): Promise<void>;
 }

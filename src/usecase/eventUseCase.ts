@@ -1,9 +1,10 @@
 import { IAddEventRegister, IEvent } from "../entities/event.entity";
 import { IPackage, IPackageRegister } from "../entities/package.entity";
 import IEventRepository from "../interfaces/repository/event.Repository";
+import { IEventUseCase } from "../interfaces/useCase/event.useCase";
 import { ICloudinaryService } from "../interfaces/utils/IClaudinary";
 
-export class EventUseCase {
+export class EventUseCase implements IEventUseCase{
   constructor(
     private cloudinaryService: ICloudinaryService,
     private eventRepo: IEventRepository
@@ -230,11 +231,7 @@ export class EventUseCase {
     page: number,
     limit: number
   ): Promise<{
-    // packageDetails: {
     packageName: string;
-    // image: string;
-    // startingAmnt: number;
-    // };
     features: Array<{
       name: string;
       isBlocked: boolean;
@@ -263,6 +260,57 @@ export class EventUseCase {
       );
     }
   }
+
+
+async addFeature(packageId: string, featureData: { name: string; amount: number }): Promise<IPackage | null> {
+  try {
+    console.log(packageId, featureData, "UseCase data");
+    const existingPackage = await this.eventRepo.findById(packageId);
+    if (!existingPackage) {
+      throw new Error("Package not found");
+    }
+
+    // Check if feature name already exists in the package
+    const featureExists = existingPackage.items.some(
+      item => item.name.toLowerCase() === featureData.name.toLowerCase()
+    );
+    if (featureExists) {
+      throw new Error("Feature with this name already exists in the package");
+    }
+
+    const newFeature = {
+      name: featureData.name,
+      amount: featureData.amount,
+      isBlocked: false
+    };
+
+    return await this.eventRepo.addFeature(packageId, newFeature);
+  } catch (error) {
+    console.log("Error in addFeature useCase:", error);
+    throw error;
+  }
+}
+
+async updateFeature(packageId: string, featureId: string, featureData: { name: string; amount: number }): Promise<IPackage | null> {
+  try {
+    console.log(packageId, featureId, featureData, "UseCase update data");
+    const existingPackage = await this.eventRepo.findById(packageId);
+    if (!existingPackage) {
+      throw new Error("Package not found");
+    }
+    const featureIndex = existingPackage.items.findIndex(
+      item => item._id.toString() === featureId
+    );
+    if (featureIndex === -1) {
+      throw new Error("Feature not found in package");
+    }
+
+    return await this.eventRepo.updateFeature(packageId, featureId, featureData);
+  } catch (error) {
+    console.log("Error in updateFeature useCase:", error);
+    throw error;
+  }
+}
 
   async blockFeature(packageId: string, featureId: string): Promise<IPackage | null> {
     try {

@@ -66,7 +66,13 @@ export enum ResponseMessage {
   FETCH_PACKAGE = "Package fetched successfully",
   FETCH_PACKAGE_FAILURE = "Failed to fetch packages",
   PACKAGE_ID_REQUIRED = "Package ID is required.",
+
+  //Feature
   FEATURE_ID_REQUIRED = "Feature ID is required.",
+  FEATURE_CREATED = "Feature created successfully",
+  FEATURE_CREATION_FAILED = "Failed to create feature",
+  FEATURE_UPDATED = "Feature updated successfully",
+  FEATURE_UPDATE_FAILED = "Failed to update feature",
   FEATURE_BLOCK_FAILURE = "Failed to block/unblock feature.",
   FEATURE_BLOCKED = "Feature blocked successfully.",
   FEATURE_UNBLOCKED = "Feature unblocked successfully.",

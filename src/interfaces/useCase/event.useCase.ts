@@ -40,6 +40,8 @@ export interface IEventUseCase {
     totalPages: number;
     currentPage: number;
   }>;
+  addFeature(packageId: string, featureData: { name: string; amount: number }): Promise<IPackage | null>
+  updateFeature(packageId: string, featureId: string, featureData: { name: string; amount: number }): Promise<IPackage | null>
   blockFeature(packageId: string, featureId: string): Promise<IPackage | null>;
   deleteFeature(packageId: string, featureId: string): Promise<IPackage | null>;
 }

@@ -4,9 +4,13 @@ import { ICloudinaryService } from "../interfaces/utils/IClaudinary";
 import { HttpStatusCode } from "../constant/httpStatusCodes";
 import { ResponseMessage } from "../constant/responseMsg";
 import { IEventUseCase } from "../interfaces/useCase/event.useCase";
+import { IEventController } from "../interfaces/controller/event.controller";
 
-export class EventController {
-  constructor( private eventUseCase: IEventUseCase, private cloudinaryService: ICloudinaryService ) {}
+export class EventController implements IEventController{
+  constructor(
+    private eventUseCase: IEventUseCase,
+    private cloudinaryService: ICloudinaryService
+  ) {}
 
   //addEvent
   async addEvent(req: Request, res: Response): Promise<void> {
@@ -56,13 +60,15 @@ export class EventController {
   }
 
   //getEvent
-  async getEvent(req:Request,res:Response):Promise<void>{
+  async getEvent(req: Request, res: Response): Promise<void> {
     try {
       const events = await this.eventUseCase.getEvents();
-      res.status(HttpStatusCode.OK).json(handleSuccess(ResponseMessage.FETCH_EVENT,HttpStatusCode.OK,events))
-    } catch (error) {
-      
-    }
+      res
+        .status(HttpStatusCode.OK)
+        .json(
+          handleSuccess(ResponseMessage.FETCH_EVENT, HttpStatusCode.OK, events)
+        );
+    } catch (error) {}
   }
 
   //Search Event
@@ -93,13 +99,13 @@ export class EventController {
         filterStatus,
         page,
         limit
-      )
-      console.log(result, "qwertyui")
+      );
+      console.log(result, "qwertyui");
       res
         .status(HttpStatusCode.OK)
         .json(
           handleSuccess(ResponseMessage.FETCH_EVENT, HttpStatusCode.OK, result)
-        )
+        );
     } catch (error) {
       console.error("Search Event Error:", error);
       res
@@ -358,6 +364,96 @@ export class EventController {
         .json(
           handleError(
             ResponseMessage.EVENT_BLOCK_FAILURE,
+            HttpStatusCode.INTERNAL_SERVER_ERROR
+          )
+        );
+    }
+  }
+
+  //addFaeture
+  async addFeature(req: Request, res: Response): Promise<void> {
+    try {
+      const { packageId, name, amount } = req.body;
+      console.log(packageId, name, amount, "Controller data");
+
+      if (!packageId || !name || amount === undefined) {
+        res
+          .status(HttpStatusCode.BAD_REQUEST)
+          .json(
+            handleError(
+              "Package ID, name and amount are required",
+              HttpStatusCode.BAD_REQUEST
+            )
+          );
+        return;
+      }
+      const result = await this.eventUseCase.addFeature(packageId, {
+        name,
+        amount,
+      });
+      res
+        .status(HttpStatusCode.CREATED)
+        .json(
+          handleSuccess(
+            ResponseMessage.FEATURE_CREATED,
+            HttpStatusCode.CREATED,
+            result
+          )
+        );
+    } catch (error) {
+      console.log("Error in addFeature controller:", error);
+      res
+        .status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+        .json(
+          handleError(
+            ResponseMessage.FEATURE_CREATION_FAILED,
+            HttpStatusCode.INTERNAL_SERVER_ERROR
+          )
+        );
+    }
+  }
+
+  //editFeature
+  async updateFeature(req: Request, res: Response): Promise<void> {
+    try {
+      const featureId = req.params.id;
+      const { packageId, name, amount } = req.body;
+      console.log(featureId, packageId, name, amount, "Controller update data");
+
+      if (!packageId || !featureId || !name || amount === undefined) {
+        res
+          .status(HttpStatusCode.BAD_REQUEST)
+          .json(
+            handleError(
+              "Package ID, Feature ID, name and amount are required",
+              HttpStatusCode.BAD_REQUEST
+            )
+          );
+        return;
+      }
+
+      const result = await this.eventUseCase.updateFeature(
+        packageId,
+        featureId,
+        { name, amount }
+      );
+
+      res
+        .status(HttpStatusCode.OK)
+        .json(
+          handleSuccess(
+            ResponseMessage.FEATURE_UPDATED,
+            HttpStatusCode.OK,
+            result
+          )
+        );
+    } catch (error) {
+      console.log("Error in updateFeature controller:", error);
+      res
+        .status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+        .json(
+          handleError(
+            ResponseMessage.FEATURE_UPDATE_FAILED,
             HttpStatusCode.INTERNAL_SERVER_ERROR
           )
         );

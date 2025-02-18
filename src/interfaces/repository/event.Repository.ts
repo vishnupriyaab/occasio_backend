@@ -44,6 +44,8 @@ export default interface IEventRepository {
     currentPage: number;
   }>;
   findById(packageId: string): Promise<IPackage | null>;
+  addFeature(packageId: string, featureData: { name: string; amount: number; isBlocked: boolean }): Promise<IPackage | null>
+  updateFeature(packageId: string, featureId: string, featureData: { name: string; amount: number }): Promise<IPackage | null>
   featureBlock(packageId: string, featureId: string): Promise<IPackage | null>;
   deleteFeature(packageId: string, featureId: string): Promise<IPackage | null>;
 }

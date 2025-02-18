@@ -12,10 +12,10 @@ const foodRepository: IFoodRepository = new FoodRepository();
 const foodUseCase: IFoodUseCase = new FoodUseCase(foodRepository);
 const foodController: IFoodController = new FoodController(foodUseCase);
 
-foodRoute.post('/addFood', foodController.addFood.bind(foodController));
+foodRoute
+    .get('/searchFood',foodController.SearchFood.bind(foodController))
+    .post('/addFood', foodController.addFood.bind(foodController))
+    .put('/editFood/:id', foodController.editFood.bind(foodController))
 
-foodRoute.put('/editFood/:id', foodController.editFood.bind(foodController));
-
-foodRoute.get('/searchFood',foodController.SearchFood.bind(foodController))
 
 export default foodRoute;   

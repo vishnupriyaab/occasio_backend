@@ -47,7 +47,16 @@ export class FoodController implements IFoodController {
             food
           )
         );
-    } catch (error) {}
+    } catch (error) {
+      res
+        .status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+        .json(
+          handleError(
+            ResponseMessage.FOOD_CREATION_FAILED,
+            HttpStatusCode.INTERNAL_SERVER_ERROR
+          )
+        );
+    }
   }
   async editFood(req: Request, res: Response): Promise<void> {
     try {
