@@ -12,35 +12,35 @@ export class AdminUseCase implements IAdminUseCase {
     private IjwtSevice:IJWTService
   ) {}
 
-  async adminLogin(email: string, password: string):Promise<{ accessToken: string; refreshToken: string }> {
-    try {
-      console.log(email, password, "qwertyuiop");
+  // async adminLogin(email: string, password: string):Promise<{ accessToken: string; refreshToken: string }> {
+  //   try {
+  //     console.log(email, password, "qwertyuiop");
 
-    const admin = await this.adminRepo.findAdminByEmail(email);
-    console.log(admin,"admin")
-    if (!admin) {
-      throw new Error('Admin not found')
-    }
+  //   const admin = await this.adminRepo.findAdminByEmail(email);
+  //   console.log(admin,"admin")
+  //   if (!admin) {
+  //     throw new Error('Admin not found')
+  //   }
 
 
-    const isValid = await this.adminRepo.validateCredentials(email, password);
-      if (!isValid) {
-        throw new Error('Invalid credentials')
-      }
+  //   const isValid = await this.adminRepo.validateCredentials(email, password);
+  //     if (!isValid) {
+  //       throw new Error('Invalid credentials')
+  //     }
 
-      const payload = { id: admin._id ,role: "admin"};
-      const accessToken = this.IjwtSevice.generateAccessToken(payload);
-      const refreshToken = this.IjwtSevice.generateRefreshToken(payload);
+  //     const payload = { id: admin._id ,role: "admin"};
+  //     const accessToken = this.IjwtSevice.generateAccessToken(payload);
+  //     const refreshToken = this.IjwtSevice.generateRefreshToken(payload);
 
-      return {
-        accessToken,
-        refreshToken
-      };
-    } catch (error) {
-      throw error;
-    }
+  //     return {
+  //       accessToken,
+  //       refreshToken
+  //     };
+  //   } catch (error) {
+  //     throw error;
+  //   }
     
-  }
+  // }
 
   async findAdminByEmail(email: string): Promise<IAdmin | null> {
     try {
@@ -64,23 +64,7 @@ export class AdminUseCase implements IAdminUseCase {
     }
   }
 
-  async isAuthenticated(
-      token: string | undefined
-    ): Promise<IsAuthenticatedUseCaseRES> {
-      try {
-        if (!token) {
-          return { message: "Unauthorized: No token provided", status: 401 };
-        }
-        const decoded = this.IjwtSevice.verifyAccessToken(token) as JWTPayload;
-        console.log(decoded,"23456789000987654")
-        if (decoded.role?.toLowerCase() !== "admin") {
-          return { message: "No access admin", status: 401 };
-        }
-        return { message: "Admin is Authenticated", status: 200 };
-      } catch (error) {
-        throw error;
-      }
-    }
+
 
     async searchEmployee(
       searchTerm: string,

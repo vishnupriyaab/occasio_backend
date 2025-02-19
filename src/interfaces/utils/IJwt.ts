@@ -1,13 +1,6 @@
 export interface JWTPayload {
-  id: string; //
-  // adminId?:string;
-  // employeeId?:string;
-  // iat?: number;
-  // exp?: number;
-  role:string; //
-  // email?:string;
-  // name?:string;
-  // picture?:string
+  id: string; 
+  role:string; 
 }
 
 export interface TokenConfig {
