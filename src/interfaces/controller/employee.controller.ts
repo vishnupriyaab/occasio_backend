@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { AuthenticatedRequest } from "../../framework/middlewares/authenticateToken";
+import { AuthenticatedRequest } from "../../middleware/authenticateToken";
 
 export default interface IEmployeeController {
   registerEmployee(req: Request, res: Response): Promise<void>;

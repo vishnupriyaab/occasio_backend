@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { IAddFood, IFood } from "../entities/food.entity";
-import Food from "../framework/models/foodModel";
+import Food from "../models/foodModel";
 import IFoodRepository from "../interfaces/repository/food.Repository";
 
 export class FoodRepository implements IFoodRepository{

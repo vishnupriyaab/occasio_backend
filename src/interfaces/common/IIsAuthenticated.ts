@@ -5,8 +5,9 @@ export interface IsAuthenticatedUseCaseRES {
 
 export interface ISuccessResponseType {
   message: string;
-  success: boolean;
-  result?: any;
+  success?: boolean;
+  data?: any;
+  statusCode: number
 }
 
 export interface IErrorResponseType {

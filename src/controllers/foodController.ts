@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import IFoodUseCase from "../interfaces/useCase/food.useCase";
 import { HttpStatusCode } from "../constant/httpStatusCodes";
-import { handleError, handleSuccess } from "../framework/utils/responseHandler";
+import { handleError, handleSuccess } from "../integration/responseHandler";
 import { ResponseMessage } from "../constant/responseMsg";
 import { IFoodController } from "../interfaces/controller/food.controller";
 

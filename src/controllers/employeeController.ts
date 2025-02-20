@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { HttpStatusCode } from "../constant/httpStatusCodes";
-import { handleError, handleSuccess } from "../framework/utils/responseHandler";
+import { handleError, handleSuccess } from "../integration/responseHandler";
 import { ResponseMessage } from "../constant/responseMsg";
 import IEmployeeController from "../interfaces/controller/employee.controller";
 import { IEmployeeUseCase } from "../interfaces/useCase/employee.useCase";
-import { AuthenticatedRequest } from "../framework/middlewares/authenticateToken";
+import { AuthenticatedRequest } from "../middleware/authenticateToken";
 
 export class EmployeeController implements IEmployeeController {
   constructor( private employeeUseCase: IEmployeeUseCase ) {}

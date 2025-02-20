@@ -1,5 +1,5 @@
 import IRefreshTokenUseCase from "../interfaces/useCase/refreshToken.useCase";
-import { IJWTService, JWTPayload } from "../interfaces/utils/IJwt";
+import { IJWTService, JWTPayload } from "../interfaces/integration/IJwt";
 
 export class RefreshTokenUsecase implements IRefreshTokenUseCase {
   private jwtService: IJWTService;

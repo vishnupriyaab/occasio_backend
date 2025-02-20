@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { IEmployee, IRegisterEmployee } from "../entities/employee.entity";
-import Employees from "../framework/models/employeeModel";
+import Employees from "../models/employeeModel";
 import IEmployeeRepository from "../interfaces/repository/employee.Repository";
 
 export class EmployeeRepository implements IEmployeeRepository {

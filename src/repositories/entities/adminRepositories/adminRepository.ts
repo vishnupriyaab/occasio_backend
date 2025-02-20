@@ -1,10 +1,10 @@
 import { IAdmin } from "../../../entities/admin.entity";
-import Admin from "../../../framework/models/adminModel";
+import Admin from "../../../models/adminModel";
 import IAdminRepository from "../../../interfaces/repository/admin/admin.repository";
-import AdminBaseRepositoy from "../../baseRepository/adminBaseRepository/adminBaseRepository";
+import CommonBaseRepository from "../../baseRepository/commonBaseRepository";
 
-export default class AdminRepository
-  extends AdminBaseRepositoy<{ admin: Document & IAdmin }>
+export default class AdminAuthRepository
+  extends CommonBaseRepository<{ admin: Document & IAdmin }>
   implements IAdminRepository
 {
   constructor() {

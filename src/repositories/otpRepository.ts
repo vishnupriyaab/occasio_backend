@@ -1,5 +1,5 @@
 import IOTP from "../entities/otp.entity";
-import Otp from "../framework/models/otpModel";
+import Otp from "../models/otpModel";
 import IOtpRepository from "../interfaces/repository/otp.Repository";
 
 export class OtpRepository implements IOtpRepository {

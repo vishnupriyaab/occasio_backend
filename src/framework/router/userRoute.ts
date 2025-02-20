@@ -3,16 +3,16 @@ import { UserController } from "../../controllers/userController";
 import { UserRepository } from "../../repositories/userRepository";
 import { UserUseCase } from "../../usecase/userUseCase";
 import { OtpRepository } from "../../repositories/otpRepository";
-import { IJWTService } from "../../interfaces/utils/IJwt";
-import { JWTService } from "../utils/jwtServices";
-import { IGoogleAuthService } from "../../interfaces/utils/IGoogleVerification";
-import { GoogleAuthService } from "../utils/googleVerification";
+import { IJWTService } from "../../interfaces/integration/IJwt";
+import { JWTService } from "../../integration/jwtServices";
+import { IGoogleAuthService } from "../../interfaces/integration/IGoogleVerification";
+import { GoogleAuthService } from "../../integration/googleVerification";
 import IUserRepository from "../../interfaces/repository/user.Repository";
 import IUserUseCase from "../../interfaces/useCase/user.useCase";
 import IUserController from "../../interfaces/controller/user.controller";
 import IOtpRepository from "../../interfaces/repository/otp.Repository";
-import AuthMiddleware from "../middlewares/authenticateToken";
-import { upload } from "../middlewares/claudinaryUpload";
+import AuthMiddleware from "../../middleware/authenticateToken";
+import { upload } from "../../middleware/claudinaryUpload";
 
 const userRoute = express.Router();
 

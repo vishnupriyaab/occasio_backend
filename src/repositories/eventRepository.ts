@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 import { IAddEventRegister, IEvent } from "../entities/event.entity";
 import { IPackage, IPackageRegister } from "../entities/package.entity";
-import Event from "../framework/models/EventModel";
-import Package from "../framework/models/packageModel";
+import Event from "../models/EventModel";
+import Package from "../models/packageModel";
 import IEventRepository from "../interfaces/repository/event.Repository";
 
 export class EventRepository  implements IEventRepository{

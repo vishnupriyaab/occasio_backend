@@ -3,16 +3,16 @@ import { EmployeeRepository } from "../../repositories/employeeRepository";
 import { EmployeeUseCase } from "../../usecase/employeeUseCase";
 import { EmployeeController } from "../../controllers/employeeController";
 import { OtpRepository } from "../../repositories/otpRepository";
-import { JWTService } from "../utils/jwtServices";
-import { ICryptoService } from "../../interfaces/utils/ICrypto";
-import { CryptoService } from "../utils/cryptoServices";
-import { IJWTService } from "../../interfaces/utils/IJwt";
+import { JWTService } from "../../integration/jwtServices";
+import { ICryptoService } from "../../interfaces/integration/ICrypto";
+import { CryptoService } from "../../integration/cryptoServices";
+import { IJWTService } from "../../interfaces/integration/IJwt";
 import IEmployeeRepository from "../../interfaces/repository/employee.Repository";
 import IOtpRepository from "../../interfaces/repository/otp.Repository";
 import { IEmployeeUseCase } from "../../interfaces/useCase/employee.useCase";
 import IEmployeeController from "../../interfaces/controller/employee.controller";
-import AuthMiddleware from "../middlewares/authenticateToken";
-import { upload } from "../middlewares/claudinaryUpload";
+import AuthMiddleware from "../../middleware/authenticateToken";
+import { upload } from "../../middleware/claudinaryUpload";
 
 const employeeRoute = express.Router();
 

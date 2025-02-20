@@ -1,5 +1,3 @@
-// import { Document } from "mongoose";
-
 export interface IAdmin {
   _id: string;
   adminId: string;

@@ -1,6 +1,6 @@
 import express from "express";
-import { IJWTService } from "../../interfaces/utils/IJwt";
-import { JWTService } from "../utils/jwtServices";
+import { IJWTService } from "../../interfaces/integration/IJwt";
+import { JWTService } from "../../integration/jwtServices";
 import IRefreshTokenUseCase from "../../interfaces/useCase/refreshToken.useCase";
 import { RefreshTokenUsecase } from "../../usecase/refreshTokenUseCase";
 import { IRefreshTokenController } from "../../interfaces/controller/refreshToken.controller";

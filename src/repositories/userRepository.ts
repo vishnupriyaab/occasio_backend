@@ -1,4 +1,4 @@
-import Users from "../framework/models/userModel";
+import Users from "../models/userModel";
 import { IRegisterUser, IUser } from "../entities/user.entity";
 import IUserRepository from "../interfaces/repository/user.Repository";
 
@@ -155,14 +155,17 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  async updateUserProfileImage(userId: string, imageUrl: string): Promise<IUser | null> {
+  async updateUserProfileImage(
+    userId: string,
+    imageUrl: string
+  ): Promise<IUser | null> {
     try {
       const updatedUser = await Users.findByIdAndUpdate(
         userId,
         { $set: { imageUrl: imageUrl } },
         { new: true }
       );
-      
+
       return updatedUser ? updatedUser.toObject() : null;
     } catch (error) {
       console.error("Error updating user profile image:", error);
@@ -170,21 +173,21 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  async updateUserProfile(userId: string, updateData: Partial<IUser>): Promise<IUser | null> {
+  async updateUserProfile(
+    userId: string,
+    updateData: Partial<IUser>
+  ): Promise<IUser | null> {
     try {
-        const updatedUser = await Users.findByIdAndUpdate(
-            userId,
-            { $set: updateData },
-            { new: true }
-        );
+      const updatedUser = await Users.findByIdAndUpdate(
+        userId,
+        { $set: updateData },
+        { new: true }
+      );
 
-        return updatedUser ? updatedUser.toObject() : null;
+      return updatedUser ? updatedUser.toObject() : null;
     } catch (error) {
-        console.error("Error updating user profile:", error);
-        throw error;
+      console.error("Error updating user profile:", error);
+      throw error;
     }
-}
-
-
-
+  }
 }

@@ -1,7 +1,8 @@
 import { IUser } from "../../../entities/user.entity";
 
-export default interface IUserService{
-    blockUser(userId:string):Promise<IUser | null>
+export default interface IUserRepository{
+    findUserById(id: string): Promise<IUser | null>
+    updateUserBlockStatus(id: string, updateData: any): Promise<IUser | null>;
     searchUser(
         searchTerm: string,
         filterStatus: string | undefined,

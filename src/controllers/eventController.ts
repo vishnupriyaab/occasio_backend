@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { handleError, handleSuccess } from "../framework/utils/responseHandler";
-import { ICloudinaryService } from "../interfaces/utils/IClaudinary";
+import { handleError, handleSuccess } from "../integration/responseHandler";
+import { ICloudinaryService } from "../interfaces/integration/IClaudinary";
 import { HttpStatusCode } from "../constant/httpStatusCodes";
 import { ResponseMessage } from "../constant/responseMsg";
 import { IEventUseCase } from "../interfaces/useCase/event.useCase";

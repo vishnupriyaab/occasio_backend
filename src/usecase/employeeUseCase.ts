@@ -1,9 +1,9 @@
 import { IEmployee, IRegisterEmployee } from "../entities/employee.entity";
-import { EmailService } from "../framework/utils/emailService";
-import { ICryptoService } from "../interfaces/utils/ICrypto";
-import { IJWTService, JWTPayload } from "../interfaces/utils/IJwt";
+import { EmailService } from "../integration/emailService";
+import { ICryptoService } from "../interfaces/integration/ICrypto";
+import { IJWTService, JWTPayload } from "../interfaces/integration/IJwt";
 import bcrypt from "bcrypt";
-import { IEmailService } from "../interfaces/utils/IEmail";
+import { IEmailService } from "../interfaces/integration/IEmail";
 import { IEmployeeUseCase } from "../interfaces/useCase/employee.useCase";
 import IEmployeeRepository from "../interfaces/repository/employee.Repository";
 import IOtpRepository from "../interfaces/repository/otp.Repository";
