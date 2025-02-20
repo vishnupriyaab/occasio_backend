@@ -10,6 +10,7 @@ export interface IEmployee {
   updatedAt: Date;
   isBlocked: boolean;
   isVerified: boolean;
+  isActivated: boolean;
   resetPasswordToken: string;
   isEmployee?: "Approved" | "Pending" | "Rejected";
 }

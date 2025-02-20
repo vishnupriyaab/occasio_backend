@@ -42,13 +42,6 @@ export default class AdminEmployeeRepository
           $options: "i",
         };
       }
-
-      //   if (filterStatus === "blocked") {
-      //     query.isBlocked = true;
-      //   } else if (filterStatus === "unblocked") {
-      //     query.isBlocked = false;
-      //   }
-
       let status = filterStatus;
       try {
         if (

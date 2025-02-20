@@ -1,6 +1,6 @@
 import { IAdmin } from "../../../entities/admin.entity";
 import Admin from "../../../models/adminModel";
-import IAdminRepository from "../../../interfaces/repository/admin/admin.repository";
+import IAdminRepository from "../../../interfaces/repository/admin/admin.auth.repository";
 import CommonBaseRepository from "../../baseRepository/commonBaseRepository";
 
 export default class AdminAuthRepository

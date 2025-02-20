@@ -1,13 +1,13 @@
 import bcrypt from "bcrypt";
-import IAdminRepository from "../../../interfaces/repository/admin/admin.repository";
-import IAdminServices from "../../../interfaces/services/admin/admin.services";
+import IAdminRepository from "../../../interfaces/repository/admin/admin.auth.repository";
 import { IJWTService, JWTPayload } from "../../../interfaces/integration/IJwt";
 import { IsAuthenticatedUseCaseRES } from "../../../interfaces/common/IIsAuthenticated";
 import { HttpStatusCode } from "../../../constant/httpStatusCodes";
 import { JWTService } from "../../../integration/jwtServices";
-import AdminAuthRepository from "../../../repositories/entities/adminRepositories/adminRepository";
+import AdminAuthRepository from "../../../repositories/entities/adminRepositories/adminAuthRepository";
+import IAdminAuthServices from "../../../interfaces/services/admin/adminAuth.services";
 
-export class AdminAuthService implements IAdminServices {
+export class AdminAuthService implements IAdminAuthServices {
   private adminRepo: IAdminRepository
   private IjwtSevice: IJWTService
   constructor(

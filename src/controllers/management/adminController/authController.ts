@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import IAdminServices from "../../../interfaces/services/admin/admin.services";
+import IAdminServices from "../../../interfaces/services/admin/adminAuth.services";
 import {
   ErrorResponse,
   successResponse,
@@ -7,7 +7,7 @@ import {
 import { HttpStatusCode } from "../../../constant/httpStatusCodes";
 import { AuthenticatedRequest } from "../../../middleware/authenticateToken";
 import { adminAuthServices } from "../../../services/business/adminServices/authService";
-import IAdminAuthController from "../../../interfaces/controller/admin/admin.controller";
+import IAdminAuthController from "../../../interfaces/controller/admin/auth.controller";
 
 export class AdminAuthController implements IAdminAuthController {
   private adminService: IAdminServices

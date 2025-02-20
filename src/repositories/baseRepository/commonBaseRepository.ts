@@ -20,17 +20,43 @@ export default class CommonBaseRepository <TModels extends Record<string, Docume
     
         return model.findOne(query);
     }
+
+    findOneAndUpdate<K extends keyof TModels>(
+        modelName: K,
+        filter: FilterQuery<TModels[K]>,
+        updateData: UpdateQuery<TModels[K]>
+      ): Promise<TModels[K] | null> {
+        const model = this.models[modelName];
+        if (!model) throw new Error(`Model ${String(modelName)} not found`);
+      
+        return model.findOneAndUpdate(
+          filter,
+          { $set: updateData },
+          { new: true, runValidators: true }
+        );
+      }
     
     //block-unblock
-    async updateById<K extends keyof TModels>( modelName: K, id: string, updateData: UpdateQuery<TModels[K]> ): Promise<TModels[K] | null> {
+    updateById<K extends keyof TModels>( modelName: K, id: string, updateData: UpdateQuery<TModels[K]> ): Promise<TModels[K] | null> {
         const model = this.models[modelName];
         if (!model) throw new Error(`Model ${String(modelName)} not found`);
         
         return model.findByIdAndUpdate(id, { $set: updateData }, { new: true, runValidators: true });
     }
+    updateOne<K extends keyof TModels>(
+        modelName: K,
+        filter: FilterQuery<TModels[K]>,
+        updateData: UpdateQuery<TModels[K]>,
+        options?: { upsert?: boolean }
+    ): Promise<import('mongodb').UpdateResult> {
+        const model = this.models[modelName];
+        if (!model) throw new Error(`Model ${String(modelName)} not found`);
+      
+        return model.updateOne(filter, { $set: updateData }, options);
+    }
 
     // search and filter
-    async findMany<K extends keyof TModels>(
+    findMany<K extends keyof TModels>(
         modelName: K,
         query: FilterQuery<TModels[K]>,
         options?: { skip?: number; limit?: number; sort?: Record<string, 1 | -1> }
@@ -45,11 +71,19 @@ export default class CommonBaseRepository <TModels extends Record<string, Docume
           .sort(options?.sort ?? {});
       }
       
-      async count<K extends keyof TModels>(modelName: K, query: FilterQuery<TModels[K]>): Promise<number> {
+    count<K extends keyof TModels>(modelName: K, query: FilterQuery<TModels[K]>): Promise<number> {
         const model = this.models[modelName];
         if (!model) throw new Error(`Model ${String(modelName)} not found`);
       
         return model.countDocuments(query);
-      }
+    }
+
+    //create
+    createData<K extends keyof TModels>(modelName: K, data: Partial<TModels[K]>): Promise<TModels[K]> {
+        const model = this.models[modelName];
+        if (!model) throw new Error(`Model ${String(modelName)} not found`);
+    
+        return model.create(data);
+    }
       
 }
