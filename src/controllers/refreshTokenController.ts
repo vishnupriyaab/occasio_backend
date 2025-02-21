@@ -1,11 +1,10 @@
 import { Request, Response } from "express";
-import { IRefreshTokenController } from "../interfaces/controller/refreshToken.controller";
 import IRefreshTokenUseCase from "../interfaces/useCase/refreshToken.useCase";
 import { ResponseMessage } from "../constant/responseMsg";
 import { handleError, handleSuccess } from "../integration/responseHandler";
 import { HttpStatusCode } from "../constant/httpStatusCodes";
 
-export class RefreshTokenController implements IRefreshTokenController {
+export class RefreshTokenController {
   constructor(private refreshUseCase: IRefreshTokenUseCase) {}
 
   async getNewAccessTokenWithRefreshToken(

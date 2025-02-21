@@ -6,10 +6,10 @@ import {
 } from "../../../integration/responseHandler";
 import { AuthenticatedRequest } from "../../../middleware/authenticateToken";
 import IEmplProfileService from "../../../interfaces/services/employee/profile.services";
-import IEmplProfileController from "../../../interfaces/controller/employee/profile.controller";
+// import IEmplProfileController from "../../../interfaces/controller/employee/profile.controller";
 import { emplProfileServices } from "../../../services/business/employeeService/profileService";
 
-export class EmplProfileController implements IEmplProfileController {
+export class EmplProfileController {
   private profileService: IEmplProfileService;
 
   constructor(profileService: IEmplProfileService) {

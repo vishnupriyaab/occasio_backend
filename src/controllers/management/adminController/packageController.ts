@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import IAdminPackageController from "../../../interfaces/controller/admin/package.controller";
 import { HttpStatusCode } from "../../../constant/httpStatusCodes";
 import {
   ErrorResponse,
@@ -8,7 +7,7 @@ import {
 import IAdminPackageService from "../../../interfaces/services/admin/package.services";
 import { adminPackageService } from "../../../services/business/adminServices/packageService";
 
-export class AdminPackageController implements IAdminPackageController {
+export class AdminPackageController {
   private packageService: IAdminPackageService;
   constructor(packageService: IAdminPackageService) {
     this.packageService = packageService;
@@ -165,25 +164,20 @@ export class AdminPackageController implements IAdminPackageController {
     }
   }
 
-    //blockPackage
-    async blockPackage(req: Request, res: Response): Promise<void> {
-      try {
-        const packageId = req.params.id;
-        console.log(packageId, "packageIddddddddddd");
-        const result: any = await this.packageService.blockPackage(packageId);
+  //blockPackage
+  async blockPackage(req: Request, res: Response): Promise<void> {
+    try {
+      const packageId = req.params.id;
+      console.log(packageId, "packageIddddddddddd");
+      const result: any = await this.packageService.blockPackage(packageId);
 
-        const response = result.isBlocked
+      const response = result.isBlocked
         ? "Package blocked successfully"
         : "Package unblocked successfully";
-        
-        return successResponse(res, HttpStatusCode.OK, response, result)
 
-    } catch (error: unknown) {
-        
-      }
-    }
+      return successResponse(res, HttpStatusCode.OK, response, result);
+    } catch (error: unknown) {}
+  }
 }
 
-export const adminPackageController = new AdminPackageController(
-  adminPackageService
-);
+export const adminPackageController = new AdminPackageController( adminPackageService );

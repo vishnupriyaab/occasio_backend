@@ -3,11 +3,9 @@ import { EventRepository } from "../../repositories/eventRepository";
 import { EventController } from "../../controllers/eventController";
 import { EventUseCase } from "../../usecase/eventUseCase";
 import { CloudinaryService } from "../../integration/claudinaryService";
-import { upload } from "../../middleware/claudinaryUpload";
 import { ICloudinaryService } from "../../interfaces/integration/IClaudinary";
 import IEventRepository from "../../interfaces/repository/event.Repository";
 import { IEventUseCase } from "../../interfaces/useCase/event.useCase";
-import { IEventController } from "../../interfaces/controller/event.controller";
 
 const eventRoute = express.Router();
 
@@ -17,7 +15,7 @@ const eventUseCase: IEventUseCase = new EventUseCase(
   claudinaryService,
   eventRepository
 );
-const eventController: IEventController = new EventController(
+const eventController = new EventController(
   eventUseCase,
   claudinaryService
 );
@@ -32,13 +30,13 @@ const eventController: IEventController = new EventController(
 //   .delete('/deleteEvent/:id', eventController.deleteEvent.bind(eventController));
 
 
-//Package
-eventRoute
-  .get( "/getPackages/:id", eventController.getPackages.bind(eventController))
-  .post( "/addPackage", upload.single("img"), eventController.addPackage.bind(eventController))
-  .put( "/updatePackage/:id", upload.single("img"), eventController.updatePackage.bind(eventController))
-  .patch( "/blockPackage/:id", eventController.blockPackage.bind(eventController))
-  .delete( "/deletePackage/:id", eventController.deletePackage.bind(eventController));
+// //Package
+// eventRoute
+//   .get( "/getPackages/:id", eventController.getPackages.bind(eventController))
+//   .post( "/addPackage", upload.single("img"), eventController.addPackage.bind(eventController))
+//   .put( "/updatePackage/:id", upload.single("img"), eventController.updatePackage.bind(eventController))
+//   .patch( "/blockPackage/:id", eventController.blockPackage.bind(eventController))
+//   .delete( "/deletePackage/:id", eventController.deletePackage.bind(eventController));
 
 
 //Features

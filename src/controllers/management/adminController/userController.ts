@@ -1,12 +1,11 @@
 import { Request, Response } from "express";
 import { AuthenticatedRequest } from "../../../middleware/authenticateToken";
-import IUserController from "../../../interfaces/controller/admin/user.controller";
 import IUserService from "../../../interfaces/services/admin/user.services";
 import { ErrorResponse, successResponse } from "../../../integration/responseHandler";
 import { HttpStatusCode } from "../../../constant/httpStatusCodes";
 import { adminUserServices } from "../../../services/business/adminServices/userServices";
 
-export class AdminUserController implements IUserController {
+export class AdminUserController {
   private userService: IUserService
   constructor(userService: IUserService) {
     this.userService = userService

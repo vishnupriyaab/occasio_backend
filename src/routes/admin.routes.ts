@@ -8,6 +8,7 @@ import { adminEmployeeController } from "../controllers/management/adminControll
 import { adminEventController } from "../controllers/management/adminController/eventController";
 import { upload } from "../middleware/claudinaryUpload";
 import { adminPackageController } from "../controllers/management/adminController/packageController";
+import { adminFeatureController } from "../controllers/management/adminController/featureController";
 
 const adminRouter = Router();
 const iJwtServices: IJWTService = new JWTService();
@@ -36,11 +37,18 @@ adminRouter
     .patch('/blockEvent/:id', adminEventController.blockEvent.bind(adminEventController))
     .delete('/deleteEvent/:id', adminEventController.deleteEvent.bind(adminEventController))
 
-    ///////////////////////////////////////////////////////       Package - Management      //////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////       Package - Management      //////////////////////////////////////////////////////
     .get( "/getPackages/:id", adminPackageController.getPackages.bind(adminPackageController))
     .post( "/addPackage", upload.single("img"), adminPackageController.addPackage.bind(adminPackageController))
     .put( "/updatePackage/:id", upload.single("img"), adminPackageController.updatePackage.bind(adminPackageController))
     .patch( "/blockPackage/:id", adminPackageController.blockPackage.bind(adminPackageController))
-    .delete( "/deletePackage/:id", adminPackageController.deletePackage.bind(adminPackageController));
+    .delete( "/deletePackage/:id", adminPackageController.deletePackage.bind(adminPackageController))
+
+    /////////////////////////////////////////////////////       Feature - Management     //////////////////////////////////////////////////////
+    .get( "/getPackageDetails/:id", adminFeatureController.getPackageDetails.bind(adminFeatureController))
+    .post( "/addFeature", adminFeatureController.addFeature.bind(adminFeatureController))
+    .put( "/updateFeature/:id", adminFeatureController.updateFeature.bind(adminFeatureController))
+    .patch( "/blockFeature/:packageId", adminFeatureController.blockFeature.bind(adminFeatureController))
+    .delete( "/deleteFeature/:packageId", adminFeatureController.deleteFeature.bind(adminFeatureController));
 
 export default adminRouter;

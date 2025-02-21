@@ -7,9 +7,8 @@ import {
 import { HttpStatusCode } from "../../../constant/httpStatusCodes";
 import { AuthenticatedRequest } from "../../../middleware/authenticateToken";
 import { adminAuthServices } from "../../../services/business/adminServices/authService";
-import IAdminAuthController from "../../../interfaces/controller/admin/auth.controller";
 
-export class AdminAuthController implements IAdminAuthController {
+export class AdminAuthController {
   private adminService: IAdminServices
   constructor( adminService: IAdminServices) {
     this.adminService = adminService;

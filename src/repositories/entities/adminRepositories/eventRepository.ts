@@ -24,8 +24,6 @@ export class AdminEventRepository
     return this.createData("event", event);
   }
 
-
-
   async searchEvent(
     searchTerm: string,
     filterStatus: string | undefined,

@@ -4,11 +4,10 @@ import {
   ErrorResponse,
   successResponse,
 } from "../../../integration/responseHandler";
-import IUserEventController from "../../../interfaces/controller/user/event.controller";
 import IUserEventService from "../../../interfaces/services/user/event.services";
 import { userEventService } from "../../../services/business/userServices/eventService";
 
-export class UserEventController implements IUserEventController {
+export class UserEventController {
   private eventService: IUserEventService;
   constructor(eventService: IUserEventService) {
     this.eventService = eventService;

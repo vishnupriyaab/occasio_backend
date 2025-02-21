@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import IAdminEventController from "../../../interfaces/controller/admin/event.controller";
 import IAdminEventService from "../../../interfaces/services/admin/event.services";
 import {
   ErrorResponse,
@@ -8,7 +7,7 @@ import {
 import { HttpStatusCode } from "../../../constant/httpStatusCodes";
 import { adminEventService } from "../../../services/business/adminServices/eventService";
 
-export class AdminEventController implements IAdminEventController {
+export class AdminEventController {
   private eventService: IAdminEventService;
   constructor(eventService: IAdminEventService) {
     this.eventService = eventService;

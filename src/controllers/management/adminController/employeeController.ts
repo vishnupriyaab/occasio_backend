@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import IAdminEmployeeController from "../../../interfaces/controller/admin/employee.controller";
 import IAdminEmployeeService from "../../../interfaces/services/admin/employee.services";
 import { HttpStatusCode } from "../../../constant/httpStatusCodes";
 import {
@@ -8,7 +7,7 @@ import {
 } from "../../../integration/responseHandler";
 import { adminEmployeeServices } from "../../../services/business/adminServices/employeeService";
 
-export class AdminEmployeeController implements IAdminEmployeeController {
+export class AdminEmployeeController {
   private employeeService: IAdminEmployeeService;
   constructor(employeeService: IAdminEmployeeService) {
     this.employeeService = employeeService;

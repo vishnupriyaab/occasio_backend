@@ -9,7 +9,6 @@ import { IGoogleAuthService } from "../../interfaces/integration/IGoogleVerifica
 import { GoogleAuthService } from "../../integration/googleVerification";
 import IUserRepository from "../../interfaces/repository/user.Repository";
 import IUserUseCase from "../../interfaces/useCase/user.useCase";
-import IUserController from "../../interfaces/controller/user.controller";
 import IOtpRepository from "../../interfaces/repository/otp.Repository";
 import AuthMiddleware from "../../middleware/authenticateToken";
 import { upload } from "../../middleware/claudinaryUpload";
@@ -30,7 +29,7 @@ const googleAuthService: IGoogleAuthService = new GoogleAuthService(
 );
 const authMiddleware = new AuthMiddleware("user",iJwtService);
 const userUseCase:IUserUseCase = new UserUseCase( userRepository, otpRepository, emailConfig ,iJwtService, googleAuthService);
-const userController:IUserController = new UserController(userUseCase);
+const userController = new UserController(userUseCase);
 
 //PublicRoute
 userRoute

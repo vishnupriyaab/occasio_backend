@@ -3,9 +3,8 @@ import IFoodUseCase from "../interfaces/useCase/food.useCase";
 import { HttpStatusCode } from "../constant/httpStatusCodes";
 import { handleError, handleSuccess } from "../integration/responseHandler";
 import { ResponseMessage } from "../constant/responseMsg";
-import { IFoodController } from "../interfaces/controller/food.controller";
 
-export class FoodController implements IFoodController {
+export class FoodController {
   constructor(private foodUseCase: IFoodUseCase) {}
   async addFood(req: Request, res: Response): Promise<void> {
     try {

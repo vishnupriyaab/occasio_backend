@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import IEmplAuthController from "../../../interfaces/controller/employee/auth.controller";
 import IEmplAuthService from "../../../interfaces/services/employee/emplAuth.services";
 import {
   ErrorResponse,
@@ -8,7 +7,7 @@ import {
 import { HttpStatusCode } from "../../../constant/httpStatusCodes";
 import { emplAuthServices } from "../../../services/business/employeeService/authService";
 
-export class EmplAuthController implements IEmplAuthController {
+export class EmplAuthController {
   private emplService: IEmplAuthService;
   constructor(emplService: IEmplAuthService) {
     this.emplService = emplService;

@@ -3,10 +3,9 @@ import { HttpStatusCode } from "../constant/httpStatusCodes";
 import { handleError, handleSuccess } from "../integration/responseHandler";
 import { ResponseMessage } from "../constant/responseMsg";
 import IUserUseCase from "../interfaces/useCase/user.useCase";
-import IUserController from "../interfaces/controller/user.controller";
 import { AuthenticatedRequest } from "../middleware/authenticateToken";
 
-export class UserController implements IUserController {
+export class UserController {
   constructor(private userUserCase: IUserUseCase) {}
 
   //user-register
