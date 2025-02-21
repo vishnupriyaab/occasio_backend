@@ -20,6 +20,7 @@ export interface IPackageRegister {
   startingAmnt: number;
   eventId: string;
   items: {
+    _id:string;
     name: string;
     isBlocked: boolean;
     amount: number;

@@ -131,11 +131,17 @@ export class EventUseCase implements IEventUseCase{
 
   async updatedPackage(
     packageId: string,
-    updatedData: any
+    updatedData: any,
+    file?: Express.Multer.File
   ): Promise<IPackage | null> {
     try {
       const eventId = updatedData.eventId;
       console.log(eventId, "eventid1234567");
+
+      if (file) {
+        const imageUrl = await this.cloudinaryService.uploadImage(file);
+        updatedData.image = imageUrl;
+      }
 
       const existingPackage = await this.eventRepo.getPackageById(
         packageId,
@@ -144,7 +150,9 @@ export class EventUseCase implements IEventUseCase{
       console.log(existingPackage, "qwertyuiop");
 
       if (!existingPackage) {
-        throw new Error("Package not found for this event");
+        const error = new Error('Package not found for this event')
+        error.name = 'PackageNotFound'
+        throw error;
       } else {
         const updatedPackage = await this.eventRepo.updatedPackage(
           packageId,
@@ -153,7 +161,7 @@ export class EventUseCase implements IEventUseCase{
         console.log("Package successfully updated");
         return updatedPackage;
       }
-    } catch (error) {
+    } catch (error: unknown) {
       throw error;
     }
   }

@@ -7,6 +7,7 @@ import { adminUserController } from "../controllers/management/adminController/u
 import { adminEmployeeController } from "../controllers/management/adminController/employeeController";
 import { adminEventController } from "../controllers/management/adminController/eventController";
 import { upload } from "../middleware/claudinaryUpload";
+import { adminPackageController } from "../controllers/management/adminController/packageController";
 
 const adminRouter = Router();
 const iJwtServices: IJWTService = new JWTService();
@@ -28,11 +29,18 @@ adminRouter
     .patch( "/blockEmployee/:id", adminEmployeeController.blockEmployee.bind(adminEmployeeController))
     .get( "/searchEmployee", adminEmployeeController.searchEmployee.bind(adminEmployeeController))
 
-////////////////////////////////////////////////////////      Event - Management ///////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////      Event - Management       ////////////////////////////////////////////////////////
     .get('/searchEvent', adminEventController.searchEvent.bind(adminEventController))
     .post('/addEvent', upload.single('img'), adminEventController.addEvent.bind(adminEventController))
     .put('/updateEvent/:id', upload.single('img'), adminEventController.updateEvent.bind(adminEventController))
     .patch('/blockEvent/:id', adminEventController.blockEvent.bind(adminEventController))
-    .delete('/deleteEvent/:id', adminEventController.deleteEvent.bind(adminEventController));
+    .delete('/deleteEvent/:id', adminEventController.deleteEvent.bind(adminEventController))
+
+    ///////////////////////////////////////////////////////       Package - Management      //////////////////////////////////////////////////////
+    .get( "/getPackages/:id", adminPackageController.getPackages.bind(adminPackageController))
+    .post( "/addPackage", upload.single("img"), adminPackageController.addPackage.bind(adminPackageController))
+    .put( "/updatePackage/:id", upload.single("img"), adminPackageController.updatePackage.bind(adminPackageController))
+    .patch( "/blockPackage/:id", adminPackageController.blockPackage.bind(adminPackageController))
+    .delete( "/deletePackage/:id", adminPackageController.deletePackage.bind(adminPackageController));
 
 export default adminRouter;

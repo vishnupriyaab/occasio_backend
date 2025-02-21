@@ -40,5 +40,5 @@ const packageSchema: Schema = new Schema<IPackage>(
   { timestamps: true }
 );
 
-const Package = mongoose.model<IPackage>("Packages", packageSchema);
+const Package = mongoose.model<IPackage & Document>("Packages", packageSchema);
 export default Package;
