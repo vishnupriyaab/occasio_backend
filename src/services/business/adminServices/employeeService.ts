@@ -23,7 +23,7 @@ export class AdminEmployeeService implements IAdminEmployeeService {
       return await this.employeeRepo.updateEmployeeBlockStatus(employeeId, {
         isBlocked: employee.isBlocked,
       });
-    } catch (error) {
+    } catch (error:unknown) {
       throw error;
     }
   }
@@ -53,7 +53,7 @@ export class AdminEmployeeService implements IAdminEmployeeService {
         page,
         limit
       );
-    } catch (error) {
+    } catch (error: unknown) {
       throw error;
     }
   }

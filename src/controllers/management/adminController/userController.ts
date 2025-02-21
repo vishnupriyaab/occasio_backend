@@ -59,7 +59,7 @@ export class AdminUserController implements IUserController {
         page,
         limit
       );
-      return successResponse(
+        return successResponse(
         res,
         HttpStatusCode.OK,
         "Users fetched successfully",

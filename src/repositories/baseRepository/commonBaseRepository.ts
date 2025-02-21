@@ -85,5 +85,12 @@ export default class CommonBaseRepository <TModels extends Record<string, Docume
     
         return model.create(data);
     }
+
+    deleteById<K extends keyof TModels>(modelName: K, id: string): Promise<TModels[K] | null> {
+        const model = this.models[modelName];
+        if (!model) throw new Error(`Model ${String(modelName)} not found`);
+    
+        return model.findByIdAndDelete(id).exec();
+    }
       
 }

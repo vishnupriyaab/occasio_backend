@@ -23,13 +23,13 @@ const eventController: IEventController = new EventController(
 );
 
 //event
-eventRoute
-  .get('/searchEvent', eventController.searchEvent.bind(eventController))
-  .get('/getEvent', eventController.getEvent.bind(eventController))
-  .post('/addEvent', upload.single('img'), eventController.addEvent.bind(eventController))
-  .put('/updateEvent/:id', upload.single('img'), eventController.updateEvent.bind(eventController))
-  .patch('/blockEvent/:id', eventController.blockEvent.bind(eventController))
-  .delete('/deleteEvent/:id', eventController.deleteEvent.bind(eventController));
+// eventRoute
+//   .get('/searchEvent', eventController.searchEvent.bind(eventController))
+//   .get('/getEvent', eventController.getEvent.bind(eventController))
+//   .post('/addEvent', upload.single('img'), eventController.addEvent.bind(eventController))
+//   .put('/updateEvent/:id', upload.single('img'), eventController.updateEvent.bind(eventController))
+//   .patch('/blockEvent/:id', eventController.blockEvent.bind(eventController))
+//   .delete('/deleteEvent/:id', eventController.deleteEvent.bind(eventController));
 
 
 //Package

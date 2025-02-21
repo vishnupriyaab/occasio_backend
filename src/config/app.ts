@@ -1,13 +1,12 @@
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
-import userRoute from "../framework/router/userRoute";
-import eventRoute from "../framework/router/eventRoute";
 import cookieParser from "cookie-parser";
 import foodRoute from "../framework/router/foodRoute";
 import refreshTokenRoute from "../framework/router/refreshTokenRoute";
 import adminRouter from "../routes/admin.routes";
 import employeeRouter from "../routes/employee.routes";
+import userRouter from "../routes/user.routes";
 
 const app = express();
 
@@ -30,13 +29,11 @@ app.use(express.json({limit:'50mb'}));
 app.use(express.urlencoded({ limit:'50mb',extended: true }));
 app.use(cookieParser());
 
-app.use("/user", userRoute);
+app.use("/user", userRouter);
 
-app.use("/employee", employeeRouter);
+app.use("/employee", employeeRouter);//finished
 
 app.use("/admin", adminRouter); //finished
-
-app.use("/event", eventRoute);
 
 app.use("/food", foodRoute);
 

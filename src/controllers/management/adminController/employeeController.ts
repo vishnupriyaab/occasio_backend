@@ -66,11 +66,11 @@ export class AdminEmployeeController implements IAdminEmployeeController {
     } catch (error: unknown) {
       if (error instanceof Error) {
         if (error.name === "InvalidPageOrLimit") {
-          ErrorResponse(res, 401, "InvalidPageOrLimit");
+          ErrorResponse(res, HttpStatusCode.NOT_FOUND, "Invalid page or limit");
           return;
         }
       }
-      ErrorResponse(res, 500, "Internal Server Error");
+      ErrorResponse(res, HttpStatusCode.INTERNAL_SERVER_ERROR, "Internal Server Error");
       return;
     }
   }
