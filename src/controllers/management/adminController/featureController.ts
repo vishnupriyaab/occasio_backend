@@ -126,11 +126,11 @@ export class AdminFeatureController {
 
       console.log(packageId, "packageId", featureId, "featureId");
 
-      const result: any = await this.featureService.blockFeature(
+      const result = await this.featureService.blockFeature(
         packageId,
         featureId
       );
-      const response = result.isBlocked
+      const response = result?.isBlocked
         ? "Feature blocked successfully"
         : "Feature unblocked successfully";
       successResponse(res, HttpStatusCode.OK, response, result);

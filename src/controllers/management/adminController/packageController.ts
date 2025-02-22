@@ -92,7 +92,7 @@ export class AdminPackageController {
       const { packageName, startingAmnt, eventId } = req.body;
       console.log(packageName, startingAmnt, eventId, "req.bodyyyyyy");
       const file = req.file;
-      const updatedData: any = { packageName, startingAmnt, eventId };
+      const updatedData = { packageName, startingAmnt, eventId };
       // if (file) {
       //   const imageUrl = await this.cloudinaryService.uploadImage(file);
       //   updatedData.image = imageUrl;
@@ -169,9 +169,9 @@ export class AdminPackageController {
     try {
       const packageId = req.params.id;
       console.log(packageId, "packageIddddddddddd");
-      const result: any = await this.packageService.blockPackage(packageId);
+      const result = await this.packageService.blockPackage(packageId);
 
-      const response = result.isBlocked
+      const response = result?.isBlocked
         ? "Package blocked successfully"
         : "Package unblocked successfully";
 

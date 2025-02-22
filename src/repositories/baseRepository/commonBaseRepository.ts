@@ -169,35 +169,28 @@ export default class CommonBaseRepository<
     const model = this.models[modelName];
     if (!model) throw new Error(`Model ${String(modelName)} not found`);
 
-    // Use type assertion for the query
     const query = {
       _id: packageId,
       "items._id": featureId,
     } as FilterQuery<TModels[typeof modelName]>;
 
-    // First find the document to determine current block status
     const doc = await model.findOne(query).exec();
     if (!doc) return null;
 
-    // Safely access the items array with type assertions
     const items = (doc as any).items;
     if (!Array.isArray(items)) return null;
 
-    // Find the feature
     const feature = items.find(
       (item: any) => item._id.toString() === featureId
     );
     if (!feature) return null;
 
-    // Get the current isBlocked value
     const newBlockStatus = !feature.isBlocked;
 
-    // Perform the update with type assertions
     const updateQuery = {
       $set: { "items.$.isBlocked": newBlockStatus },
     } as unknown as UpdateQuery<TModels[typeof modelName]>;
 
-    // Execute the update
     return (await model
       .findOneAndUpdate(query, updateQuery, { new: true })
       .exec()) as unknown as Promise<TModels[typeof modelName] | null>;
@@ -212,11 +205,9 @@ export default class CommonBaseRepository<
     const model = this.models[modelName];
     if (!model) throw new Error(`Model ${String(modelName)} not found`);
 
-    // Create the pull operation
     const pullOperation = {} as any;
     pullOperation[arrayField] = criteria;
 
-    // Create the update query with $pull operator
     const updateQuery = {
       $pull: pullOperation,
     } as unknown as UpdateQuery<TModels[K]>;

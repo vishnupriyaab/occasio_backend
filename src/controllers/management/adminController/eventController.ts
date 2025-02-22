@@ -113,7 +113,7 @@ export class AdminEventController {
       console.log(eventName, packageName, description, "req.body");
       const file = req.file;
 
-      const updatedData: any = { eventName, packageName, description };
+      const updatedData = { eventName, packageName, description };
 
       if (!file) {
         const error = new Error("Image is required");
@@ -155,9 +155,9 @@ export class AdminEventController {
     try {
       const eventId = req.params.id;
       console.log(eventId, "eventid");
-      const result: any = await this.eventService.blockEvent(eventId);
+      const result = await this.eventService.blockEvent(eventId);
 
-      const response = result.isBlocked
+      const response = result?.isBlocked
         ? "Event blocked successfully"
         : "Event unblocked successfully";
 

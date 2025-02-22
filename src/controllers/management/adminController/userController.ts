@@ -17,8 +17,8 @@ export class AdminUserController {
       const userId = req.params.id;
       console.log(userId, "userId");
 
-      const result: any = await this.userService.blockUser(userId);
-      const response = result.isBlocked
+      const result = await this.userService.blockUser(userId);
+      const response = result?.isBlocked
         ? "User blocked successfully"
         : "User unblocked successfully";
 

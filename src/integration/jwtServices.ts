@@ -50,19 +50,6 @@ export class JWTService implements IJWTService {
       throw error;
     }
   }
-
-  // decodeToken(token: string): JWTPayload | null {
-  //   try {
-  //     console.log('xdcfvbgj',token)
-  //     const decoded = jwt.decode(token) as JWTPayload | null;
-  //     if (!decoded) {
-  //       throw new Error("Failed to decode token");
-  //     }
-  //     return decoded;
-  //   } catch (error: any) {
-  //     throw new Error("Error decoding token: " + error.message);
-  //   }
-  // }
   decodeToken(token: string): JWTPayload | null {
     console.log('Decoded Token:', token);
     const decoded = jwt.decode(token) as JWTPayload | null;

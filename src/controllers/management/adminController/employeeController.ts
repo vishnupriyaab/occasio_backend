@@ -18,8 +18,8 @@ export class AdminEmployeeController {
     try {
       const employeeId = req.params.id;
       console.log(employeeId, "employeeId");
-      const result: any = await this.employeeService.blockEmployee(employeeId);
-      const response = result.isBlocked
+      const result = await this.employeeService.blockEmployee(employeeId);
+      const response = result?.isBlocked
         ? "Employee blocked successfully"
         : "Employee unblocked successfully";
 

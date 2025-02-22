@@ -12,7 +12,7 @@ const connectDB = async () => {
     const connect = await mongoose.connect(dbUrl, { dbName: "Occasio" });
 
     console.log(`Server connected to host ${connect.connection.host}`);
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error(`Failed to connect to database`, err);
     process.exit(1);
   }
