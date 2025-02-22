@@ -213,7 +213,7 @@ export class UserController {
           );
       }
 
-      const { accessToken, refreshToken } = await this.userUserCase.execute(
+      const { accessToken, refreshToken } = await this.userUserCase.googleLogin(
         jwtToken
       );
       console.log(accessToken, refreshToken);

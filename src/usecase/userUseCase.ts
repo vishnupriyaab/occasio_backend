@@ -20,6 +20,7 @@ export class UserUseCase implements IUserUseCase {
   private jwtService: IJWTService;
   private cloudinaryService: ICloudinaryService;
   private googleAuthService: IGoogleAuthService;
+  
 
   constructor(
     private userRepo: IUserRepository,
@@ -199,7 +200,7 @@ export class UserUseCase implements IUserUseCase {
     }
   }
 
-  async execute(
+  async googleLogin(
     token: string
   ): Promise<{ accessToken: string; refreshToken: string }> {
     try {

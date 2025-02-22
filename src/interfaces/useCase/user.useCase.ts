@@ -9,7 +9,7 @@ export default interface IUserUseCase {
     loginUser(email: string, password: string): Promise<{ accessToken: string; refreshToken: string }>
     forgotPassword(email: string): Promise<void>;
     resetPassword(token: string, password: string): Promise<void>;
-    execute(credential:any):Promise<{ accessToken: string; refreshToken: string }>;
+    googleLogin(credential:any):Promise<{ accessToken: string; refreshToken: string }>;
     getAllUsers():Promise<IUser[]>;
     isAuthenticated(token: string | undefined): Promise<IsAuthenticatedUseCaseRES>
     showProfile(userId: string): Promise<IProfile>

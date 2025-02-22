@@ -15,11 +15,14 @@ export class GoogleAuthService implements IGoogleAuthService {
         audience: this.client._clientId,
       });
       const payload: TokenPayload = ticket.getPayload() as TokenPayload;
-      if (!payload) throw new Error("Invalid ID token payload");
+      if (!payload){
+        const error = new Error('Invalid ID token payload')
+        error.name = 'InvalidIDTokenPayload'
+        throw error;
+      } 
       return payload;
-    } catch (error) {
-      console.error("Error verifying ID token:", error);
-      throw new Error("Invalid ID token");
+    } catch (error: unknown) {
+      throw error;
     }
   }
 }
