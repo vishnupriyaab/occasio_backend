@@ -1,4 +1,4 @@
-import { IAddFood, IFood } from "../../../entities/food.entity";
+import { IAddFood, IFood } from "../../entities/food.entity";
 
 export default interface IEmplFoodService{
     addFood(foodData: IFood): Promise<any>

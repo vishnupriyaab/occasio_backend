@@ -29,7 +29,7 @@ export class AdminUserController {
       console.log(error,"Errorrr")
       if (error instanceof Error) {
         if (error.name == "UserNotFound") {
-          ErrorResponse(res, HttpStatusCode.NO_CONTENT, "UserNotFound");
+          ErrorResponse(res, HttpStatusCode.NOT_FOUND, "UserNotFound");
           return;
         }
       }else{

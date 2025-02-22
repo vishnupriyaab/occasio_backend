@@ -1,4 +1,4 @@
-import { IAddEventRegister, IEvent } from "../../../entities/event.entity";
+import { IAddEventRegister, IEvent } from "../../entities/event.entity";
 
 export default interface IAdminEventRepository {
   addEvent(event: IAddEventRegister): Promise<IEvent>;

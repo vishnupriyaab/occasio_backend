@@ -1,4 +1,4 @@
-import { IPackage } from "../../../entities/package.entity";
+import { IPackage } from "../../../interfaces/entities/package.entity";
 import IAdminFeatureRepository from "../../../interfaces/repository/admin/feature.repository";
 import IAdminFeatureService from "../../../interfaces/services/admin/feature.services";
 import { AdminFeatureRepository } from "../../../repositories/entities/adminRepositories/featureRepository";

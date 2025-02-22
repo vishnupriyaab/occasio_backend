@@ -1,5 +1,5 @@
 import mongoose, { FilterQuery } from "mongoose";
-import { IEmployee } from "../../../entities/employee.entity";
+import { IEmployee } from "../../../interfaces/entities/employee.entity";
 import IEmployeeRepository from "../../../interfaces/repository/admin/employee.repository";
 import Employees from "../../../models/employeeModel";
 import CommonBaseRepository from "../../baseRepository/commonBaseRepository";

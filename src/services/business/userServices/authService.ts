@@ -1,5 +1,5 @@
-import { otpResponse } from "../../../entities/otp.entity";
-import { IRegisterUser, IUser } from "../../../entities/user.entity";
+import { otpResponse } from "../../../interfaces/entities/otp.entity";
+import { IRegisterUser, IUser } from "../../../interfaces/entities/user.entity";
 import { CloudinaryService } from "../../../integration/claudinaryService";
 import { CryptoService } from "../../../integration/cryptoServices";
 import { EmailService } from "../../../integration/emailService";
@@ -15,7 +15,7 @@ import IOtpRepository from "../../../interfaces/repository/otp.Repository";
 import IUserAuthRepository from "../../../interfaces/repository/user/auth.repository";
 import IUserAuthService from "../../../interfaces/services/user/auth.services";
 import { UserAuthRepository } from "../../../repositories/entities/userRepositories/authRepository";
-import { OtpRepository } from "../../../repositories/otpRepository";
+import { OtpRepository } from "../../../repositories/entities/otpRepository";
 import bcrypt from "bcrypt";
 
 export class UserAuthService implements IUserAuthService{
@@ -236,6 +236,7 @@ export class UserAuthService implements IUserAuthService{
     token: string
   ): Promise<{ accessToken: string; refreshToken: string }> {
     try {
+      console.log(token,"qwertyuiop")
       const tokenPayload = await this.googleAuthService.verifyIdToken(token);
       if (!tokenPayload){
         const error = new Error('Invalid token');
@@ -319,11 +320,11 @@ const IjwtService: IJWTService = new JWTService();
 const cryptoService: ICryptoService = new CryptoService();
 const cloudinaryService: ICloudinaryService = new CloudinaryService()
 
-if (!process.env.GOOGLE_CLIENT_ID) {
+if (!process.env.GOOGLE_AUTH_CLIENT_ID) {
   throw new Error("GOOGLE_CLIENT_ID environment variable is required");
 }
 const googleAuthService: IGoogleAuthService = new GoogleAuthService(
-  process.env.GOOGLE_CLIENT_ID
+  process.env.GOOGLE_AUTH_CLIENT_ID
 );
 
 const emailConfig = {

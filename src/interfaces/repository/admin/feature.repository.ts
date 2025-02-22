@@ -1,4 +1,4 @@
-import { IPackage } from "../../../entities/package.entity";
+import { IPackage } from "../../entities/package.entity";
 
 export default interface IAdminFeatureRepository {
     findByPackageId(id: string): Promise<IPackage | null>

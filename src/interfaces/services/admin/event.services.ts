@@ -1,4 +1,4 @@
-import { IEvent } from "../../../entities/event.entity";
+import { IEvent } from "../../entities/event.entity";
 
 export default interface IAdminEventService {
   addEvent(eventData: any, file: Express.Multer.File): Promise<any>;

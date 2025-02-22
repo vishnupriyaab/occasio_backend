@@ -1,5 +1,5 @@
-import { IEmployee } from "../../../entities/employee.entity";
-import { IProfile } from "../../../entities/user.entity";
+import { IEmployee } from "../../../interfaces/entities/employee.entity";
+import { IProfile } from "../../../interfaces/entities/user.entity";
 import { CryptoService } from "../../../integration/cryptoServices";
 import { ICryptoService } from "../../../interfaces/integration/ICrypto";
 import IProfileRepository from "../../../interfaces/repository/employee/profile.repository";

@@ -1,4 +1,4 @@
-import { IPackage } from "../../../entities/package.entity";
+import { IPackage } from "../../../interfaces/entities/package.entity";
 import IAdminFeatureRepository from "../../../interfaces/repository/admin/feature.repository";
 import Package from "../../../models/packageModel";
 import CommonBaseRepository from "../../baseRepository/commonBaseRepository";

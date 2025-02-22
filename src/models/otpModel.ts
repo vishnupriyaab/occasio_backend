@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import IOTP from "../entities/otp.entity";
+import IOTP from "../interfaces/entities/otp.entity";
 
 const OtpSchema: Schema = new Schema(
   {
@@ -14,5 +14,5 @@ const OtpSchema: Schema = new Schema(
   },
   { timestamps: true }
 );
-const Otp = mongoose.model<IOTP>("OTP", OtpSchema);
+const Otp = mongoose.model<IOTP & Document>("OTP", OtpSchema);
 export default Otp;

@@ -1,4 +1,4 @@
-import { IAddEventRegister, IEvent } from "../../../entities/event.entity";
+import { IAddEventRegister, IEvent } from "../../../interfaces/entities/event.entity";
 import { CloudinaryService } from "../../../integration/claudinaryService";
 import { ICloudinaryService } from "../../../interfaces/integration/IClaudinary";
 import IAdminEventRepository from "../../../interfaces/repository/admin/event.repository";

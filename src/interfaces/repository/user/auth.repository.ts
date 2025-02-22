@@ -1,4 +1,4 @@
-import { IRegisterUser, IUser } from "../../../entities/user.entity";
+import { IRegisterUser, IUser } from "../../entities/user.entity";
 
 export default interface IUserAuthRepository{
     findUserByEmail(email: string): Promise<IUser | null> 

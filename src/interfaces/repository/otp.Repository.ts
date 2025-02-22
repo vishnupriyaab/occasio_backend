@@ -1,4 +1,4 @@
-import IOTP from "../../entities/otp.entity";
+import IOTP from "../entities/otp.entity";
 
 export default interface IOtpRepository {
   createOtp(email: string, otp: string): Promise<IOTP>;

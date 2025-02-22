@@ -1,5 +1,5 @@
 import { FilterQuery } from "mongoose";
-import { IAddFood, IFood } from "../../../entities/food.entity";
+import { IAddFood, IFood } from "../../../interfaces/entities/food.entity";
 import IEmplFoodRepository from "../../../interfaces/repository/employee/food.repository";
 import Food from "../../../models/foodModel";
 import CommonBaseRepository from "../../baseRepository/commonBaseRepository";

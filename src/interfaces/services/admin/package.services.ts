@@ -1,4 +1,4 @@
-import { IPackage } from "../../../entities/package.entity"
+import { IPackage } from "../../entities/package.entity"
 
 export default interface IAdminPackageService {
     addPackage(packageData: any, file: Express.Multer.File): Promise<any>

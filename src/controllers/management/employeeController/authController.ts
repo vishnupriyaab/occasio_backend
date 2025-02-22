@@ -43,7 +43,7 @@ export class EmplAuthController {
         if (error.name === "AllFieldsAreRequired") {
           ErrorResponse(
             res,
-            HttpStatusCode.UNPROCESSABLE_ENTITY,
+            HttpStatusCode.CLIENT_CLOSED_REQUEST,
             "All fields are required"
           );
           return;

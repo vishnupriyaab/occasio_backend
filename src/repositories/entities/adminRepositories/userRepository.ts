@@ -1,4 +1,4 @@
-import { IUser } from "../../../entities/user.entity";
+import { IUser } from "../../../interfaces/entities/user.entity";
 import Users from "../../../models/userModel";
 import IUserRepository from "../../../interfaces/repository/admin/user.repository";
 import CommonBaseRepository from "../../baseRepository/commonBaseRepository";

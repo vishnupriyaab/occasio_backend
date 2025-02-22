@@ -2,10 +2,10 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
-import refreshTokenRoute from "../framework/router/refreshTokenRoute";
 import adminRouter from "../routes/admin.routes";
 import employeeRouter from "../routes/employee.routes";
 import userRouter from "../routes/user.routes";
+import refreshTokenRoute from "../routes/refresh.routes";
 
 const app = express();
 
@@ -30,9 +30,9 @@ app.use(cookieParser());
 
 app.use("/user", userRouter);
 
-app.use("/employee", employeeRouter);//finished
+app.use("/employee", employeeRouter);
 
-app.use("/admin", adminRouter); //finished
+app.use("/admin", adminRouter); 
 
 app.use("/refreshToken", refreshTokenRoute);
 

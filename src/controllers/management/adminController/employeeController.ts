@@ -27,7 +27,7 @@ export class AdminEmployeeController {
     } catch (error: unknown) {
       if (error instanceof Error) {
         if (error.name == "EmployeeNotFound") {
-          ErrorResponse(res, HttpStatusCode.NO_CONTENT, "EmployeeNotFound");
+          ErrorResponse(res, HttpStatusCode.NOT_FOUND, "EmployeeNotFound");
           return;
         } else {
           ErrorResponse(res, 500, "Internal Server Error");

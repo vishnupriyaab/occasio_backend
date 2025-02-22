@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { IPackage } from "../entities/package.entity";
+import { IPackage } from "../interfaces/entities/package.entity";
 
 const packageSchema: Schema = new Schema<IPackage>(
   {

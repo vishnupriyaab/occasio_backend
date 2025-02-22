@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { IJWTService } from "../interfaces/integration/IJwt";
+import { HttpStatusCode } from "../constant/httpStatusCodes";
 
 export interface AuthenticatedRequest extends Request{
   id?:string
@@ -22,20 +23,20 @@ export default class AuthMiddleware {
       console.log(token, "authenticatedToken");
 
       if (!token) {
-        res.status(401).json({ message: "Unauthorized: No token provided" });
+        res.status( HttpStatusCode.UNAUTHORIZED ).json({ message: "Unauthorized: No token provided" });
         return;
       }
         const decoded = this.jwtService.verifyAccessToken(token);
         console.log(decoded, "qwertyuio");
         if (decoded.role !== this.role) {
-          res.status(401).json({ message: "Unauthorized: No token provided" });
+          res.status( HttpStatusCode.UNAUTHORIZED ).json({ message: "Unauthorized: No token provided" });
           return;
         }
         req.id = decoded.id;
         next();
     } catch (error) {
       console.log(error, "errorrr");
-      res.status(403).json({ message: "Forbidden: Invalid token" });
+      res.status(HttpStatusCode.FORBIDDEN).json({ message: "Forbidden: Invalid token" });
       return;
     }
   }

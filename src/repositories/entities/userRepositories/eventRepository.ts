@@ -1,4 +1,4 @@
-import { IEvent } from "../../../entities/event.entity";
+import { IEvent } from "../../../interfaces/entities/event.entity";
 import IUserEventRepository from "../../../interfaces/repository/user/event.repository";
 import Event from "../../../models/EventModel";
 import CommonBaseRepository from "../../baseRepository/commonBaseRepository";

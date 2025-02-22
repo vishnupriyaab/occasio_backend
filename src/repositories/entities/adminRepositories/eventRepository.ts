@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { IAddEventRegister, IEvent } from "../../../entities/event.entity";
+import { IAddEventRegister, IEvent } from "../../../interfaces/entities/event.entity";
 import IAdminEventRepository from "../../../interfaces/repository/admin/event.repository";
 import Event from "../../../models/EventModel";
 import CommonBaseRepository from "../../baseRepository/commonBaseRepository";

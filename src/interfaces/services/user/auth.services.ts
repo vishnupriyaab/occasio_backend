@@ -1,5 +1,5 @@
-import { otpResponse } from "../../../entities/otp.entity";
-import { IRegisterUser } from "../../../entities/user.entity";
+import { otpResponse } from "../../entities/otp.entity";
+import { IRegisterUser } from "../../entities/user.entity";
 import { IsAuthenticatedUseCaseRES } from "../../common/IIsAuthenticated";
 
 export default interface IUserAuthService {

@@ -1,4 +1,4 @@
-import { IAddFood, IFood } from "../../../entities/food.entity";
+import { IAddFood, IFood } from "../../../interfaces/entities/food.entity";
 import IEmplFoodRepository from "../../../interfaces/repository/employee/food.repository";
 import IEmplFoodService from "../../../interfaces/services/employee/food.services";
 import { EmplFoodRepository } from "../../../repositories/entities/employeeRepositories/foodRepository";

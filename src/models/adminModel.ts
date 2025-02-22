@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { IAdmin } from "../entities/admin.entity";
+import { IAdmin } from "../interfaces/entities/admin.entity";
 
 const adminSchema: Schema = new Schema<IAdmin>(
   {

@@ -1,4 +1,4 @@
-import { IRegisterEmployee } from "../../../entities/employee.entity";
+import { IRegisterEmployee } from "../../entities/employee.entity";
 import { IsAuthenticatedUseCaseRES } from "../../common/IIsAuthenticated";
 
 export default interface IEmplAuthService {

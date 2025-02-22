@@ -1,4 +1,4 @@
-import { IEmployee } from "../../../entities/employee.entity"
+import { IEmployee } from "../../entities/employee.entity"
 
 export default interface IProfileRepository{
     findEmplById(employeeId: string): Promise<IEmployee | null>

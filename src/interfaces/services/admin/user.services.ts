@@ -1,4 +1,4 @@
-import { IUser } from "../../../entities/user.entity";
+import { IUser } from "../../entities/user.entity";
 
 export default interface IUserService{
     blockUser(userId:string):Promise<IUser | null>

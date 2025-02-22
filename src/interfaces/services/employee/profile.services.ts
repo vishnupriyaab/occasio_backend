@@ -1,5 +1,5 @@
-import { IEmployee } from "../../../entities/employee.entity";
-import { IProfile } from "../../../entities/user.entity";
+import { IEmployee } from "../../entities/employee.entity";
+import { IProfile } from "../../entities/user.entity";
 
 export default interface IEmplProfileService {
   showProfile(userId: string): Promise<IProfile>;

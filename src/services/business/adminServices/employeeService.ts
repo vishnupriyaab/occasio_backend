@@ -1,4 +1,4 @@
-import { IEmployee } from "../../../entities/employee.entity";
+import { IEmployee } from "../../../interfaces/entities/employee.entity";
 import IEmployeeRepository from "../../../interfaces/repository/admin/employee.repository";
 import IAdminEmployeeService from "../../../interfaces/services/admin/employee.services";
 import AdminEmployeeRepository from "../../../repositories/entities/adminRepositories/employeeRepository";

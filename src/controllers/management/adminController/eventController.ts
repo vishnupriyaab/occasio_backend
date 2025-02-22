@@ -33,7 +33,7 @@ export class AdminEventController {
       );
       return successResponse(
         res,
-        HttpStatusCode.OK,
+        HttpStatusCode.CREATED,
         "Event successfully created",
         event
       );

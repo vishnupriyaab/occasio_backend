@@ -30,7 +30,7 @@ export class EmplFoodController {
 
       return successResponse(
         res,
-        HttpStatusCode.OK,
+        HttpStatusCode.CREATED,
         "Food created successfully",
         food
       );

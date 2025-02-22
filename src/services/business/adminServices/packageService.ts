@@ -1,4 +1,4 @@
-import { IPackage, IPackageRegister } from "../../../entities/package.entity";
+import { IPackage, IPackageRegister } from "../../../interfaces/entities/package.entity";
 import { CloudinaryService } from "../../../integration/claudinaryService";
 import { ICloudinaryService } from "../../../interfaces/integration/IClaudinary";
 import IAdminPackageRepository from "../../../interfaces/repository/admin/package.repository";

@@ -1,4 +1,4 @@
-import { IEmployee } from "../../../entities/employee.entity";
+import { IEmployee } from "../../../interfaces/entities/employee.entity";
 import IProfileRepository from "../../../interfaces/repository/employee/profile.repository";
 import Employees from "../../../models/employeeModel";
 import CommonBaseRepository from "../../baseRepository/commonBaseRepository";

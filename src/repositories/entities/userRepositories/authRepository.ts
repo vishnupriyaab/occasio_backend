@@ -1,4 +1,4 @@
-import { IRegisterUser, IUser } from "../../../entities/user.entity";
+import { IRegisterUser, IUser } from "../../../interfaces/entities/user.entity";
 import IUserAuthRepository from "../../../interfaces/repository/user/auth.repository";
 import Users from "../../../models/userModel";
 import CommonBaseRepository from "../../baseRepository/commonBaseRepository";

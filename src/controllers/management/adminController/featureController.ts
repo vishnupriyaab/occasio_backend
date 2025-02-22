@@ -31,7 +31,7 @@ export class AdminFeatureController {
 
       return successResponse(
         res,
-        HttpStatusCode.OK,
+        HttpStatusCode.CREATED,
         "Feature created successfully",
         result
       );

@@ -1,4 +1,4 @@
-import { IEmployee, IRegisterEmployee } from "../../../entities/employee.entity";
+import { IEmployee, IRegisterEmployee } from "../../entities/employee.entity";
 
 export default interface IEmplAuthRepository{
     findEmplById(employeeId: string): Promise<IEmployee | null>

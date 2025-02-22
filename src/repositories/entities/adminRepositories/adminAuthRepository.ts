@@ -1,4 +1,4 @@
-import { IAdmin } from "../../../entities/admin.entity";
+import { IAdmin } from "../../../interfaces/entities/admin.entity";
 import Admin from "../../../models/adminModel";
 import IAdminRepository from "../../../interfaces/repository/admin/admin.auth.repository";
 import CommonBaseRepository from "../../baseRepository/commonBaseRepository";

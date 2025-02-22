@@ -32,7 +32,7 @@ export class AdminPackageController {
 
       return successResponse(
         res,
-        HttpStatusCode.OK,
+        HttpStatusCode.CREATED,
         "Package successfully created",
         newPackage
       );

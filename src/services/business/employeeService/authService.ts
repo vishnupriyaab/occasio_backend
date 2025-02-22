@@ -1,7 +1,7 @@
 import {
   IEmployee,
   IRegisterEmployee,
-} from "../../../entities/employee.entity";
+} from "../../../interfaces/entities/employee.entity";
 import { CryptoService } from "../../../integration/cryptoServices";
 import { EmailService } from "../../../integration/emailService";
 import { JWTService } from "../../../integration/jwtServices";
@@ -13,7 +13,7 @@ import IEmplAuthRepository from "../../../interfaces/repository/employee/auth.re
 import IOtpRepository from "../../../interfaces/repository/otp.Repository";
 import IEmplAuthService from "../../../interfaces/services/employee/emplAuth.services";
 import { EmplAuthRepository } from "../../../repositories/entities/employeeRepositories/authRepository";
-import { OtpRepository } from "../../../repositories/otpRepository";
+import { OtpRepository } from "../../../repositories/entities/otpRepository";
 import bcrypt from "bcrypt";
 
 export class EmplAuthService implements IEmplAuthService {
