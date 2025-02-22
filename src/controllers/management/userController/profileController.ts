@@ -6,9 +6,9 @@ import { HttpStatusCode } from "../../../constant/httpStatusCodes";
 import { userProfileServices } from "../../../services/business/userServices/profileService";
 
 export class UserProfController {
-    private userService: IUserProfServices
+    private _userService: IUserProfServices
   constructor( userService: IUserProfServices ) {
-    this.userService = userService;
+    this._userService = userService;
   }
 
   async showProfile(req: AuthenticatedRequest, res: Response): Promise<void> {
@@ -21,7 +21,7 @@ export class UserProfController {
         throw error;
       }
 
-      const profile = await this.userService.showProfile(userId);
+      const profile = await this._userService.showProfile(userId);
       return successResponse(res, HttpStatusCode.OK, 'Profile fetched successfully', profile);
     } catch (error: unknown) {
       if(error instanceof Error){
@@ -52,7 +52,7 @@ export class UserProfController {
         error.name = 'ImageIsRequired'
         throw error;
       }
-      const updatedUser = await this.userService.updateProfileImage(
+      const updatedUser = await this._userService.updateProfileImage(
         image,
         userId
       );
@@ -89,7 +89,7 @@ export class UserProfController {
         error.name = 'PasswordsDonotMatch'
         throw error;
       }
-      const updatedUser = await this.userService.updateProfile(userId, {
+      const updatedUser = await this._userService.updateProfile(userId, {
         name,
         email,
         password,

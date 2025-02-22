@@ -7,7 +7,7 @@ export interface AuthenticatedRequest extends Request{
 }
 
 export default class AuthMiddleware {
-  constructor(role: string, private jwtService: IJWTService) {
+  constructor(role: string, private _jwtService: IJWTService) {
     this.role = role;
   }
   role: string;
@@ -26,7 +26,7 @@ export default class AuthMiddleware {
         res.status( HttpStatusCode.UNAUTHORIZED ).json({ message: "Unauthorized: No token provided" });
         return;
       }
-        const decoded = this.jwtService.verifyAccessToken(token);
+        const decoded = this._jwtService.verifyAccessToken(token);
         console.log(decoded, "qwertyuio");
         if (decoded.role !== this.role) {
           res.status( HttpStatusCode.UNAUTHORIZED ).json({ message: "Unauthorized: No token provided" });

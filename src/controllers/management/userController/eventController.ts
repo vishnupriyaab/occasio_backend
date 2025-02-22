@@ -8,15 +8,15 @@ import IUserEventService from "../../../interfaces/services/user/event.services"
 import { userEventService } from "../../../services/business/userServices/eventService";
 
 export class UserEventController {
-  private eventService: IUserEventService;
+  private _eventService: IUserEventService;
   constructor(eventService: IUserEventService) {
-    this.eventService = eventService;
+    this._eventService = eventService;
   }
 
   //getEvent
   async getEvent(req: Request, res: Response): Promise<void> {
     try {
-      const events = await this.eventService.getEvents();
+      const events = await this._eventService.getEvents();
       return successResponse(
         res,
         HttpStatusCode.OK,

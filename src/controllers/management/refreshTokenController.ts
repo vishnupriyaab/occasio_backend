@@ -8,9 +8,9 @@ import { HttpStatusCode } from "../../constant/httpStatusCodes";
 import { refreshTokenServices } from "../../services/business/refreshTokenServices";
 
 export class RefreshTokenController {
-  private refreshSevice: IRefreshTokenService;
+  private _refreshSevice: IRefreshTokenService;
   constructor(refreshSevice: IRefreshTokenService) {
-    this.refreshSevice = refreshSevice;
+    this._refreshSevice = refreshSevice;
   }
   async getNewAccessTokenWithRefreshToken(
     req: Request,
@@ -21,7 +21,7 @@ export class RefreshTokenController {
       console.log(refreshToken, "refreshToken");
 
       const accessToken =
-        await this.refreshSevice.getNewAccessTokenWithRefreshToken(
+        await this._refreshSevice.getNewAccessTokenWithRefreshToken(
           refreshToken
         );
 

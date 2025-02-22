@@ -4,15 +4,15 @@ import IUserService from "../../../interfaces/services/admin/user.services";
 import AdminUserRepository from "../../../repositories/entities/adminRepositories/userRepository";
 
 export class AdminUserService implements IUserService {
-  private userRepo: IUserRepository
+  private _userRepo: IUserRepository
   constructor( userRepo: IUserRepository ) {
-    this. userRepo = userRepo
+    this._userRepo = userRepo
   }
 
   //block-Unblock User
   async blockUser(userId: string): Promise<IUser | null> {
     try {
-      const user = await this.userRepo.findUserById(userId);
+      const user = await this._userRepo.findUserById(userId);
       if (!user) {
         const error = new Error("User not found");
         error.name = "UserNotFound";
@@ -20,7 +20,7 @@ export class AdminUserService implements IUserService {
       }
 
       user.isBlocked = !user.isBlocked;
-      const result = await this.userRepo.updateUserBlockStatus(userId, {
+      const result = await this._userRepo.updateUserBlockStatus(userId, {
         isBlocked: user.isBlocked,
       });
       console.log(result,"1111111111111111111111111111111111111")
@@ -49,7 +49,7 @@ export class AdminUserService implements IUserService {
         throw error;
       }
 
-      return await this.userRepo.searchUser(
+      return await this._userRepo.searchUser(
         searchTerm,
         filterStatus,
         page,

@@ -8,9 +8,9 @@ import { HttpStatusCode } from "../../../constant/httpStatusCodes";
 import { emplAuthServices } from "../../../services/business/employeeService/authService";
 
 export class EmplAuthController {
-  private emplService: IEmplAuthService;
+  private _emplService: IEmplAuthService;
   constructor(emplService: IEmplAuthService) {
-    this.emplService = emplService;
+    this._emplService = emplService;
   }
 
   //Employee - register
@@ -24,7 +24,7 @@ export class EmplAuthController {
         throw error;
       }
 
-      const employee = await this.emplService.registerEmployee({
+      const employee = await this._emplService.registerEmployee({
         name,
         email,
         mobile,
@@ -71,7 +71,7 @@ export class EmplAuthController {
     try {
       const { email, otp } = req.body;
       console.log(email, otp, "req.body");
-      const result = await this.emplService.verifyOtp(email, otp);
+      const result = await this._emplService.verifyOtp(email, otp);
 
       return successResponse(
         res,
@@ -109,7 +109,7 @@ export class EmplAuthController {
     console.log(email, password, "employeelogin");
     try {
       const { accessToken, refreshToken } =
-        await this.emplService.loginEmployee(email, password);
+        await this._emplService.loginEmployee(email, password);
       res
         .cookie("refresh_token", refreshToken, {
           httpOnly: true,
@@ -166,7 +166,7 @@ export class EmplAuthController {
     try {
       const { email } = req.body;
       console.log(email, "emailgot itttt");
-      const result = await this.emplService.forgotPassword(email);
+      const result = await this._emplService.forgotPassword(email);
       return successResponse(
         res,
         HttpStatusCode.OK,
@@ -194,7 +194,7 @@ export class EmplAuthController {
     try {
       const { password, token } = req.body;
       console.log(password, token, "req.bodyyy");
-      const result = await this.emplService.resetPassword(token, password);
+      const result = await this._emplService.resetPassword(token, password);
       return successResponse(res, HttpStatusCode.OK, "Password has been reset");
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -255,7 +255,7 @@ export class EmplAuthController {
       console.log(req.cookies, "qwertyu");
       const token = req.cookies.access_token;
       console.log(token, "authenticatedToken");
-      const responseObj = await this.emplService.isAuthenticated(token);
+      const responseObj = await this._emplService.isAuthenticated(token);
       return successResponse(res, responseObj.status, responseObj.message);
       // res
       //   .status(responseObj.status)

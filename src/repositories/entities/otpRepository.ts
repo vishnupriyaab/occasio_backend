@@ -33,7 +33,7 @@ export class OtpRepository
 
   async deleteOtp(email: string): Promise<void> {
     try {
-      await this.models.otp.deleteMany({ email });
+      await this._models.otp.deleteMany({ email });
       // await Otp.deleteMany({ email });
     } catch (error) {
       throw error;

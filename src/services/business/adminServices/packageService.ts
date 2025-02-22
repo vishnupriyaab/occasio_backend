@@ -6,20 +6,20 @@ import IAdminPackageService from "../../../interfaces/services/admin/package.ser
 import { AdminPackageRepository } from "../../../repositories/entities/adminRepositories/packageRepository";
 
 export class AdminPackageService implements IAdminPackageService {
-  private packageRepo: IAdminPackageRepository;
-  private cloudinaryService: ICloudinaryService;
+  private _packageRepo: IAdminPackageRepository;
+  private _cloudinaryService: ICloudinaryService;
   constructor(
     packageRepo: IAdminPackageRepository,
     cloudinaryService: ICloudinaryService
   ) {
-    this.packageRepo = packageRepo;
-    this.cloudinaryService = cloudinaryService;
+    this._packageRepo = packageRepo;
+    this._cloudinaryService = cloudinaryService;
   }
 
   async addPackage(packageData: any, file: Express.Multer.File): Promise<any> {
     console.log(packageData, file, "data in useCase,1234567890");
     try {
-      const existingPackage = await this.packageRepo.findByPackageName(
+      const existingPackage = await this._packageRepo.findByPackageName(
         packageData.packageName
       );
       console.log(existingPackage, "existingPackage");
@@ -30,7 +30,7 @@ export class AdminPackageService implements IAdminPackageService {
         error.name = "PackageAlreadyExists";
         throw error;
       }
-      const imageUrl = await this.cloudinaryService.uploadImage(file);
+      const imageUrl = await this._cloudinaryService.uploadImage(file);
       console.log(imageUrl, "imageUrl");
 
       const featuresName = packageData.items[0].name;
@@ -51,7 +51,7 @@ export class AdminPackageService implements IAdminPackageService {
         image: imageUrl,
       };
 
-      const setNewPackage = await this.packageRepo.addPackage(newPackage);
+      const setNewPackage = await this._packageRepo.addPackage(newPackage);
       return setNewPackage;
     } catch (error) {
       throw error;
@@ -60,7 +60,7 @@ export class AdminPackageService implements IAdminPackageService {
 
   async getAllPackages(eventId: string): Promise<IPackage[]> {
     try {
-      return this.packageRepo.getAllPackages(eventId);
+      return this._packageRepo.getAllPackages(eventId);
     } catch (error) {
       throw error;
     }
@@ -76,11 +76,11 @@ export class AdminPackageService implements IAdminPackageService {
       console.log(eventId, "eventid1234567");
 
       if (file) {
-        const imageUrl = await this.cloudinaryService.uploadImage(file);
+        const imageUrl = await this._cloudinaryService.uploadImage(file);
         updatedData.image = imageUrl;
       }
 
-      const existingPackage = await this.packageRepo.getPackageById(
+      const existingPackage = await this._packageRepo.getPackageById(
         packageId,
         eventId
       );
@@ -91,7 +91,7 @@ export class AdminPackageService implements IAdminPackageService {
         error.name = "PackageNotFound";
         throw error;
       } else {
-        const updatedPackage = await this.packageRepo.updatedPackage(
+        const updatedPackage = await this._packageRepo.updatedPackage(
           packageId,
           updatedData
         );
@@ -105,13 +105,13 @@ export class AdminPackageService implements IAdminPackageService {
 
   async deletePackage(packageId: string): Promise<void> {
     try {
-      const packagee = await this.packageRepo.findByPackageId(packageId);
+      const packagee = await this._packageRepo.findByPackageId(packageId);
       if (!packagee) {
         const error = new Error('Package not found');
         error.name = 'PackageNotFound';
         throw error;
       }
-      await this.packageRepo.deletePackage(packageId);
+      await this._packageRepo.deletePackage(packageId);
       return;
     } catch (error) {
       throw error;
@@ -120,12 +120,12 @@ export class AdminPackageService implements IAdminPackageService {
 
   async blockPackage(packageId: string): Promise<IPackage | null> {
     try {
-      const packagee = await this.packageRepo.findByPackageId(packageId);
+      const packagee = await this._packageRepo.findByPackageId(packageId);
       if (!packagee) {
         throw new Error("Package not found");
       }
       packagee.isBlocked = !packagee.isBlocked;
-      return await this.packageRepo.updatedPackage(packageId, {
+      return await this._packageRepo.updatedPackage(packageId, {
         isBlocked: packagee.isBlocked,
       });
     } catch (error) {

@@ -8,9 +8,9 @@ import IAdminPackageService from "../../../interfaces/services/admin/package.ser
 import { adminPackageService } from "../../../services/business/adminServices/packageService";
 
 export class AdminPackageController {
-  private packageService: IAdminPackageService;
+  private _packageService: IAdminPackageService;
   constructor(packageService: IAdminPackageService) {
-    this.packageService = packageService;
+    this._packageService = packageService;
   }
 
   //addPackage
@@ -25,7 +25,7 @@ export class AdminPackageController {
         error.name = "NoImageFile";
         throw error;
       }
-      const newPackage = await this.packageService.addPackage(
+      const newPackage = await this._packageService.addPackage(
         { packageName, startingAmnt, eventId, items },
         file
       );
@@ -65,7 +65,7 @@ export class AdminPackageController {
     const eventId: string = req.params.id;
     try {
       console.log(eventId, "eventId");
-      const packages = await this.packageService.getAllPackages(eventId);
+      const packages = await this._packageService.getAllPackages(eventId);
 
       return successResponse(
         res,
@@ -102,7 +102,7 @@ export class AdminPackageController {
         error.name = "ImageIsRequired";
         throw error;
       }
-      const updatedPackage = await this.packageService.updatedPackage(
+      const updatedPackage = await this._packageService.updatedPackage(
         packageId,
         updatedData,
         file
@@ -142,7 +142,7 @@ export class AdminPackageController {
     try {
       const packageId = req.params.id;
       console.log(packageId, "packageId");
-      await this.packageService.deletePackage(packageId);
+      await this._packageService.deletePackage(packageId);
 
       return successResponse(
         res,
@@ -169,7 +169,7 @@ export class AdminPackageController {
     try {
       const packageId = req.params.id;
       console.log(packageId, "packageIddddddddddd");
-      const result = await this.packageService.blockPackage(packageId);
+      const result = await this._packageService.blockPackage(packageId);
 
       const response = result?.isBlocked
         ? "Package blocked successfully"

@@ -8,9 +8,9 @@ import { adminFeatureService } from "../../../services/business/adminServices/fe
 import { HttpStatusCode } from "../../../constant/httpStatusCodes";
 
 export class AdminFeatureController {
-  private featureService: IAdminFeatureService;
+  private _featureService: IAdminFeatureService;
   constructor(featureService: IAdminFeatureService) {
-    this.featureService = featureService;
+    this._featureService = featureService;
   }
 
   //addFaeture
@@ -24,7 +24,7 @@ export class AdminFeatureController {
         error.name = "AllFieldsAreRequired";
         throw error;
       }
-      const result = await this.featureService.addFeature(packageId, {
+      const result = await this._featureService.addFeature(packageId, {
         name,
         amount,
       });
@@ -81,7 +81,7 @@ export class AdminFeatureController {
         throw error;
       }
 
-      const result = await this.featureService.updateFeature(
+      const result = await this._featureService.updateFeature(
         packageId,
         featureId,
         { name, amount }
@@ -126,7 +126,7 @@ export class AdminFeatureController {
 
       console.log(packageId, "packageId", featureId, "featureId");
 
-      const result = await this.featureService.blockFeature(
+      const result = await this._featureService.blockFeature(
         packageId,
         featureId
       );
@@ -174,7 +174,7 @@ export class AdminFeatureController {
       const featureId: string = req.query.featureId as string;
       console.log(packageId, featureId);
 
-      await this.featureService.deleteFeature(packageId, featureId);
+      await this._featureService.deleteFeature(packageId, featureId);
       successResponse(res, HttpStatusCode.OK, 'Feature deleted successfully');
       return;
     } catch (error: unknown) {
@@ -214,7 +214,7 @@ export class AdminFeatureController {
           : 10;
        
   
-        const result = await this.featureService.searchFeature(
+        const result = await this._featureService.searchFeature(
           packageId,
           searchTerm,
           filterStatus,

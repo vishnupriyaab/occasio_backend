@@ -31,20 +31,20 @@ export class EmailTemplates {
 }
 
 export class EmailTransport {
-  private transporter: Transporter;
+  private _transporter: Transporter;
 
   constructor(config: EmailConfig) {
-    this.transporter = nodemailer.createTransport(config);
+    this._transporter = nodemailer.createTransport(config);
   }
 
   async sendMail(content: EmailContent): Promise<any> {
-    return await this.transporter.sendMail(content);
+    return await this._transporter.sendMail(content);
   }
 }
 
 export class EmailService implements IEmailService {
-  private emailTransport: EmailTransport;
-  private senderEmail: string | undefined;
+  private _emailTransport: EmailTransport;
+  private _senderEmail: string | undefined;
 
   constructor(
     private emailConfig: {
@@ -64,19 +64,19 @@ export class EmailService implements IEmailService {
       },
     };
 
-    this.emailTransport = new EmailTransport(config);
-    this.senderEmail = emailConfig.user;
+    this._emailTransport = new EmailTransport(config);
+    this._senderEmail = emailConfig.user;
   }
 
   async sendOtpEmail(email: string, otp: string): Promise<string> {
     const content: EmailContent = {
-      from: this.senderEmail!,
+      from: this._senderEmail!,
       to: email,
       subject: "Verify your email in Occasio Event Management Team",
       html: EmailTemplates.getOtpTemplate(otp),
     };
 
-    return await this.emailTransport.sendMail(content);
+    return await this._emailTransport.sendMail(content);
   }
 
   async sendPasswordResetEmail(
@@ -84,12 +84,12 @@ export class EmailService implements IEmailService {
     resetLink: string
   ): Promise<string> {
     const content: EmailContent = {
-      from: this.senderEmail!,
+      from: this._senderEmail!,
       to: email,
       subject: "Password Reset",
       html: EmailTemplates.getPasswordResetTemplate(resetLink),
     };
 
-    return await this.emailTransport.sendMail(content);
+    return await this._emailTransport.sendMail(content);
   }
 }

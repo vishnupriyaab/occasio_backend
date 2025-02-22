@@ -4,11 +4,11 @@ import { ICloudinaryService } from "../interfaces/integration/IClaudinary";
 import { configureCloudinary } from "../config/claudinary";
 
 export class CloudinaryService implements ICloudinaryService {
-  private cloudinary = configureCloudinary();
+  private _cloudinary = configureCloudinary();
 
   async uploadImage(file: Express.Multer.File): Promise<string> {
     try {
-      const result = await this.cloudinary.uploader.upload(file.path);
+      const result = await this._cloudinary.uploader.upload(file.path);
       return result.secure_url;
     } catch (error) {
       throw new Error("Failed to upload image to Cloudinary");
@@ -17,7 +17,7 @@ export class CloudinaryService implements ICloudinaryService {
 
   async deleteImage(publicId: string): Promise<void> {
     try {
-      await this.cloudinary.uploader.destroy(publicId);
+      await this._cloudinary.uploader.destroy(publicId);
     } catch (error) {
       throw new Error("Failed to delete image from Cloudinary");
     }
@@ -38,7 +38,7 @@ export class CloudinaryService implements ICloudinaryService {
       );
       const dataUri = `data:${response.headers["content-type"]};base64,${base64Image}`;
 
-      const result = await this.cloudinary.uploader.upload(dataUri, {
+      const result = await this._cloudinary.uploader.upload(dataUri, {
         folder: "google_profile_pictures",
         transformation: [
           { width: 400, height: 400, crop: "fill" },

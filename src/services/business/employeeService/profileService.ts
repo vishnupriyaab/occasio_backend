@@ -7,16 +7,16 @@ import IEmplProfileService from "../../../interfaces/services/employee/profile.s
 import { EmplProfileRepository } from "../../../repositories/entities/employeeRepositories/profileRepository";
 
 export class EmplProfileService implements IEmplProfileService{
-  private profileRepo: IProfileRepository;
-  private cryptoService: ICryptoService;
+  private _profileRepo: IProfileRepository;
+  private _cryptoService: ICryptoService;
   constructor(profileRepo: IProfileRepository, cryptoService: ICryptoService) {
-    this.cryptoService = cryptoService;
-    this.profileRepo = profileRepo;
+    this._cryptoService = cryptoService;
+    this._profileRepo = profileRepo;
   }
 
   async showProfile(userId: string): Promise<IProfile> {
     try {
-      const user = await this.profileRepo.findEmplById(userId);
+      const user = await this._profileRepo.findEmplById(userId);
       if (!user) {
         const error = new Error("User not found");
         error.name = "UserNotFound";
@@ -46,7 +46,7 @@ export class EmplProfileService implements IEmplProfileService{
       const { name, email, password } = updateData;
 
       if (email) {
-        const existingUser = await this.profileRepo.findEmplByEmail(email);
+        const existingUser = await this._profileRepo.findEmplByEmail(email);
         if (existingUser && existingUser._id.toString() !== userId) {
             const error = new Error('Email already in use by another user');
             error.name = 'EmailAlreadyUse'
@@ -54,11 +54,11 @@ export class EmplProfileService implements IEmplProfileService{
         }
       }
       if (password) {
-        const hashedPassword = await this.cryptoService.hashData(password);
+        const hashedPassword = await this._cryptoService.hashData(password);
         updateData.password = hashedPassword;
       }
 
-      const updatedUser = await this.profileRepo.updateUserProfile(
+      const updatedUser = await this._profileRepo.updateUserProfile(
         userId,
         updateData
       );
@@ -77,7 +77,7 @@ export class EmplProfileService implements IEmplProfileService{
   async updateProfileImage(image:string, userId: string):Promise<IEmployee | null>{
     try {
     console.log(image,"image")
-    const updatedUser = await this.profileRepo.updateUserProfileImage(userId, image);
+    const updatedUser = await this._profileRepo.updateUserProfileImage(userId, image);
     console.log(updatedUser,".,mnpokj")
     if (!updatedUser) {
         const error = new Error('User not found or update failed');

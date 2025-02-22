@@ -2,17 +2,17 @@ import { LoginTicket, OAuth2Client, TokenPayload } from "google-auth-library";
 import { IGoogleAuthService } from "../interfaces/integration/IGoogleVerification";
 
 export class GoogleAuthService implements IGoogleAuthService {
-  private client: OAuth2Client;
+  private _client: OAuth2Client;
 
   constructor(clientId: string) {
-    this.client = new OAuth2Client(clientId);
+    this._client = new OAuth2Client(clientId);
   }
 
   async verifyIdToken(idToken: string): Promise<TokenPayload> {
     try {
-      const ticket: LoginTicket = await this.client.verifyIdToken({
+      const ticket: LoginTicket = await this._client.verifyIdToken({
         idToken,
-        audience: this.client._clientId,
+        audience: this._client._clientId,
       });
       const payload: TokenPayload = ticket.getPayload() as TokenPayload;
       if (!payload){

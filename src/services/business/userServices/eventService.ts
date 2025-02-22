@@ -4,15 +4,15 @@ import IUserEventService from "../../../interfaces/services/user/event.services"
 import { UserEventRepository } from "../../../repositories/entities/userRepositories/eventRepository";
 
 export class UserEventService implements IUserEventService {
-  private eventRepo: IUserEventRepository;
+  private _eventRepo: IUserEventRepository;
   constructor(eventRepo: IUserEventRepository) {
-    this.eventRepo = eventRepo;
+    this._eventRepo = eventRepo;
   }
 
   //getEvents
   async getEvents(): Promise<IEvent[]> {
     try {
-      return this.eventRepo.getEvents();
+      return this._eventRepo.getEvents();
     } catch (error: unknown) {
       throw error;
     }

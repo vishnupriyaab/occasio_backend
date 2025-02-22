@@ -6,16 +6,16 @@ import IUserProfServices from "../../../interfaces/services/user/profile.service
 import { UserProfRepository } from "../../../repositories/entities/userRepositories/profileRepository";
 
 export class UserProfServices implements IUserProfServices{
-  private userRepo: IUserProfRepository;
-  private cryptoService: ICryptoService;
+  private _userRepo: IUserProfRepository;
+  private _cryptoService: ICryptoService;
   constructor(userRepo: IUserProfRepository, cryptoService: ICryptoService) {
-    this.userRepo = userRepo;
-    this.cryptoService = cryptoService;
+    this._userRepo = userRepo;
+    this._cryptoService = cryptoService;
   }
 
   async showProfile(userId: string): Promise<IProfile> {
     try {
-      const user = await this.userRepo.findUserById(userId);
+      const user = await this._userRepo.findUserById(userId);
       if (!user) {
         const error = new Error("User not found");
         error.name = "UserNotFound";
@@ -43,7 +43,7 @@ export class UserProfServices implements IUserProfServices{
     userId: string
   ): Promise<IUser | null> {
     try {
-      const updatedUser = await this.userRepo.updateUserProfileImage(
+      const updatedUser = await this._userRepo.updateUserProfileImage(
         userId,
         image
       );
@@ -67,7 +67,7 @@ export class UserProfServices implements IUserProfServices{
       const { name, email, password } = updateData;
 
       if (email) {
-        const existingUser = await this.userRepo.findUserByEmail(email);
+        const existingUser = await this._userRepo.findUserByEmail(email);
         if (existingUser && existingUser._id.toString() !== userId) {
           const error = new Error("Email already in use by another user");
           error.name = "EmailAlreadyUse";
@@ -75,11 +75,11 @@ export class UserProfServices implements IUserProfServices{
         }
       }
       if (password) {
-        const hashedPassword = await this.cryptoService.hashData(password);
+        const hashedPassword = await this._cryptoService.hashData(password);
         updateData.password = hashedPassword;
       }
 
-      const updatedUser = await this.userRepo.updateUserProfile(
+      const updatedUser = await this._userRepo.updateUserProfile(
         userId,
         updateData
       );

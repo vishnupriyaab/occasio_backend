@@ -6,14 +6,14 @@ import IAdminEventService from "../../../interfaces/services/admin/event.service
 import { AdminEventRepository } from "../../../repositories/entities/adminRepositories/eventRepository";
 
 export class AdminEventService implements IAdminEventService {
-  private eventRepo: IAdminEventRepository;
-  private cloudinaryService: ICloudinaryService;
+  private _eventRepo: IAdminEventRepository;
+  private _cloudinaryService: ICloudinaryService;
   constructor(
     eventRepo: IAdminEventRepository,
     cloudinaryService: ICloudinaryService
   ) {
-    this.eventRepo = eventRepo;
-    this.cloudinaryService = cloudinaryService;
+    this._eventRepo = eventRepo;
+    this._cloudinaryService = cloudinaryService;
   }
 
   //addEvents
@@ -21,7 +21,7 @@ export class AdminEventService implements IAdminEventService {
     try {
       const normalizedEventName = eventData.eventName.toLowerCase();
 
-      const existingEvent = await this.eventRepo.findByEventName(
+      const existingEvent = await this._eventRepo.findByEventName(
         normalizedEventName
       );
 
@@ -33,7 +33,7 @@ export class AdminEventService implements IAdminEventService {
         throw error;
       }
 
-      const imageUrl = await this.cloudinaryService.uploadImage(file);
+      const imageUrl = await this._cloudinaryService.uploadImage(file);
       console.log(imageUrl, "imageUrl");
 
       const event: IAddEventRegister = {
@@ -42,7 +42,7 @@ export class AdminEventService implements IAdminEventService {
       };
 
       console.log(event, "event of useCase");
-      const newEvent = await this.eventRepo.addEvent(event);
+      const newEvent = await this._eventRepo.addEvent(event);
 
       return newEvent;
     } catch (error: unknown) {
@@ -68,7 +68,7 @@ export class AdminEventService implements IAdminEventService {
         error.name = "InvalidPageOrLimit";
         throw error;
       }
-      return await this.eventRepo.searchEvent(
+      return await this._eventRepo.searchEvent(
         searchTerm,
         filterStatus,
         page,
@@ -87,11 +87,11 @@ export class AdminEventService implements IAdminEventService {
   ): Promise<IEvent | undefined | null> {
     try {
       if (file) {
-        const imageUrl = await this.cloudinaryService.uploadImage(file);
+        const imageUrl = await this._cloudinaryService.uploadImage(file);
         updatedData.image = imageUrl;
       }
 
-      const updatedEvent = await this.eventRepo.updateEvent(id, updatedData);
+      const updatedEvent = await this._eventRepo.updateEvent(id, updatedData);
       return updatedEvent;
     } catch (error: unknown) {
       throw error;
@@ -101,7 +101,7 @@ export class AdminEventService implements IAdminEventService {
   //blockEvent
   async blockEvent(eventId: string): Promise<IEvent | null> {
     try {
-      const event = await this.eventRepo.findByEventId(eventId);
+      const event = await this._eventRepo.findByEventId(eventId);
       if (!event) {
         const error = new Error('Event not found');
         error.name = 'EventNotFound'
@@ -109,7 +109,7 @@ export class AdminEventService implements IAdminEventService {
       }
 
       event.isBlocked = !event.isBlocked;
-      return await this.eventRepo.updateEvent(eventId, {
+      return await this._eventRepo.updateEvent(eventId, {
         isBlocked: event.isBlocked,
       });
     } catch (error: unknown) {
@@ -120,14 +120,14 @@ export class AdminEventService implements IAdminEventService {
   //DeleteEvent
   async deleteEvent(eventId: string): Promise<void> {
     try {
-      const event = await this.eventRepo.findByEventId(eventId);
+      const event = await this._eventRepo.findByEventId(eventId);
       if (!event) {
         const error = new Error('Event not found');
         error.name = 'EventNotFound'
         throw error;
       }
 
-      await this.eventRepo.deleteEvent(eventId);
+      await this._eventRepo.deleteEvent(eventId);
       return;
     } catch (error:unknown) {
       throw error;

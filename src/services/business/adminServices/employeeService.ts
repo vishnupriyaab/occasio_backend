@@ -4,15 +4,15 @@ import IAdminEmployeeService from "../../../interfaces/services/admin/employee.s
 import AdminEmployeeRepository from "../../../repositories/entities/adminRepositories/employeeRepository";
 
 export class AdminEmployeeService implements IAdminEmployeeService {
-  private employeeRepo: IEmployeeRepository;
+  private _employeeRepo: IEmployeeRepository;
   constructor(employeeRepo: IEmployeeRepository) {
-    this.employeeRepo = employeeRepo;
+    this._employeeRepo = employeeRepo;
   }
 
   //block-Unblock Employee
   async blockEmployee(employeeId: string): Promise<IEmployee | null> {
     try {
-      const employee = await this.employeeRepo.findEmployeeById(employeeId);
+      const employee = await this._employeeRepo.findEmployeeById(employeeId);
       if (!employee) {
         const error = new Error("Employee not found");
         error.name = "EmployeeNotFound";
@@ -20,7 +20,7 @@ export class AdminEmployeeService implements IAdminEmployeeService {
       }
 
       employee.isBlocked = !employee.isBlocked;
-      return await this.employeeRepo.updateEmployeeBlockStatus(employeeId, {
+      return await this._employeeRepo.updateEmployeeBlockStatus(employeeId, {
         isBlocked: employee.isBlocked,
       });
     } catch (error:unknown) {
@@ -47,7 +47,7 @@ export class AdminEmployeeService implements IAdminEmployeeService {
         throw error;
       }
 
-      return await this.employeeRepo.searchEmployee(
+      return await this._employeeRepo.searchEmployee(
         searchTerm,
         filterStatus,
         page,

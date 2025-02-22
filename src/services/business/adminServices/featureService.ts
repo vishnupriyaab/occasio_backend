@@ -4,9 +4,9 @@ import IAdminFeatureService from "../../../interfaces/services/admin/feature.ser
 import { AdminFeatureRepository } from "../../../repositories/entities/adminRepositories/featureRepository";
 
 export class AdminFeatureService implements IAdminFeatureService {
-  private featureRepo: IAdminFeatureRepository;
+  private _featureRepo: IAdminFeatureRepository;
   constructor(featureRepo: IAdminFeatureRepository) {
-    this.featureRepo = featureRepo;
+    this._featureRepo = featureRepo;
   }
 
   async addFeature(
@@ -15,7 +15,7 @@ export class AdminFeatureService implements IAdminFeatureService {
   ): Promise<IPackage | null> {
     try {
       console.log(packageId, featureData, "UseCase data");
-      const existingPackage = await this.featureRepo.findByPackageId(packageId);
+      const existingPackage = await this._featureRepo.findByPackageId(packageId);
       if (!existingPackage) {
         const error = new Error("Package not found");
         error.name = "PackageNotFound";
@@ -40,7 +40,7 @@ export class AdminFeatureService implements IAdminFeatureService {
         isBlocked: false,
       };
 
-      return await this.featureRepo.addFeature(packageId, newFeature);
+      return await this._featureRepo.addFeature(packageId, newFeature);
     } catch (error) {
       console.log("Error in addFeature useCase:", error);
       throw error;
@@ -54,7 +54,7 @@ export class AdminFeatureService implements IAdminFeatureService {
   ): Promise<IPackage | null> {
     try {
       console.log(packageId, featureId, featureData, "UseCase update data");
-      const existingPackage = await this.featureRepo.findByPackageId(packageId);
+      const existingPackage = await this._featureRepo.findByPackageId(packageId);
       if (!existingPackage) {
         const error = new Error("Package not found");
         error.name = "PackageNotFound";
@@ -69,7 +69,7 @@ export class AdminFeatureService implements IAdminFeatureService {
         throw error;
       }
 
-      return await this.featureRepo.updateFeature(
+      return await this._featureRepo.updateFeature(
         packageId,
         featureId,
         featureData
@@ -97,7 +97,7 @@ export class AdminFeatureService implements IAdminFeatureService {
         throw error;
       }
 
-      const existingPackage = await this.featureRepo.findByPackageId(packageId);
+      const existingPackage = await this._featureRepo.findByPackageId(packageId);
       if (!existingPackage) {
         const error = new Error("Package not found");
         error.name = "PackageNotFound";
@@ -113,7 +113,7 @@ export class AdminFeatureService implements IAdminFeatureService {
         throw error;
       }
 
-      return await this.featureRepo.featureBlock(packageId, featureId);
+      return await this._featureRepo.featureBlock(packageId, featureId);
     } catch (error) {
       throw error;
     }
@@ -137,7 +137,7 @@ export class AdminFeatureService implements IAdminFeatureService {
         throw error;
       }
 
-      const existingPackage = await this.featureRepo.findByPackageId(packageId);
+      const existingPackage = await this._featureRepo.findByPackageId(packageId);
       if (!existingPackage) {
         const error = new Error("Package not found");
         error.name = "PackageNotFound";
@@ -154,7 +154,7 @@ export class AdminFeatureService implements IAdminFeatureService {
         throw error;
       }
 
-      return await this.featureRepo.deleteFeature(packageId, featureId);
+      return await this._featureRepo.deleteFeature(packageId, featureId);
     } catch (error) {
       throw error;
     }
@@ -184,7 +184,7 @@ export class AdminFeatureService implements IAdminFeatureService {
         throw error;
       }
 
-      return await this.featureRepo.searchFeatures(
+      return await this._featureRepo.searchFeatures(
         packageId,
         searchTerm,
         filterStatus,

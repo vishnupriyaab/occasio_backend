@@ -17,11 +17,11 @@ import { OtpRepository } from "../../../repositories/entities/otpRepository";
 import bcrypt from "bcrypt";
 
 export class EmplAuthService implements IEmplAuthService {
-  private emplRepo: IEmplAuthRepository;
-  private cryptoService: ICryptoService;
-  private jwtService: IJWTService;
-  private emailService: IEmailService;
-  private otpRepo: IOtpRepository;
+  private _emplRepo: IEmplAuthRepository;
+  private _cryptoService: ICryptoService;
+  private _jwtService: IJWTService;
+  private _emailService: IEmailService;
+  private _otpRepo: IOtpRepository;
   constructor(
     emplRepo: IEmplAuthRepository,
     otpRepo: IOtpRepository,
@@ -33,18 +33,18 @@ export class EmplAuthService implements IEmplAuthService {
     jwtService: IJWTService,
     cryptoService: ICryptoService
   ) {
-    this.emailService = new EmailService(emailConfig);
-    this.emplRepo = emplRepo;
-    this.cryptoService = cryptoService;
-    this.jwtService = jwtService;
-    this.otpRepo = otpRepo;
+    this._emailService = new EmailService(emailConfig);
+    this._emplRepo = emplRepo;
+    this._cryptoService = cryptoService;
+    this._jwtService = jwtService;
+    this._otpRepo = otpRepo;
   }
 
   async registerEmployee(
     employee: IRegisterEmployee
   ): Promise<IRegisterEmployee | null> {
     try {
-      const existingEmployee = await this.emplRepo.findEmplByEmail(
+      const existingEmployee = await this._emplRepo.findEmplByEmail(
         employee.email
       );
       console.log(existingEmployee, "existingEmployee");
@@ -54,18 +54,18 @@ export class EmplAuthService implements IEmplAuthService {
         throw error;
       }
 
-      const hashedPassword = await this.cryptoService.hashData(
+      const hashedPassword = await this._cryptoService.hashData(
         employee.password
       );
       employee.password = hashedPassword;
-      const newEmployee = await this.emplRepo.createEmployee(employee);
+      const newEmployee = await this._emplRepo.createEmployee(employee);
 
-      const otp = this.cryptoService.generateOtp();
+      const otp = this._cryptoService.generateOtp();
       console.log(otp, "otp..........!");
-      const hashedOtp = await this.cryptoService.hashData(otp);
-      await this.otpRepo.createOtp(String(newEmployee.email), hashedOtp);
+      const hashedOtp = await this._cryptoService.hashData(otp);
+      await this._otpRepo.createOtp(String(newEmployee.email), hashedOtp);
 
-      await this.emailService.sendOtpEmail(employee.email, otp);
+      await this._emailService.sendOtpEmail(employee.email, otp);
 
       return newEmployee;
     } catch (error: unknown) {
@@ -77,21 +77,21 @@ export class EmplAuthService implements IEmplAuthService {
   //verify OTP
   async verifyOtp(email: string, otp: string): Promise<any> {
     try {
-      const otpRecord = await this.otpRepo.findOtp(email);
+      const otpRecord = await this._otpRepo.findOtp(email);
       if (!otpRecord) {
         const error = new Error("OTP not found or has expired");
         error.name = "OTPNotFoundOrHasExpired";
         throw error;
       }
-      const verified = await this.cryptoService.compareData(otp, otpRecord.otp);
+      const verified = await this._cryptoService.compareData(otp, otpRecord.otp);
       console.log(verified, "verified");
       if (verified) {
-        const updatedEmployee = await this.emplRepo.updateActivatedStatus(
+        const updatedEmployee = await this._emplRepo.updateActivatedStatus(
           email,
           true
         );
         console.log(updatedEmployee, "updatedEmployee");
-        await this.otpRepo.deleteOtp(email);
+        await this._otpRepo.deleteOtp(email);
         return updatedEmployee;
       } else {
         const error = new Error("Invalid OTP");
@@ -108,8 +108,8 @@ export class EmplAuthService implements IEmplAuthService {
     password: string
   ): Promise<{ accessToken: string; refreshToken: string }> {
     try {
-      const employee = await this.emplRepo.findEmplByEmail(email);
-      await this.emplRepo.updateActivatedStatus(email, true);
+      const employee = await this._emplRepo.findEmplByEmail(email);
+      await this._emplRepo.updateActivatedStatus(email, true);
       if (!employee) {
         const error = new Error("Employee not found");
         error.name = "EmployeeNotFound";
@@ -139,8 +139,8 @@ export class EmplAuthService implements IEmplAuthService {
         throw error;
       }
       const payload = { id: employee._id, role: "employee" };
-      const accessToken = this.jwtService.generateAccessToken(payload);
-      const refreshToken = this.jwtService.generateRefreshToken(payload);
+      const accessToken = this._jwtService.generateAccessToken(payload);
+      const refreshToken = this._jwtService.generateRefreshToken(payload);
       return { accessToken, refreshToken };
     } catch (error) {
       throw error;
@@ -149,7 +149,7 @@ export class EmplAuthService implements IEmplAuthService {
 
   async forgotPassword(email: string): Promise<void> {
     try {
-      const employee: IEmployee | null = await this.emplRepo.findEmplByEmail(
+      const employee: IEmployee | null = await this._emplRepo.findEmplByEmail(
         email
       );
       if (!employee) {
@@ -159,13 +159,13 @@ export class EmplAuthService implements IEmplAuthService {
         throw error;
       }
 
-      const token = this.jwtService.generateAccessToken({
+      const token = this._jwtService.generateAccessToken({
         id: employee._id,
         role: "employee",
       });
-      await this.emplRepo.savePasswordResetToken(employee._id, token);
+      await this._emplRepo.savePasswordResetToken(employee._id, token);
       const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
-      await this.emailService.sendPasswordResetEmail(email, resetLink);
+      await this._emailService.sendPasswordResetEmail(email, resetLink);
     } catch (error) {
       throw error;
     }
@@ -173,7 +173,7 @@ export class EmplAuthService implements IEmplAuthService {
 
   async resetPassword(token: string, newPassword: string): Promise<void> {
     try {
-      const decoded = this.jwtService.verifyAccessToken(token);
+      const decoded = this._jwtService.verifyAccessToken(token);
       console.log(decoded, "decodeddddddd");
 
       if (!decoded.id) {
@@ -182,7 +182,7 @@ export class EmplAuthService implements IEmplAuthService {
         throw error;
       }
 
-      const employee = await this.emplRepo.findEmplById(decoded.id);
+      const employee = await this._emplRepo.findEmplById(decoded.id);
       console.log(employee, "employee of employeeUseCase");
       if (!employee) {
         const error = new Error("Employee not found");
@@ -190,7 +190,7 @@ export class EmplAuthService implements IEmplAuthService {
         throw error;
       }
 
-      const storedToken = await this.emplRepo.getPasswordResetToken(decoded.id);
+      const storedToken = await this._emplRepo.getPasswordResetToken(decoded.id);
       console.log(storedToken, "storedToken in EmployeeuseCse");
       if (!storedToken || storedToken !== token) {
         const error = new Error("Invalid or expired reset token");
@@ -198,10 +198,10 @@ export class EmplAuthService implements IEmplAuthService {
         throw error;
       }
 
-      const hashedPassword = await this.cryptoService.hashData(newPassword);
+      const hashedPassword = await this._cryptoService.hashData(newPassword);
       console.log(hashedPassword, "hashedPassword in employeeUseCase");
-      await this.emplRepo.updatePassword(decoded.id, hashedPassword);
-      await this.emplRepo.clearPasswordResetToken(decoded.id);
+      await this._emplRepo.updatePassword(decoded.id, hashedPassword);
+      await this._emplRepo.clearPasswordResetToken(decoded.id);
     } catch (error) {
       throw error;
     }
@@ -214,7 +214,7 @@ export class EmplAuthService implements IEmplAuthService {
         if (!token) {
           return { message: "Unauthorized: No token provided", status: 401 };
         }
-        const decoded = this.jwtService.verifyAccessToken(token) as JWTPayload;
+        const decoded = this._jwtService.verifyAccessToken(token) as JWTPayload;
         console.log(decoded, "23456789000987654");
         if (decoded.role?.toLowerCase() !== "employee") {
           return { message: "No access employee", status: 401 };

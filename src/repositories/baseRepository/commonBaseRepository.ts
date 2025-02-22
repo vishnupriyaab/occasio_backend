@@ -3,17 +3,17 @@ import { FilterQuery, Model, Query, UpdateQuery } from "mongoose";
 export default class CommonBaseRepository<
   TModels extends Record<string, Document>
 > {
-  protected models: { [K in keyof TModels]: Model<TModels[K]> };
+  protected _models: { [K in keyof TModels]: Model<TModels[K]> };
 
   constructor(models: { [K in keyof TModels]: Model<TModels[K]> }) {
-    this.models = models;
+    this._models = models;
   }
 
   findById<K extends keyof TModels>(
     modelName: K,
     id: string
   ): Query<TModels[K] | null, TModels[K]> {
-    const model = this.models[modelName];
+    const model = this._models[modelName];
     if (!model) throw new Error(`Model ${String(modelName)} not found`);
 
     return model.findById(id);
@@ -23,7 +23,7 @@ export default class CommonBaseRepository<
     modelName: K,
     query: FilterQuery<TModels[K]>
   ): Query<TModels[K] | null, TModels[K]> {
-    const model = this.models[modelName];
+    const model = this._models[modelName];
     if (!model) throw new Error(`Model ${String(modelName)} not found`);
 
     return model.findOne(query);
@@ -34,7 +34,7 @@ export default class CommonBaseRepository<
     filter: FilterQuery<TModels[K]>,
     updateData: UpdateQuery<TModels[K]>
   ): Promise<TModels[K] | null> {
-    const model = this.models[modelName];
+    const model = this._models[modelName];
     if (!model) throw new Error(`Model ${String(modelName)} not found`);
 
     return model.findOneAndUpdate(
@@ -50,7 +50,7 @@ export default class CommonBaseRepository<
     id: string,
     updateData: UpdateQuery<TModels[K]>
   ): Promise<TModels[K] | null> {
-    const model = this.models[modelName];
+    const model = this._models[modelName];
     if (!model) throw new Error(`Model ${String(modelName)} not found`);
 
     return model.findByIdAndUpdate(
@@ -65,7 +65,7 @@ export default class CommonBaseRepository<
     updateData: UpdateQuery<TModels[K]>,
     options?: { upsert?: boolean }
   ): Promise<import("mongodb").UpdateResult> {
-    const model = this.models[modelName];
+    const model = this._models[modelName];
     if (!model) throw new Error(`Model ${String(modelName)} not found`);
 
     return model.updateOne(filter, { $set: updateData }, options);
@@ -77,7 +77,7 @@ export default class CommonBaseRepository<
     query: FilterQuery<TModels[K]>,
     options?: { skip?: number; limit?: number; sort?: Record<string, 1 | -1> }
   ): Promise<TModels[K][]> {
-    const model = this.models[modelName];
+    const model = this._models[modelName];
     if (!model) throw new Error(`Model ${String(modelName)} not found`);
 
     return model
@@ -91,7 +91,7 @@ export default class CommonBaseRepository<
     modelName: K,
     query: FilterQuery<TModels[K]>
   ): Promise<number> {
-    const model = this.models[modelName];
+    const model = this._models[modelName];
     if (!model) throw new Error(`Model ${String(modelName)} not found`);
 
     return model.countDocuments(query);
@@ -102,7 +102,7 @@ export default class CommonBaseRepository<
     modelName: K,
     data: Partial<TModels[K]>
   ): Promise<TModels[K]> {
-    const model = this.models[modelName];
+    const model = this._models[modelName];
     if (!model) throw new Error(`Model ${String(modelName)} not found`);
 
     return model.create(data);
@@ -112,7 +112,7 @@ export default class CommonBaseRepository<
     modelName: K,
     id: string
   ): Promise<TModels[K] | null> {
-    const model = this.models[modelName];
+    const model = this._models[modelName];
     if (!model) throw new Error(`Model ${String(modelName)} not found`);
 
     return model.findByIdAndDelete(id).exec();
@@ -124,7 +124,7 @@ export default class CommonBaseRepository<
     field: string,
     value: any
   ): Promise<TModels[K] | null> {
-    const model = this.models[modelName];
+    const model = this._models[modelName];
     if (!model) throw new Error(`Model ${String(modelName)} not found`);
 
     // Use type assertion to bypass TypeScript's strict typing
@@ -143,7 +143,7 @@ export default class CommonBaseRepository<
     itemId: string,
     updateData: Record<string, any>
   ): Promise<TModels[K] | null> {
-    const model = this.models[modelName];
+    const model = this._models[modelName];
     if (!model) throw new Error(`Model ${String(modelName)} not found`);
 
     // Create the filter with array item identifier
@@ -166,7 +166,7 @@ export default class CommonBaseRepository<
     packageId: string,
     featureId: string
   ): Promise<TModels[typeof modelName] | null> {
-    const model = this.models[modelName];
+    const model = this._models[modelName];
     if (!model) throw new Error(`Model ${String(modelName)} not found`);
 
     const query = {
@@ -202,7 +202,7 @@ export default class CommonBaseRepository<
     arrayField: string,
     criteria: Record<string, any>
   ): Promise<TModels[K] | null> {
-    const model = this.models[modelName];
+    const model = this._models[modelName];
     if (!model) throw new Error(`Model ${String(modelName)} not found`);
 
     const pullOperation = {} as any;

@@ -19,13 +19,13 @@ import { OtpRepository } from "../../../repositories/entities/otpRepository";
 import bcrypt from "bcrypt";
 
 export class UserAuthService implements IUserAuthService{
-  private authRepo: IUserAuthRepository;
-  private cryptoService: ICryptoService;
-  private jwtService: IJWTService;
-  private emailService: IEmailService;
-  private otpRepo: IOtpRepository;
-  private googleAuthService: IGoogleAuthService;
-  private cloudinaryService: ICloudinaryService;
+  private _authRepo: IUserAuthRepository;
+  private _cryptoService: ICryptoService;
+  private _jwtService: IJWTService;
+  private _emailService: IEmailService;
+  private _otpRepo: IOtpRepository;
+  private _googleAuthService: IGoogleAuthService;
+  private _cloudinaryService: ICloudinaryService;
   constructor(
     authRepo: IUserAuthRepository,
     otpRepo: IOtpRepository,
@@ -39,34 +39,34 @@ export class UserAuthService implements IUserAuthService{
     googleAuthService: IGoogleAuthService,
     cloudinaryService: ICloudinaryService
   ) {
-    this.authRepo = authRepo;
-    this.emailService = new EmailService(emailConfig);
-    this.cryptoService = cryptoService;
-    this.jwtService = jwtService;
-    this.otpRepo = otpRepo;
-    this.googleAuthService = googleAuthService;
-    this.cloudinaryService = cloudinaryService
+    this._authRepo = authRepo;
+    this._emailService = new EmailService(emailConfig);
+    this._cryptoService = cryptoService;
+    this._jwtService = jwtService;
+    this._otpRepo = otpRepo;
+    this._googleAuthService = googleAuthService;
+    this._cloudinaryService = cloudinaryService
   }
 
   async registerUser(user: IRegisterUser): Promise<IRegisterUser | null> {
     try {
-      const existingUser = await this.authRepo.findUserByEmail(user.email);
+      const existingUser = await this._authRepo.findUserByEmail(user.email);
       if (existingUser) {
         const error = new Error("User already exists");
         error.name = "UserAlreadyExists";
         throw error;
       }
 
-      const hashedPassword = await this.cryptoService.hashData(user.password);
+      const hashedPassword = await this._cryptoService.hashData(user.password);
       user.password = hashedPassword;
-      const newUser = await this.authRepo.createUser(user);
+      const newUser = await this._authRepo.createUser(user);
 
-      const otp = this.cryptoService.generateOtp();
+      const otp = this._cryptoService.generateOtp();
       console.log(otp, "otp..........!");
-      const hashedOtp = await this.cryptoService.hashData(otp);
-      await this.otpRepo.createOtp(String(newUser.email), hashedOtp);
+      const hashedOtp = await this._cryptoService.hashData(otp);
+      await this._otpRepo.createOtp(String(newUser.email), hashedOtp);
 
-      await this.emailService.sendOtpEmail(user.email, otp);
+      await this._emailService.sendOtpEmail(user.email, otp);
 
       return newUser;
     } catch (error: unknown) {
@@ -76,22 +76,22 @@ export class UserAuthService implements IUserAuthService{
 
   async verifyOtp(email: string, otp: string): Promise<otpResponse> {
     try {
-      const otpRecord = await this.otpRepo.findOtp(email);
+      const otpRecord = await this._otpRepo.findOtp(email);
       if (!otpRecord) {
         const error = new Error("OTP not found or has expired");
         error.name = "OTPNotFoundOrHasExpired";
         throw error;
       }
 
-      const verified = await this.cryptoService.compareData(otp, otpRecord.otp);
+      const verified = await this._cryptoService.compareData(otp, otpRecord.otp);
       if (verified) {
-        const updatedUser = await this.authRepo.updateActivatedStatus(
+        const updatedUser = await this._authRepo.updateActivatedStatus(
           email,
           true
         );
 
         console.log(updatedUser, "updatedUser");
-        await this.otpRepo.deleteOtp(email);
+        await this._otpRepo.deleteOtp(email);
         return{
             success: true,
             message: 'Verify Otp',
@@ -109,22 +109,22 @@ export class UserAuthService implements IUserAuthService{
 
   async resendOtp(email: string): Promise<otpResponse> {
     try {
-      const existingUser = await this.authRepo.findUserByEmail(email);
+      const existingUser = await this._authRepo.findUserByEmail(email);
       if (!existingUser) {
         const error = new Error("User not found");
         error.name = "UserNotFound";
         throw error;
       }
 
-      await this.otpRepo.deleteOtp(email);
+      await this._otpRepo.deleteOtp(email);
 
-      const otp = this.cryptoService.generateOtp();
+      const otp = this._cryptoService.generateOtp();
       console.log(otp, "new otp generated");
-      const hashedOtp = await this.cryptoService.hashData(otp);
+      const hashedOtp = await this._cryptoService.hashData(otp);
 
-      await this.otpRepo.createOtp(email, hashedOtp);
+      await this._otpRepo.createOtp(email, hashedOtp);
 
-      await this.emailService.sendOtpEmail(email, otp);
+      await this._emailService.sendOtpEmail(email, otp);
       return {
         success: true,
         message: 'Resend OTP',
@@ -140,8 +140,8 @@ export class UserAuthService implements IUserAuthService{
     password: string
   ): Promise<{ accessToken: string; refreshToken: string }> {
     try {
-      const user = await this.authRepo.findUserByEmail(email);
-      await this.authRepo.updateActivatedStatus(email, true);
+      const user = await this._authRepo.findUserByEmail(email);
+      await this._authRepo.updateActivatedStatus(email, true);
 
       if (!user) {
         const error = new Error("User not found");
@@ -172,8 +172,8 @@ export class UserAuthService implements IUserAuthService{
         throw error;
       }
       const payload = { id: user._id, role: "user" };
-      const accessToken = this.jwtService.generateAccessToken(payload);
-      const refreshToken = this.jwtService.generateRefreshToken(payload);
+      const accessToken = this._jwtService.generateAccessToken(payload);
+      const refreshToken = this._jwtService.generateRefreshToken(payload);
       return { accessToken, refreshToken };
     } catch (error: unknown) {
       throw error;
@@ -182,19 +182,19 @@ export class UserAuthService implements IUserAuthService{
 
   async forgotPassword(email: string): Promise<void> {
     try {
-      const user = await this.authRepo.findUserByEmail(email);
+      const user = await this._authRepo.findUserByEmail(email);
       if (!user) {
         const error = new Error("User not found!");
         error.name = "UserNotFound";
         throw error;
       }
-      const token = this.jwtService.generateAccessToken({
+      const token = this._jwtService.generateAccessToken({
         id: user._id,
         role: "user",
       });
-      await this.authRepo.savePasswordResetToken(user._id as string, token);
+      await this._authRepo.savePasswordResetToken(user._id as string, token);
       const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
-      await this.emailService.sendPasswordResetEmail(email, resetLink);
+      await this._emailService.sendPasswordResetEmail(email, resetLink);
     } catch (error: unknown) {
       throw error;
     }
@@ -202,7 +202,7 @@ export class UserAuthService implements IUserAuthService{
 
   async resetPassword(token: string, newPassword: string): Promise<void> {
     try {
-      const decoded = this.jwtService.verifyAccessToken(token);
+      const decoded = this._jwtService.verifyAccessToken(token);
 
       if (!decoded.id) {
         const error = new Error("Invalid reset token");
@@ -210,23 +210,23 @@ export class UserAuthService implements IUserAuthService{
         throw error;
       }
 
-      const user = await this.authRepo.findUserById(decoded.id);
+      const user = await this._authRepo.findUserById(decoded.id);
       if (!user) {
         const error = new Error("User not found");
         error.name = "UserNotFound";
         throw error;
       }
 
-      const storedToken = await this.authRepo.getPasswordResetToken(decoded.id);
+      const storedToken = await this._authRepo.getPasswordResetToken(decoded.id);
       if (!storedToken || storedToken !== token) {
         const error = new Error("Invalid or expired reset token");
         error.name = "InvalidOrExpiredResetToken";
         throw error;
       }
 
-      const hashedPassword = await this.cryptoService.hashData(newPassword);
-      await this.authRepo.updatePassword(decoded.id, hashedPassword);
-      await this.authRepo.clearPasswordResetToken(decoded.id);
+      const hashedPassword = await this._cryptoService.hashData(newPassword);
+      await this._authRepo.updatePassword(decoded.id, hashedPassword);
+      await this._authRepo.clearPasswordResetToken(decoded.id);
     } catch (error: unknown) {
       throw error;
     }
@@ -237,7 +237,7 @@ export class UserAuthService implements IUserAuthService{
   ): Promise<{ accessToken: string; refreshToken: string }> {
     try {
       console.log(token,"qwertyuiop")
-      const tokenPayload = await this.googleAuthService.verifyIdToken(token);
+      const tokenPayload = await this._googleAuthService.verifyIdToken(token);
       if (!tokenPayload){
         const error = new Error('Invalid token');
         error.name = 'InvalidToken'
@@ -248,7 +248,7 @@ export class UserAuthService implements IUserAuthService{
       let cloudinaryImageUrl: string;
       try {
         cloudinaryImageUrl =
-          await this.cloudinaryService.uploadGoogleProfileImage(googleImageUrl);
+          await this._cloudinaryService.uploadGoogleProfileImage(googleImageUrl);
       } catch (error) {
         console.error("Failed to upload profile image:", error);
         cloudinaryImageUrl = googleImageUrl;
@@ -256,7 +256,7 @@ export class UserAuthService implements IUserAuthService{
 
       console.log(cloudinaryImageUrl, "cloudinaryImageUrl");
 
-      const existingUser = await this.authRepo.findUserByEmail(
+      const existingUser = await this._authRepo.findUserByEmail(
         tokenPayload.email as string
       );
       console.log(existingUser, "user in userUseCase");
@@ -277,13 +277,13 @@ export class UserAuthService implements IUserAuthService{
           isBlocked: false,
         } as unknown as IUser;
         console.log(userData, "userDataaaaaaaaaaaaaa");
-        await this.authRepo.createGoogleUser(userData);
+        await this._authRepo.createGoogleUser(userData);
         console.log("New user created successfully");
       }
       const payload = { id: existingUser!._id, role: "user" };
       console.log(payload, "payload");
-      const accessToken = this.jwtService.generateAccessToken(payload);
-      const refreshToken = this.jwtService.generateRefreshToken(payload);
+      const accessToken = this._jwtService.generateAccessToken(payload);
+      const refreshToken = this._jwtService.generateRefreshToken(payload);
 
       console.log("Generated Tokens:", { accessToken, refreshToken });
 
@@ -300,7 +300,7 @@ export class UserAuthService implements IUserAuthService{
         if (!token) {
           return { message: "Unauthorized: No token provided", status: 401 };
         }
-        const decoded = this.jwtService.verifyAccessToken(token) as JWTPayload;
+        const decoded = this._jwtService.verifyAccessToken(token) as JWTPayload;
         console.log(decoded, "decodeeeeeeeeeeeeeeeeee");
         if (decoded.role?.toLowerCase() !== "user") {
           return { message: "No access user", status: 401 };

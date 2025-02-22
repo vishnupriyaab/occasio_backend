@@ -8,13 +8,13 @@ import AdminAuthRepository from "../../../repositories/entities/adminRepositorie
 import IAdminAuthServices from "../../../interfaces/services/admin/adminAuth.services";
 
 export class AdminAuthService implements IAdminAuthServices {
-  private adminRepo: IAdminRepository
-  private IjwtSevice: IJWTService
+  private _adminRepo: IAdminRepository
+  private _IjwtSevice: IJWTService
   constructor(
      adminRepo: IAdminRepository,
   ) {
-    this .adminRepo = adminRepo
-    this.IjwtSevice = new JWTService()
+    this ._adminRepo = adminRepo
+    this._IjwtSevice = new JWTService()
   }
 
   //Admin-login
@@ -25,7 +25,7 @@ export class AdminAuthService implements IAdminAuthServices {
     try {
       console.log(email, password, "qwertyuiop");
 
-      const admin = await this.adminRepo.findAdminByEmail(email);
+      const admin = await this._adminRepo.findAdminByEmail(email);
       console.log(admin, "admin");
       if (!admin) {
         const error = new Error("Admin not found");
@@ -41,8 +41,8 @@ export class AdminAuthService implements IAdminAuthServices {
       }
 
       const payload = { id: admin._id, role: "admin" };
-      const accessToken = this.IjwtSevice.generateAccessToken(payload);
-      const refreshToken = this.IjwtSevice.generateRefreshToken(payload);
+      const accessToken = this._IjwtSevice.generateAccessToken(payload);
+      const refreshToken = this._IjwtSevice.generateRefreshToken(payload);
       return {
         accessToken,
         refreshToken,
@@ -60,7 +60,7 @@ export class AdminAuthService implements IAdminAuthServices {
       if (!token) {
         return { message: "Unauthorized: No token provided", status: 401 };
       }
-      const decoded = this.IjwtSevice.verifyAccessToken(token) as JWTPayload;
+      const decoded = this._IjwtSevice.verifyAccessToken(token) as JWTPayload;
       if (decoded.role?.toLowerCase() !== "admin") {
         const error = new Error("No access admin");
         error.name = "NoAccessAdmin";

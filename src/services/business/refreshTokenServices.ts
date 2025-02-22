@@ -3,9 +3,9 @@ import { IJWTService, JWTPayload } from "../../interfaces/integration/IJwt";
 import IRefreshTokenService from "../../interfaces/services/refresh.services";
 
 export class RefreshTokenServices implements IRefreshTokenService {
-  private jwtService: IJWTService;
+  private _jwtService: IJWTService;
   constructor(jwtService: IJWTService) {
-    this.jwtService = jwtService;
+    this._jwtService = jwtService;
   }
 
     async getNewAccessTokenWithRefreshToken(
@@ -18,13 +18,13 @@ export class RefreshTokenServices implements IRefreshTokenService {
           throw error;
         }
         try {
-            const decode = this.jwtService.verifyRefreshToken(refreshToken);
+            const decode = this._jwtService.verifyRefreshToken(refreshToken);
             console.log(decode, "123456789");
             const payload: JWTPayload = {
               id: decode.id,
               role: decode.role,
             };
-            const accessToken = this.jwtService.generateAccessToken(payload);
+            const accessToken = this._jwtService.generateAccessToken(payload);
             return accessToken;
         } catch (error:unknown) {
           if(error instanceof Error){

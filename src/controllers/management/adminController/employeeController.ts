@@ -8,9 +8,9 @@ import {
 import { adminEmployeeServices } from "../../../services/business/adminServices/employeeService";
 
 export class AdminEmployeeController {
-  private employeeService: IAdminEmployeeService;
+  private _employeeService: IAdminEmployeeService;
   constructor(employeeService: IAdminEmployeeService) {
-    this.employeeService = employeeService;
+    this._employeeService = employeeService;
   }
 
   //blockEmployee
@@ -18,7 +18,7 @@ export class AdminEmployeeController {
     try {
       const employeeId = req.params.id;
       console.log(employeeId, "employeeId");
-      const result = await this.employeeService.blockEmployee(employeeId);
+      const result = await this._employeeService.blockEmployee(employeeId);
       const response = result?.isBlocked
         ? "Employee blocked successfully"
         : "Employee unblocked successfully";
@@ -49,7 +49,7 @@ export class AdminEmployeeController {
         ? parseInt(req.query.limit as string, 10)
         : 10;
 
-      const data = await this.employeeService.searchEmployee(
+      const data = await this._employeeService.searchEmployee(
         searchTerm,
         filterStatus,
         page,

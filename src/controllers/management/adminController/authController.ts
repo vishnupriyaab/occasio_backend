@@ -9,9 +9,9 @@ import { AuthenticatedRequest } from "../../../middleware/authenticateToken";
 import { adminAuthServices } from "../../../services/business/adminServices/authService";
 
 export class AdminAuthController {
-  private adminService: IAdminServices
+  private _adminService: IAdminServices
   constructor( adminService: IAdminServices) {
-    this.adminService = adminService;
+    this._adminService = adminService;
   }
 
   //adminLogin
@@ -20,7 +20,7 @@ export class AdminAuthController {
       const { email, password } = req.body;
       console.log(email, password);
 
-      const { accessToken, refreshToken } = await this.adminService.adminLogin(
+      const { accessToken, refreshToken } = await this._adminService.adminLogin(
         email,
         password
       );
@@ -65,7 +65,7 @@ export class AdminAuthController {
       console.log(req.cookies, "qwertyu");
       const token = req.cookies.access_token;
       console.log(token, "authenticatedToken");
-      const responseObj = await this.adminService.isAuthenticated(token);
+      const responseObj = await this._adminService.isAuthenticated(token);
       console.log(responseObj, "qwertyuiopertyuiop");
 
       return successResponse(res, HttpStatusCode.OK, "Admin is Authenticated");

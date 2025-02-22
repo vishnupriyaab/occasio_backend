@@ -6,9 +6,9 @@ import { HttpStatusCode } from "../../../constant/httpStatusCodes";
 import { adminUserServices } from "../../../services/business/adminServices/userServices";
 
 export class AdminUserController {
-  private userService: IUserService
+  private _userService: IUserService
   constructor(userService: IUserService) {
-    this.userService = userService
+    this._userService = userService
   }
 
   //blockUser
@@ -17,7 +17,7 @@ export class AdminUserController {
       const userId = req.params.id;
       console.log(userId, "userId");
 
-      const result = await this.userService.blockUser(userId);
+      const result = await this._userService.blockUser(userId);
       const response = result?.isBlocked
         ? "User blocked successfully"
         : "User unblocked successfully";
@@ -52,7 +52,7 @@ export class AdminUserController {
         ? parseInt(req.query.limit as string, 10)
         : 10;
 
-      const result = await this.userService.searchUser(
+      const result = await this._userService.searchUser(
         searchTerm,
         filterStatus,
         page,

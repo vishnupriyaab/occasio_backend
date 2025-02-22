@@ -5,9 +5,9 @@ import { successResponse } from "../../../integration/responseHandler";
 import { HttpStatusCode } from "../../../constant/httpStatusCodes";
 
 export class EmplFoodController {
-  private foodService: IEmplFoodService;
+  private _foodService: IEmplFoodService;
   constructor(foodService: IEmplFoodService) {
-    this.foodService = foodService;
+    this._foodService = foodService;
   }
 
   //addFood
@@ -20,7 +20,7 @@ export class EmplFoodController {
         error.name = "AllFieldsAreRequired";
         throw error;
       }
-      const food = await this.foodService.addFood({
+      const food = await this._foodService.addFood({
         foodName,
         category,
         price,
@@ -43,7 +43,7 @@ export class EmplFoodController {
       const foodId = req.params.id;
       const foodData = req.body;
       console.log(foodId, foodData, "wertyui");
-      const updateFood = await this.foodService.updateFood(foodId, foodData);
+      const updateFood = await this._foodService.updateFood(foodId, foodData);
       return successResponse(res, HttpStatusCode.OK, 'Food updated successfully', updateFood)
     } catch (error: unknown) {
       
@@ -67,7 +67,7 @@ export class EmplFoodController {
   
         
   
-        const result = await this.foodService.searchFood(
+        const result = await this._foodService.searchFood(
           searchTerm,
           status,
           price,

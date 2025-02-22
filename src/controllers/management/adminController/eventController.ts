@@ -8,9 +8,9 @@ import { HttpStatusCode } from "../../../constant/httpStatusCodes";
 import { adminEventService } from "../../../services/business/adminServices/eventService";
 
 export class AdminEventController {
-  private eventService: IAdminEventService;
+  private _eventService: IAdminEventService;
   constructor(eventService: IAdminEventService) {
-    this.eventService = eventService;
+    this._eventService = eventService;
   }
 
   //addEvent
@@ -27,7 +27,7 @@ export class AdminEventController {
         throw error;
       }
 
-      const event = await this.eventService.addEvent(
+      const event = await this._eventService.addEvent(
         { eventName, description },
         file
       );
@@ -73,7 +73,7 @@ export class AdminEventController {
         ? parseInt(req.query.limit as string, 10)
         : 10;
 
-      const result = await this.eventService.searchEvent(
+      const result = await this._eventService.searchEvent(
         searchTerm,
         filterStatus,
         page,
@@ -124,7 +124,7 @@ export class AdminEventController {
       //     const imageUrl = await this.cloudinaryService.uploadImage(file);
       //     updatedData.image = imageUrl;
       //   }
-      const updatedEvent = await this.eventService.updateEvent(
+      const updatedEvent = await this._eventService.updateEvent(
         id,
         updatedData,
         file
@@ -155,7 +155,7 @@ export class AdminEventController {
     try {
       const eventId = req.params.id;
       console.log(eventId, "eventid");
-      const result = await this.eventService.blockEvent(eventId);
+      const result = await this._eventService.blockEvent(eventId);
 
       const response = result?.isBlocked
         ? "Event blocked successfully"
@@ -181,7 +181,7 @@ export class AdminEventController {
   async deleteEvent(req: Request, res: Response): Promise<void> {
     try {
       const eventId = req.params.id;
-      await this.eventService.deleteEvent(eventId);
+      await this._eventService.deleteEvent(eventId);
 
       return successResponse(
         res,

@@ -4,22 +4,22 @@ import IEmplFoodService from "../../../interfaces/services/employee/food.service
 import { EmplFoodRepository } from "../../../repositories/entities/employeeRepositories/foodRepository";
 
 export class EmplFoodService implements IEmplFoodService {
-  private foodRepo: IEmplFoodRepository;
+  private _foodRepo: IEmplFoodRepository;
   constructor(foodRepo: IEmplFoodRepository) {
-    this.foodRepo = foodRepo;
+    this._foodRepo = foodRepo;
   }
 
   async addFood(foodData: IFood): Promise<any> {
     try {
       const foodName = foodData.foodName.toLowerCase();
-      const existingFood = await this.foodRepo.findByFoodName(foodName);
+      const existingFood = await this._foodRepo.findByFoodName(foodName);
       console.log(existingFood, "swertyuiovb");
       if (existingFood) {
         throw new Error(`Food with name "${foodName}" already exist`);
       }
       const food: IAddFood = { ...foodData };
       console.log(food, "1234567890");
-      const newFood = await this.foodRepo.addFood(food);
+      const newFood = await this._foodRepo.addFood(food);
       return newFood;
     } catch (error) {
       throw error;
@@ -31,7 +31,7 @@ export class EmplFoodService implements IEmplFoodService {
     foodData: IAddFood
   ): Promise<IFood | undefined | null> {
     try {
-      return this.foodRepo.updateFood(foodId, foodData);
+      return this._foodRepo.updateFood(foodId, foodData);
     } catch (error) {
       throw error;
     }
@@ -58,7 +58,7 @@ export class EmplFoodService implements IEmplFoodService {
         throw error;
       }
 
-      return await this.foodRepo.searchFood(
+      return await this._foodRepo.searchFood(
         searchTerm,
         status,
         price,

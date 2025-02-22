@@ -8,9 +8,9 @@ import {
 import { HttpStatusCode } from "../../../constant/httpStatusCodes";
 
 export class UserAuthController {
-  private authService: IUserAuthService;
+  private _authService: IUserAuthService;
   constructor(authService: IUserAuthService) {
-    this.authService = authService;
+    this._authService = authService;
   }
   //user-register
   async registerUser(req: Request, res: Response): Promise<void> {
@@ -21,7 +21,7 @@ export class UserAuthController {
         error.name = "AllFieldsAreRequired";
         throw error;
       }
-      const user = await this.authService.registerUser({
+      const user = await this._authService.registerUser({
         name,
         email,
         mobile,
@@ -61,7 +61,7 @@ export class UserAuthController {
     try {
       const { email, otp } = req.body;
       console.log(email, otp, "req.body");
-      const result = await this.authService.verifyOtp(email, otp);
+      const result = await this._authService.verifyOtp(email, otp);
       return successResponse(
         res,
         HttpStatusCode.OK,
@@ -103,7 +103,7 @@ export class UserAuthController {
         throw error;
       }
 
-      const result = await this.authService.resendOtp(email);
+      const result = await this._authService.resendOtp(email);
       return successResponse(
         res,
         HttpStatusCode.OK,
@@ -135,7 +135,7 @@ export class UserAuthController {
     try {
       const { email, password } = req.body;
       console.log(email, password);
-      const { accessToken, refreshToken } = await this.authService.loginUser(
+      const { accessToken, refreshToken } = await this._authService.loginUser(
         email,
         password
       );
@@ -198,7 +198,7 @@ export class UserAuthController {
     const { email } = req.body;
     console.log(email, "emailgot itttt");
     try {
-      const result = await this.authService.forgotPassword(email);
+      const result = await this._authService.forgotPassword(email);
       return successResponse(
         res,
         HttpStatusCode.OK,
@@ -225,7 +225,7 @@ export class UserAuthController {
   async resetPassword(req: Request, res: Response): Promise<void> {
     try {
       const { password, token } = req.body;
-      await this.authService.resetPassword(token, password);
+      await this._authService.resetPassword(token, password);
       return successResponse(res, HttpStatusCode.OK, "Password has been reset");
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -267,7 +267,7 @@ export class UserAuthController {
         throw error;
       }
 
-      const { accessToken, refreshToken } = await this.authService.googleLogin(
+      const { accessToken, refreshToken } = await this._authService.googleLogin(
         jwtToken
       );
 
@@ -338,7 +338,7 @@ export class UserAuthController {
       console.log(req.cookies, "1234567890-");
       const token = req.cookies.access_token;
       console.log(token, "authenticatedToken");
-      const responseObj = await this.authService.isAuthenticated(token);
+      const responseObj = await this._authService.isAuthenticated(token);
       return successResponse(res, responseObj.status, responseObj.message);
       //   res
       //     .status(responseObj.status)

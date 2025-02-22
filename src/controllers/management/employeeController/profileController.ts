@@ -10,10 +10,10 @@ import IEmplProfileService from "../../../interfaces/services/employee/profile.s
 import { emplProfileServices } from "../../../services/business/employeeService/profileService";
 
 export class EmplProfileController {
-  private profileService: IEmplProfileService;
+  private _profileService: IEmplProfileService;
 
   constructor(profileService: IEmplProfileService) {
-    this.profileService = profileService;
+    this._profileService = profileService;
   }
 
   //showProfile
@@ -27,7 +27,7 @@ export class EmplProfileController {
         throw error;
       }
 
-      const profile = await this.profileService.showProfile(userId);
+      const profile = await this._profileService.showProfile(userId);
       return successResponse(
         res,
         HttpStatusCode.OK,
@@ -71,7 +71,7 @@ export class EmplProfileController {
         error.name = "PasswordsDoNotMatch";
         throw error;
       }
-      const updatedUser = await this.profileService.updateProfile(userId, {
+      const updatedUser = await this._profileService.updateProfile(userId, {
         name,
         email,
         password,
@@ -126,7 +126,7 @@ export class EmplProfileController {
         throw error;
       }
 
-      const updatedUser = await this.profileService.updateProfileImage(
+      const updatedUser = await this._profileService.updateProfileImage(
         image,
         userId
       );
