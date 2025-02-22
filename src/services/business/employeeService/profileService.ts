@@ -2,7 +2,7 @@ import { IEmployee } from "../../../entities/employee.entity";
 import { IProfile } from "../../../entities/user.entity";
 import { CryptoService } from "../../../integration/cryptoServices";
 import { ICryptoService } from "../../../interfaces/integration/ICrypto";
-import IProfileRepository from "../../../interfaces/repository/employee/empl.profile.repository";
+import IProfileRepository from "../../../interfaces/repository/employee/profile.repository";
 import IEmplProfileService from "../../../interfaces/services/employee/profile.services";
 import { EmplProfileRepository } from "../../../repositories/entities/employeeRepositories/profileRepository";
 

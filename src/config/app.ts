@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
-import foodRoute from "../framework/router/foodRoute";
 import refreshTokenRoute from "../framework/router/refreshTokenRoute";
 import adminRouter from "../routes/admin.routes";
 import employeeRouter from "../routes/employee.routes";
@@ -34,8 +33,6 @@ app.use("/user", userRouter);
 app.use("/employee", employeeRouter);//finished
 
 app.use("/admin", adminRouter); //finished
-
-app.use("/food", foodRoute);
 
 app.use("/refreshToken", refreshTokenRoute);
 

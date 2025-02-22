@@ -5,6 +5,7 @@ import { IJWTService } from "../interfaces/integration/IJwt";
 import AuthMiddleware from "../middleware/authenticateToken";
 import { emplProfileController } from "../controllers/management/employeeController/profileController";
 import { upload } from "../middleware/claudinaryUpload";
+import { emplFoodController } from "../controllers/management/employeeController/foodController";
 
 const employeeRouter = express.Router()
 const iJwtServices: IJWTService = new JWTService();
@@ -25,7 +26,10 @@ employeeRouter
     .post( "/logOut", emplAuthController.logOut.bind(emplAuthController))
     .get( "/showProfile", emplProfileController.showProfile.bind(emplProfileController))
     .put( "/updateProfile", emplProfileController.updateProfile.bind(emplProfileController))
-    .put( "/profileImage", upload.single("img"), emplProfileController.updateProfileImage.bind(emplProfileController));
+    .put( "/profileImage", upload.single("img"), emplProfileController.updateProfileImage.bind(emplProfileController))
+    .get('/searchFood',emplFoodController.SearchFood.bind(emplFoodController))
+    .post('/addFood', emplFoodController.addFood.bind(emplFoodController))
+    .put('/editFood/:id', emplFoodController.editFood.bind(emplFoodController))
 
 
 export default employeeRouter;

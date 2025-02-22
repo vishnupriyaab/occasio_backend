@@ -2,7 +2,7 @@ import {
   IEmployee,
   IRegisterEmployee,
 } from "../../../entities/employee.entity";
-import IEmplAuthRepository from "../../../interfaces/repository/employee/empl.auth.respository";
+import IEmplAuthRepository from "../../../interfaces/repository/employee/auth.respository";
 import Employees from "../../../models/employeeModel";
 import CommonBaseRepository from "../../baseRepository/commonBaseRepository";
 

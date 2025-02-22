@@ -9,7 +9,7 @@ import { IsAuthenticatedUseCaseRES } from "../../../interfaces/common/IIsAuthent
 import { ICryptoService } from "../../../interfaces/integration/ICrypto";
 import { IEmailService } from "../../../interfaces/integration/IEmail";
 import { IJWTService, JWTPayload } from "../../../interfaces/integration/IJwt";
-import IEmplAuthRepository from "../../../interfaces/repository/employee/empl.auth.respository";
+import IEmplAuthRepository from "../../../interfaces/repository/employee/auth.respository";
 import IOtpRepository from "../../../interfaces/repository/otp.Repository";
 import IEmplAuthService from "../../../interfaces/services/employee/emplAuth.services";
 import { EmplAuthRepository } from "../../../repositories/entities/employeeRepositories/authRepository";

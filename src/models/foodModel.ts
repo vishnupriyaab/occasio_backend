@@ -33,5 +33,5 @@ const foodSchema: Schema = new Schema<IFood>(
   { timestamps: true }
 );
 
-const Food = mongoose.model<IFood>("Foods", foodSchema);
+const Food = mongoose.model<IFood & Document>("Foods", foodSchema);
 export default Food;
